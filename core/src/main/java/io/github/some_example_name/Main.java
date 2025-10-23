@@ -1,21 +1,27 @@
 package io.github.some_example_name;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main implements ApplicationListener {
-    // decalre the variables here
+    // declare the variables here
     SpriteBatch spriteBatch;
     FitViewport viewport;
+    Texture playerTexture;
+    Texture backgroundTexture;
     sprite playerSprite;
+
 
     @Override
     public void create() {
         // load the assets here
+        backgroundTexture = new Texture("background.png");
+        playerTexture = new Texture("player.png");
 
-
-        playerSprite = new Sprite(//add the player texter); // Initialize the sprite based on the texture
+        playerSprite = new Sprite(playerTexture); // Initialize the sprite based on the texture
         playerSprite.setSize(1, 1);
 
         spriteBatch = new SpriteBatch();
@@ -60,24 +66,25 @@ public class Main implements ApplicationListener {
             playerSprite.setX(MathUtils.clamp(bucketSprite.getX(), 0, worldWidth));
 
         }
-        privet void draw(){
-            ScreenUtils.clear(Color.BLACK);
-            viewport.apply();
-            spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
-            spriteBatch.begin();
-            // i think here is the texture for the map
-            //eveything about rendering should be here
-            float worldWidth = viewport.getWorldWidth();
-            float worldHeight = viewport.getWorldHeight();
 
-            spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
-            playerSprite.draw(spriteBatch));
+    @Override
+    private void draw() {
+        ScreenUtils.clear(Color.BLACK);
+        viewport.apply();
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
+        spriteBatch.begin();
 
-            spriteBatch.end();
+        // i think here is the texture for the map
+        //everything about rendering should be here
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
 
-        }
+        spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
+        playerSprite.draw(spriteBatch);
 
+        spriteBatch.end();
     }
+
 
     @Override
     public void pause() {
