@@ -23,9 +23,8 @@ public class Main implements ApplicationListener {
     @Override
     public void create() {
         // Load the assets here
-        // Create a simple 1x1 white pixel texture for now (placeholder until you add actual game assets)
-        playerTexture = createPlaceholderTexture();
-        backgroundTexture = createPlaceholderTexture();
+        backgroundTexture = new Texture("background.png");
+        playerTexture = new Texture("bucket.png");
 
         // Initialize the sprite based on the texture
         playerSprite = new Sprite(playerTexture);
@@ -34,20 +33,6 @@ public class Main implements ApplicationListener {
 
         spriteBatch = new SpriteBatch();
         viewport = new FitViewport(8, 5);
-    }
-
-    /**
-     * Creates a simple 1x1 white pixel texture as a placeholder.
-     * Replace this with actual texture loading when you have game assets.
-     */
-    private Texture createPlaceholderTexture() {
-        // Create a 1x1 white pixel texture programmatically
-        com.badlogic.gdx.graphics.Pixmap pixmap = new com.badlogic.gdx.graphics.Pixmap(1, 1, com.badlogic.gdx.graphics.Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.WHITE);
-        pixmap.fill();
-        Texture texture = new Texture(pixmap);
-        pixmap.dispose();
-        return texture;
     }
 
     @Override
