@@ -1,11 +1,14 @@
 package io.github.some_example_name;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main implements ApplicationListener {
     // decalre the variables here
+    Texture backgroundTexture;
+    Texture Playertexture;
     SpriteBatch spriteBatch;
     FitViewport viewport;
     sprite playerSprite;
@@ -13,7 +16,8 @@ public class Main implements ApplicationListener {
     @Override
     public void create() {
         // load the assets here
-
+        backgroundTexture = new Texture("background.png");
+        Playertexture = new Texture();
 
         playerSprite = new Sprite(//add the player texter); // Initialize the sprite based on the texture
         playerSprite.setSize(1, 1);
@@ -66,10 +70,10 @@ public class Main implements ApplicationListener {
             spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
             spriteBatch.begin();
             // i think here is the texture for the map
-            //eveything about rendering should be here
+            //eveything about rendering should be here between the begain and end
             float worldWidth = viewport.getWorldWidth();
             float worldHeight = viewport.getWorldHeight();
-
+           // add texture
             spriteBatch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
             playerSprite.draw(spriteBatch));
 
