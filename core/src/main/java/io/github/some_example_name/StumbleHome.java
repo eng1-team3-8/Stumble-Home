@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-public class GameName extends Game {
+public class StumbleHome extends Game {
 
     public SpriteBatch batch;
     public BitmapFont font;

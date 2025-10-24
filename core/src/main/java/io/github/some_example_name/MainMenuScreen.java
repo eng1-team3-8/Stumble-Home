@@ -6,10 +6,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MainMenuScreen implements Screen {
+    final StumbleHome game;
 
-    final GameName game;
-
-    public MainMenuScreen(final GameName game) {
+    public MainMenuScreen(final StumbleHome game) {
         this.game = game;
     }
 
@@ -27,7 +26,7 @@ public class MainMenuScreen implements Screen {
 
         game.batch.begin();
         // draw text, remember x and y are in meters
-        game.font.draw(game.batch, "Welcome to GameName!", 1, 1.5f);
+        game.font.draw(game.batch, "Welcome to StumbleHome!", 1, 1.5f);
         game.font.draw(game.batch, "Tap anywhere to begin.", 1, 1);
         game.batch.end();
 

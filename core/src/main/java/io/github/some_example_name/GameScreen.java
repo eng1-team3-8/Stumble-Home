@@ -10,13 +10,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen implements Screen {
-    final GameName game;
+    final StumbleHome game;
 
     Sprite playerSprite;
     Texture playerTexture;
     Texture backgroundTexture;
 
-    public GameScreen(final GameName game){
+    public GameScreen(final StumbleHome game){
         this.game = game;
 
         // load images for the background + player
