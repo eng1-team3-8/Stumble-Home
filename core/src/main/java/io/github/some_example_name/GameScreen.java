@@ -4,9 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class GameScreen implements Screen {
@@ -16,17 +22,27 @@ public class GameScreen implements Screen {
     Texture playerTexture;
     Texture backgroundTexture;
 
+    TiledMap map;
+    OrthogonalTiledMapRenderer renderer;
+
+    final float GAME_WORLD_WIDTH = 60;
+    final float GAME_WORLD_HEIGHT = 30;
+
     public GameScreen(final StumbleHome game){
         this.game = game;
 
-        // load images for the background + player
-        backgroundTexture = new Texture("background.png");
+        //load the map, set unit scale to 1/16 (1 unit == 16 pixels)
+        map = new TmxMapLoader().load("map.tmx");
+        renderer = new OrthogonalTiledMapRenderer(map, 1/16f);
+
+
+        // load images for the player
         playerTexture = new Texture("bucket.png");
 
         // Initialize the player sprite
-        playerSprite = new Sprite(playerTexture);
-        playerSprite.setSize(1, 1);
-        playerSprite.setPosition(3.5f, 2); // Center the player initially
+//        playerSprite = new Sprite(playerTexture);
+//        playerSprite.setSize(1, 1);
+//        playerSprite.setPosition(3.5f, 2); // Center the player initially
     }
 
     @Override
@@ -47,51 +63,46 @@ public class GameScreen implements Screen {
         float delta = Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            playerSprite.translateX(speed * delta);
+            //playerSprite.translateX(speed * delta);
+            game.camera.translate(speed*delta, 0);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            playerSprite.translateX(-speed * delta); // Fixed: now moves left
+            //playerSprite.translateX(-speed * delta);
+            game.camera.translate(-speed*delta,0);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            playerSprite.translateY(speed * delta);
+           // playerSprite.translateY(speed * delta);
+            game.camera.translate(0,speed*delta);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            playerSprite.translateY(-speed * delta);
+            //playerSprite.translateY(-speed * delta);
+            game.camera.translate(0,-speed*delta);
         }
     }
 
     private void logic() {
-        // Store the worldWidth and worldHeight as local variables for brevity
-        float worldWidth = game.viewport.getWorldWidth();
-        float worldHeight = game.viewport.getWorldHeight();
-
-        // Clamp x and y to keep player within the viewport
-        playerSprite.setX(MathUtils.clamp(playerSprite.getX(), 0, worldWidth - playerSprite.getWidth()));
-        playerSprite.setY(MathUtils.clamp(playerSprite.getY(), 0, worldHeight - playerSprite.getHeight()));
     }
 
     private void draw() {
         // Clear the screen with black color
         ScreenUtils.clear(Color.BLACK);
 
-        game.viewport.apply();
-        game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
+        game.camera.update();
+
+        renderer.setView(game.camera);
+        renderer.render();
+
         game.batch.begin();
 
-        // Draw the background texture to fill the entire viewport
-        float worldWidth = game.viewport.getWorldWidth();
-        float worldHeight = game.viewport.getWorldHeight();
-        game.batch.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
-
         // Draw the player sprite
-        playerSprite.draw(game.batch);
+        //playerSprite.draw(game.batch);
 
         game.batch.end();
     }
 
     @Override
     public void resize(int width, int height) {
-        game.viewport.update(width, height, true);
+        game.viewport.update(width, height);
     }
 
     @Override
@@ -105,7 +116,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        backgroundTexture.dispose();
         playerTexture.dispose();
     }
 }

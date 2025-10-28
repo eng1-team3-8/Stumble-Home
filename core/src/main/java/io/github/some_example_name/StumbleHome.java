@@ -2,28 +2,39 @@ package io.github.some_example_name;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class StumbleHome extends Game {
 
     public SpriteBatch batch;
     public BitmapFont font;
-    public FitViewport viewport;
+    public OrthographicCamera camera;
+
+    final float VIEWPORT_WIDTH = 30;
+    final float VIEWPORT_HEIGHT = 15;
+
+    public Viewport viewport;
+
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        // use libGDX's default font
-        font = new BitmapFont();
-        viewport = new FitViewport(8,5);
 
-        // font has 15pt, but we need to scale it to our viewport by ratio of viewport height to screen height
-        font.setUseIntegerPositions(false);
-        font.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
+        // aspect ratio = width/height.
+        float aspectRatio = (float) Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
 
-        this.setScreen(new MainMenuScreen(this));
+        // create orthographic camera
+        camera = new OrthographicCamera();
+        viewport = new FitViewport(15*aspectRatio, 15, camera);
+        viewport.apply();
+        camera.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
+        camera.update();
+
+        this.setScreen(new GameScreen(this));
     }
 
     public void render(){
@@ -33,5 +44,7 @@ public class StumbleHome extends Game {
     public void dispose(){
         batch.dispose();
         font.dispose();
+        // need to dispose everything in gameScreen dispose method, as dispose method in
+        // screen class is not automatically called
     }
 }
