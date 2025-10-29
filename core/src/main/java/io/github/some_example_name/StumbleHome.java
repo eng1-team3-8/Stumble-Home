@@ -23,6 +23,7 @@ public class StumbleHome extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
+        font = new BitmapFont();
 
         // aspect ratio = width/height.
         float aspectRatio = (float) Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
@@ -34,7 +35,7 @@ public class StumbleHome extends Game {
         camera.position.set(viewport.getWorldWidth()/2, VIEWPORT_HEIGHT/2, 0);
         camera.update();
 
-        this.setScreen(new GameScreen(this));
+        this.setScreen(new MainMenuScreen(this));
     }
 
     public void render(){
