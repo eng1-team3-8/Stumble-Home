@@ -18,14 +18,24 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class GameScreen implements Screen {
     final StumbleHome game;
 
+
     Sprite playerSprite;
     Texture playerTexture;
 
     TiledMap map;
     OrthogonalTiledMapRenderer renderer;
 
+    // Map boundaries
+    private float mapWidth;
+    private float mapHeight;
+    private float minCameraX;
+    private float maxCameraX;
+    private float minCameraY;
+    private float maxCameraY;
+
     public GameScreen(final StumbleHome game){
         this.game = game;
+
 
         //load the map, set unit scale to 1/16 (1 unit == 16 pixels)
         map = new TmxMapLoader().load("map.tmx");
@@ -35,6 +45,39 @@ public class GameScreen implements Screen {
         playerTexture = new Texture("bucket.png");
         playerSprite = new Sprite(playerTexture);
         playerSprite.setPosition(game.viewport.getWorldWidth()/2,game.VIEWPORT_HEIGHT/2);
+
+        // Get map properties
+        int mapWidthInTiles = map.getProperties().get("width", Integer.class);
+        int mapHeightInTiles = map.getProperties().get("height", Integer.class);
+        int tilePixelWidth = map.getProperties().get("tilewidth", Integer.class);
+        int tilePixelHeight = map.getProperties().get("tileheight", Integer.class);
+
+        // Calculate map dimensions in world units (remember: 1 world unit = 16 pixels)
+        mapWidth = mapWidthInTiles * tilePixelWidth / 16f;
+        mapHeight = mapHeightInTiles * tilePixelHeight / 16f;
+
+        // Calculate camera boundaries
+        // The camera center can't get closer to the edge than half the viewport size
+        float halfViewportWidth = game.viewport.getWorldWidth() / 2;
+        float halfViewportHeight = game.viewport.getWorldHeight() / 2;
+
+        minCameraX = halfViewportWidth;
+        maxCameraX = mapWidth - halfViewportWidth;
+        minCameraY = halfViewportHeight;
+        maxCameraY = mapHeight - halfViewportHeight;
+
+        // Debug: Print boundary information
+        System.out.println("=== MAP BOUNDARIES DEBUG ===");
+        System.out.println("Map size: " + mapWidth + " x " + mapHeight + " world units");
+        System.out.println("Viewport size: " + game.viewport.getWorldWidth() + " x " + game.viewport.getWorldHeight() + " world units");
+        System.out.println("Camera X range: " + minCameraX + " to " + maxCameraX);
+        System.out.println("Camera Y range: " + minCameraY + " to " + maxCameraY);
+        System.out.println("Camera starting position: " + game.camera.position.x + ", " + game.camera.position.y);
+        System.out.println("===========================");
+
+        // Center camera on map instead of starting at bottom-left corner
+        game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
+        System.out.println("Camera centered at: " + game.camera.position.x + ", " + game.camera.position.y);
     }
 
     @Override
@@ -70,9 +113,30 @@ public class GameScreen implements Screen {
             //playerSprite.translateY(-speed * delta);
             game.camera.translate(0,-speed*delta);
         }
+
+        // Clamp camera to boundaries after movement
+        clampCamera();
     }
 
     private void logic() {
+    }
+
+    private void clampCamera() {
+        // Only clamp if map is larger than viewport in each dimension
+        if (mapWidth >= game.viewport.getWorldWidth()) {
+            game.camera.position.x = MathUtils.clamp(
+                game.camera.position.x,
+                minCameraX,
+                maxCameraX
+            );
+        }
+        if (mapHeight >= game.viewport.getWorldHeight()) {
+            game.camera.position.y = MathUtils.clamp(
+                game.camera.position.y,
+                minCameraY,
+                maxCameraY
+            );
+        }
     }
 
     private void draw() {

@@ -15,7 +15,7 @@ public class StumbleHome extends Game {
     public OrthographicCamera camera;
 
     final float VIEWPORT_WIDTH = 30;
-    final float VIEWPORT_HEIGHT = 15;
+    final float VIEWPORT_HEIGHT = 30;  // Changed from 15 to 30 to see full map height
 
     public Viewport viewport;
 
@@ -43,7 +43,9 @@ public class StumbleHome extends Game {
 
     public void dispose(){
         batch.dispose();
-        font.dispose();
+        if (font != null) {
+            font.dispose();
+        }
         // need to dispose everything in gameScreen dispose method, as dispose method in
         // screen class is not automatically called
     }
