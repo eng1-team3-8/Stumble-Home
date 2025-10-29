@@ -20,13 +20,9 @@ public class GameScreen implements Screen {
 
     Sprite playerSprite;
     Texture playerTexture;
-    Texture backgroundTexture;
 
     TiledMap map;
     OrthogonalTiledMapRenderer renderer;
-
-    final float GAME_WORLD_WIDTH = 60;
-    final float GAME_WORLD_HEIGHT = 30;
 
     public GameScreen(final StumbleHome game){
         this.game = game;
@@ -35,14 +31,10 @@ public class GameScreen implements Screen {
         map = new TmxMapLoader().load("map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1/16f);
 
-
-        // load images for the player
-        playerTexture = new Texture("bucket.png");
-
         // Initialize the player sprite
-//        playerSprite = new Sprite(playerTexture);
-//        playerSprite.setSize(1, 1);
-//        playerSprite.setPosition(3.5f, 2); // Center the player initially
+        playerTexture = new Texture("bucket.png");
+        playerSprite = new Sprite(playerTexture);
+        playerSprite.setPosition(game.viewport.getWorldWidth()/2,game.VIEWPORT_HEIGHT/2);
     }
 
     @Override
@@ -59,7 +51,7 @@ public class GameScreen implements Screen {
     }
 
     private void input() {
-        float speed = 5f; // Units per second
+        float speed = 10f; // Units per second
         float delta = Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
@@ -85,7 +77,7 @@ public class GameScreen implements Screen {
 
     private void draw() {
         // Clear the screen with black color
-        ScreenUtils.clear(Color.BLACK);
+        ScreenUtils.clear(Color.RED);
 
         game.camera.update();
 
@@ -95,7 +87,7 @@ public class GameScreen implements Screen {
         game.batch.begin();
 
         // Draw the player sprite
-        //playerSprite.draw(game.batch);
+        playerSprite.draw(game.batch);
 
         game.batch.end();
     }

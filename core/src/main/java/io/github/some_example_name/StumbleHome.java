@@ -29,9 +29,9 @@ public class StumbleHome extends Game {
 
         // create orthographic camera
         camera = new OrthographicCamera();
-        viewport = new FitViewport(15*aspectRatio, 15, camera);
+        viewport = new FitViewport(VIEWPORT_HEIGHT*aspectRatio, VIEWPORT_HEIGHT, camera);
         viewport.apply();
-        camera.position.set(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2, 0);
+        camera.position.set(viewport.getWorldWidth()/2, VIEWPORT_HEIGHT/2, 0);
         camera.update();
 
         this.setScreen(new GameScreen(this));
