@@ -6,7 +6,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -18,9 +20,32 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class GameScreen implements Screen {
     final StumbleHome game;
 
+    // Player animation
+    private Texture characterSheet;
+    private Animation<TextureRegion> walkDown;
+    private Animation<TextureRegion> walkLeft;
+    private Animation<TextureRegion> walkRight;
+    private Animation<TextureRegion> walkUp;
 
-    Sprite playerSprite;
-    Texture playerTexture;
+    // Standing poses (static, not animated)
+    private TextureRegion standDown;
+    private TextureRegion standLeft;
+    private TextureRegion standRight;
+    private TextureRegion standUp;
+
+    private Animation<TextureRegion> currentAnimation;
+    private Animation<TextureRegion> previousAnimation;
+    private TextureRegion currentStandingPose;
+    private float stateTime;
+
+    // Track last direction for standing pose
+    private enum Direction { DOWN, LEFT, RIGHT, UP }
+    private Direction lastDirection = Direction.DOWN;
+
+    // Player position and size
+    private float playerX;
+    private float playerY;
+    private float playerSize = 0.8f;
 
     TiledMap map;
     OrthogonalTiledMapRenderer renderer;
@@ -70,22 +95,71 @@ public class GameScreen implements Screen {
         System.out.println("Camera starting position: " + game.camera.position.x + ", " + game.camera.position.y);
         System.out.println("===========================");
 
-        // Initialize the player sprite
-        playerTexture = new Texture("bucket.png");
-        playerSprite = new Sprite(playerTexture);
-
-        // Scale player to fit paths (tiles are 1 world unit, make player 0.8 units)
-        float playerSize = 0.8f;
-        playerSprite.setSize(playerSize, playerSize);
-
+        // Initialize player animations
+        initializeAnimations();
 
         // Position player at center of map
-        playerSprite.setPosition(mapWidth / 2 - playerSize / 2, mapHeight / 2 - playerSize / 2);
+        playerX = mapWidth / 2 - playerSize / 2;
+        playerY = mapHeight / 2 - playerSize / 2;
 
         // Center camera on player position
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
         System.out.println("Camera centered at: " + game.camera.position.x + ", " + game.camera.position.y);
-        System.out.println("Player positioned at: " + playerSprite.getX() + ", " + playerSprite.getY());
+        System.out.println("Player positioned at: " + playerX + ", " + playerY);
+    }
+
+    private void initializeAnimations() {
+        // Load character sprite sheet
+        characterSheet = new Texture("character.png");
+
+        // Frame size: 25x49 pixels
+        int frameWidth = 25;
+        int frameHeight = 49;
+
+        // Standing poses (static, not animated)
+        standLeft = new TextureRegion(characterSheet, 4, 10, frameWidth, frameHeight);
+        standRight = new TextureRegion(characterSheet, 198, 9, frameWidth, frameHeight);
+        standDown = new TextureRegion(characterSheet, 3, 65, frameWidth, frameHeight);
+        standUp = new TextureRegion(characterSheet, 3, 120, frameWidth, frameHeight);
+
+        // Walking LEFT (4 frames)
+        TextureRegion[] walkLeftFrames = new TextureRegion[4];
+        walkLeftFrames[0] = new TextureRegion(characterSheet, 44, 9, frameWidth, frameHeight);
+        walkLeftFrames[1] = new TextureRegion(characterSheet, 78, 10, frameWidth, frameHeight);
+        walkLeftFrames[2] = new TextureRegion(characterSheet, 117, 9, frameWidth, frameHeight);
+        walkLeftFrames[3] = new TextureRegion(characterSheet, 151, 10, frameWidth, frameHeight);
+        walkLeft = new Animation<>(0.1f, walkLeftFrames);
+
+        // Walking RIGHT (4 frames)
+        TextureRegion[] walkRightFrames = new TextureRegion[4];
+        walkRightFrames[0] = new TextureRegion(characterSheet, 198, 64, frameWidth, frameHeight);
+        walkRightFrames[1] = new TextureRegion(characterSheet, 230, 65, frameWidth, frameHeight);
+        walkRightFrames[2] = new TextureRegion(characterSheet, 262, 65, frameWidth, frameHeight);
+        walkRightFrames[3] = new TextureRegion(characterSheet, 292, 65, frameWidth, frameHeight);
+        walkRight = new Animation<>(0.1f, walkRightFrames);
+
+        // Walking FORWARD/DOWN (4 frames)
+        TextureRegion[] walkDownFrames = new TextureRegion[4];
+        walkDownFrames[0] = new TextureRegion(characterSheet, 43, 64, frameWidth, frameHeight);
+        walkDownFrames[1] = new TextureRegion(characterSheet, 79, 66, frameWidth, frameHeight);
+        walkDownFrames[2] = new TextureRegion(characterSheet, 115, 65, frameWidth, frameHeight);
+        walkDownFrames[3] = new TextureRegion(characterSheet, 151, 66, frameWidth, frameHeight);
+        walkDown = new Animation<>(0.1f, walkDownFrames);
+
+        // Walking BACKWARDS/UP (4 frames)
+        TextureRegion[] walkUpFrames = new TextureRegion[4];
+        walkUpFrames[0] = new TextureRegion(characterSheet, 43, 121, frameWidth, frameHeight);
+        walkUpFrames[1] = new TextureRegion(characterSheet, 78, 122, frameWidth, frameHeight);
+        walkUpFrames[2] = new TextureRegion(characterSheet, 115, 121, frameWidth, frameHeight);
+        walkUpFrames[3] = new TextureRegion(characterSheet, 152, 122, frameWidth, frameHeight);
+        walkUp = new Animation<>(0.1f, walkUpFrames);
+
+        // Set initial standing pose (facing down)
+        currentStandingPose = standDown;
+        stateTime = 0f;
+
+        System.out.println("Animations initialized successfully!");
+        System.out.println("Frame size: " + frameWidth + "x" + frameHeight);
     }
 
     @Override
@@ -105,18 +179,52 @@ public class GameScreen implements Screen {
         float speed = 5f; // Player movement speed (units per second)
         float delta = Gdx.graphics.getDeltaTime();
 
-        // Move PLAYER with arrow keys (not camera)
+        boolean moving = false;
+
+        // Move PLAYER with arrow keys and set appropriate animation
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            playerSprite.translateX(speed * delta);
+            playerX += speed * delta;
+            currentAnimation = walkRight;
+            lastDirection = Direction.RIGHT;
+            moving = true;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            playerSprite.translateX(-speed * delta);
+        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            playerX -= speed * delta;
+            currentAnimation = walkLeft;
+            lastDirection = Direction.LEFT;
+            moving = true;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            playerSprite.translateY(speed * delta);
+        else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            playerY += speed * delta;
+            currentAnimation = walkUp;
+            lastDirection = Direction.UP;
+            moving = true;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            playerSprite.translateY(-speed * delta);
+        else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            playerY -= speed * delta;
+            currentAnimation = walkDown;
+            lastDirection = Direction.DOWN;
+            moving = true;
+        }
+
+        // If not moving, set standing pose based on last direction
+        if (!moving) {
+            currentAnimation = null;  // Not animating when standing
+            switch (lastDirection) {
+                case LEFT:
+                    currentStandingPose = standLeft;
+                    break;
+                case RIGHT:
+                    currentStandingPose = standRight;
+                    break;
+                case UP:
+                    currentStandingPose = standUp;
+                    break;
+                case DOWN:
+                default:
+                    currentStandingPose = standDown;
+                    break;
+            }
         }
 
         // Clamp player position to stay within map boundaries
@@ -125,26 +233,33 @@ public class GameScreen implements Screen {
 
     private void clampPlayerPosition() {
         // Player can't go beyond map edges (0 to mapWidth, 0 to mapHeight)
-        // Account for player sprite size
-        float playerX = MathUtils.clamp(
-            playerSprite.getX(),
+        // Account for player size
+        playerX = MathUtils.clamp(
+            playerX,
             0,  // Left edge
-            mapWidth - playerSprite.getWidth()  // Right edge (minus player width)
+            mapWidth - playerSize  // Right edge (minus player width)
         );
-        float playerY = MathUtils.clamp(
-            playerSprite.getY(),
+        playerY = MathUtils.clamp(
+            playerY,
             0,  // Bottom edge
-            mapHeight - playerSprite.getHeight()  // Top edge (minus player height)
+            mapHeight - playerSize  // Top edge (minus player height)
         );
-
-        playerSprite.setPosition(playerX, playerY);
     }
 
     private void logic() {
+        // Reset animation time if animation changed
+        if (currentAnimation != previousAnimation) {
+            stateTime = 0f;
+            previousAnimation = currentAnimation;
+        }
+
+        // Update animation time
+        stateTime += Gdx.graphics.getDeltaTime();
+
         // Make camera follow player
-        // Camera should be centered on player sprite (add half player size to get center)
-        float playerCenterX = playerSprite.getX() + playerSprite.getWidth() / 2;
-        float playerCenterY = playerSprite.getY() + playerSprite.getHeight() / 2;
+        // Camera should be centered on player (add half player size to get center)
+        float playerCenterX = playerX + playerSize / 2;
+        float playerCenterY = playerY + playerSize / 2;
 
         game.camera.position.set(playerCenterX, playerCenterY, 0);
 
@@ -183,8 +298,22 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
 
-        // Draw the player sprite
-        playerSprite.draw(game.batch);
+        // Determine which frame to draw
+        TextureRegion frameToDraw;
+        if (currentAnimation != null) {
+            // Walking - use animated frame
+            frameToDraw = currentAnimation.getKeyFrame(stateTime, true);
+        } else {
+            // Standing - use static pose
+            frameToDraw = currentStandingPose;
+        }
+
+        // Draw the character with proper aspect ratio
+        // Frames are 25x49 pixels (width x height), aspect ratio = 49/25 = 1.96
+        float aspectRatio = 49f / 25f;
+        float drawWidth = playerSize;
+        float drawHeight = playerSize * aspectRatio;
+        game.batch.draw(frameToDraw, playerX, playerY, drawWidth, drawHeight);
 
         game.batch.end();
     }
@@ -205,6 +334,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        playerTexture.dispose();
+        characterSheet.dispose();
     }
 }
