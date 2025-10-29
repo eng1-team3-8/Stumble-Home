@@ -41,12 +41,7 @@ public class GameScreen implements Screen {
         map = new TmxMapLoader().load("map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1/16f);
 
-        // Initialize the player sprite
-        playerTexture = new Texture("bucket.png");
-        playerSprite = new Sprite(playerTexture);
-        playerSprite.setPosition(game.viewport.getWorldWidth()/2,game.VIEWPORT_HEIGHT/2);
-
-        // Get map properties
+        // Get map properties FIRST
         int mapWidthInTiles = map.getProperties().get("width", Integer.class);
         int mapHeightInTiles = map.getProperties().get("height", Integer.class);
         int tilePixelWidth = map.getProperties().get("tilewidth", Integer.class);
@@ -75,9 +70,22 @@ public class GameScreen implements Screen {
         System.out.println("Camera starting position: " + game.camera.position.x + ", " + game.camera.position.y);
         System.out.println("===========================");
 
-        // Center camera on map instead of starting at bottom-left corner
+        // Initialize the player sprite
+        playerTexture = new Texture("bucket.png");
+        playerSprite = new Sprite(playerTexture);
+
+        // Scale player to fit paths (tiles are 1 world unit, make player 0.8 units)
+        float playerSize = 0.8f;
+        playerSprite.setSize(playerSize, playerSize);
+
+
+        // Position player at center of map
+        playerSprite.setPosition(mapWidth / 2 - playerSize / 2, mapHeight / 2 - playerSize / 2);
+
+        // Center camera on player position
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
         System.out.println("Camera centered at: " + game.camera.position.x + ", " + game.camera.position.y);
+        System.out.println("Player positioned at: " + playerSprite.getX() + ", " + playerSprite.getY());
     }
 
     @Override
@@ -94,31 +102,54 @@ public class GameScreen implements Screen {
     }
 
     private void input() {
-        float speed = 10f; // Units per second
+        float speed = 5f; // Player movement speed (units per second)
         float delta = Gdx.graphics.getDeltaTime();
 
+        // Move PLAYER with arrow keys (not camera)
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            //playerSprite.translateX(speed * delta);
-            game.camera.translate(speed*delta, 0);
+            playerSprite.translateX(speed * delta);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            //playerSprite.translateX(-speed * delta);
-            game.camera.translate(-speed*delta,0);
+            playerSprite.translateX(-speed * delta);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-           // playerSprite.translateY(speed * delta);
-            game.camera.translate(0,speed*delta);
+            playerSprite.translateY(speed * delta);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            //playerSprite.translateY(-speed * delta);
-            game.camera.translate(0,-speed*delta);
+            playerSprite.translateY(-speed * delta);
         }
 
-        // Clamp camera to boundaries after movement
-        clampCamera();
+        // Clamp player position to stay within map boundaries
+        clampPlayerPosition();
+    }
+
+    private void clampPlayerPosition() {
+        // Player can't go beyond map edges (0 to mapWidth, 0 to mapHeight)
+        // Account for player sprite size
+        float playerX = MathUtils.clamp(
+            playerSprite.getX(),
+            0,  // Left edge
+            mapWidth - playerSprite.getWidth()  // Right edge (minus player width)
+        );
+        float playerY = MathUtils.clamp(
+            playerSprite.getY(),
+            0,  // Bottom edge
+            mapHeight - playerSprite.getHeight()  // Top edge (minus player height)
+        );
+
+        playerSprite.setPosition(playerX, playerY);
     }
 
     private void logic() {
+        // Make camera follow player
+        // Camera should be centered on player sprite (add half player size to get center)
+        float playerCenterX = playerSprite.getX() + playerSprite.getWidth() / 2;
+        float playerCenterY = playerSprite.getY() + playerSprite.getHeight() / 2;
+
+        game.camera.position.set(playerCenterX, playerCenterY, 0);
+
+        // Clamp camera to boundaries so we don't see beyond map edges
+        clampCamera();
     }
 
     private void clampCamera() {
@@ -148,6 +179,8 @@ public class GameScreen implements Screen {
         renderer.setView(game.camera);
         renderer.render();
 
+        // Set batch to use camera's coordinate system
+        game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
 
         // Draw the player sprite

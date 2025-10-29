@@ -15,7 +15,7 @@ public class StumbleHome extends Game {
     public OrthographicCamera camera;
 
     final float VIEWPORT_WIDTH = 30;
-    final float VIEWPORT_HEIGHT = 30;  // Changed from 15 to 30 to see full map height
+    final float VIEWPORT_HEIGHT = 12;  // Zoomed in closer to see player navigate paths
 
     public Viewport viewport;
 
