@@ -1,6 +1,7 @@
 package io.github.some_example_name;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -103,13 +104,28 @@ public class MainMenuScreen implements Screen {
         // Added: draw tutorial popup if active
         if (showTutorial && tutorialImage != null) {
             game.batch.begin();
-            game.batch.draw(
-                tutorialImage,
-                Gdx.graphics.getWidth() / 2f - tutorialImage.getWidth() / 2f,
-                Gdx.graphics.getHeight() / 2f - tutorialImage.getHeight() / 2f
-            );
+            float screenWidth = Gdx.graphics.getWidth();
+            float screenHeight = Gdx.graphics.getHeight();
+            float imgWidth = tutorialImage.getWidth();
+            float imgHeight = tutorialImage.getHeight();
+
+            float scale = Math.min(screenWidth / imgWidth, screenHeight / imgHeight) * 0.8f; // 80% of screen
+            float drawWidth = imgWidth * scale;
+            float drawHeight = imgHeight * scale;
+
+            // Center on screen
+            float x = (screenWidth - drawWidth) / 2f;
+            float y = (screenHeight - drawHeight) / 2f;
+
+            game.batch.draw(tutorialImage, x, y, drawWidth, drawHeight);
             game.batch.end();
         }
+        if (showTutorial) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.justTouched()) {
+                showTutorial = false; // close tutorial when pressing ESC or clicking
+            }
+        }
+
 
 
     }
