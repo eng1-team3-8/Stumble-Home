@@ -45,18 +45,22 @@ public class GameScreen implements Screen {
     // Player position and size
     private float playerX;
     private float playerY;
-    private float playerSize = 0.8f;
+    private final float playerSize = 0.8f;
 
     TiledMap map;
     OrthogonalTiledMapRenderer renderer;
 
     // Map boundaries
-    private float mapWidth;
-    private float mapHeight;
-    private float minCameraX;
-    private float maxCameraX;
-    private float minCameraY;
-    private float maxCameraY;
+    private final float mapWidth;
+    private final float mapHeight;
+    private final float minCameraX;
+    private final float maxCameraX;
+    private final float minCameraY;
+    private final float maxCameraY;
+
+    private boolean paused = false;
+
+
 
     public GameScreen(final StumbleHome game){
         this.game = game;
@@ -170,9 +174,23 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        input();
-        logic();
+        // Toggle pause when SPACE is pressed
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            paused = !paused; // flip pause state
+        }
+
+        // Only run input and logic if not paused
+        if (!paused) {
+            input();
+            logic();
+        }
+
         draw();
+
+        // Draw pause overlay if paused
+        if (paused) {
+            drawPauseOverlay();
+        }
     }
 
     private void input() {
@@ -317,6 +335,31 @@ public class GameScreen implements Screen {
 
         game.batch.end();
     }
+    private void drawPauseOverlay() {
+        game.batch.setProjectionMatrix(game.camera.combined);
+        game.batch.begin();
+
+        // Slightly larger scale so text is readable in world units
+        game.font.getData().setScale(0.3f);
+
+        String pausedText = "PAUSED";
+
+        // Draw roughly centered on screen (world-space)
+        float x = game.camera.position.x - 8f;  // adjust horizontally
+        float y = game.camera.position.y + 2f;    // adjust vertically
+
+        game.font.setColor(Color.WHITE);
+        game.font.draw(game.batch, pausedText, x, y);
+
+        // Reset scale
+        game.font.getData().setScale(1f);
+        game.batch.end();
+    }
+
+
+
+
+
 
     @Override
     public void resize(int width, int height) {
