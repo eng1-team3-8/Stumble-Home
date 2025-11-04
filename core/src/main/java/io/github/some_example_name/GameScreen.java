@@ -99,8 +99,8 @@ public class GameScreen implements Screen {
         initializeAnimations();
 
         // Position player at center of map
-        playerX = mapWidth / 2 - playerSize / 2;
-        playerY = mapHeight / 2 - playerSize / 2;
+        playerX = mapWidth - 12  - playerSize / 2;
+        playerY = mapHeight - 2 - playerSize / 2;
 
         // Center camera on player position
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
