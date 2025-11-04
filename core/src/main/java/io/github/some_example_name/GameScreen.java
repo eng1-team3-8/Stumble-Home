@@ -60,7 +60,9 @@ public class GameScreen implements Screen {
     private final float maxCameraY;
 
     private boolean paused = false;
-    private float elapsedTime = 0f;
+    private float remainingTime = 10f; //timer is 5min / 300sec
+    private boolean timeUp = false;
+
 
 
 
@@ -182,8 +184,8 @@ public class GameScreen implements Screen {
             paused = !paused; // flip pause state
         }
 
-        // Only run input and logic if not paused
-        if (!paused) {
+        // Only run input and logic if not paused and there is enough time left
+        if (!paused && !timeUp) {
             input();
             logic();
         }
@@ -194,9 +196,17 @@ public class GameScreen implements Screen {
         if (paused) {
             drawPauseOverlay();
         }
+
+        if (timeUp){
+            drawTimeUpOverlay();
+            if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+                game.setScreen(new MainMenuScreen(game));
+            }
+
+        }
     }
 
-    private void input() {
+        private void input() {
         float speed = 5f; // Player movement speed (units per second)
         float delta = Gdx.graphics.getDeltaTime();
 
@@ -284,7 +294,14 @@ public class GameScreen implements Screen {
 
         game.camera.position.set(playerCenterX, playerCenterY, 0);
         if (!paused) {
-            elapsedTime += Gdx.graphics.getDeltaTime();
+            if (remainingTime > 0) {
+                remainingTime -= Gdx.graphics.getDeltaTime();
+                if (remainingTime <= 0) {
+                    remainingTime = 0;
+                    timeUp = true; // trigger popup
+                }
+            }
+
         }
 
 
@@ -346,9 +363,9 @@ public class GameScreen implements Screen {
             game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
         );
 
-        int minutes = (int) (elapsedTime / 60);
-        int seconds = (int) (elapsedTime % 60);
-        String timeText = String.format("Timer: %02d:%02d", minutes, seconds);
+        int minutes = (int)(remainingTime / 60);
+        int seconds = (int)(remainingTime % 60);
+        String timeText = String.format("%02d:%02d", minutes, seconds);
 
         game.batch.begin();
         game.font.getData().setScale(4f);
@@ -396,6 +413,27 @@ public class GameScreen implements Screen {
 
         game.batch.end();
     }
+    private void drawTimeUpOverlay() {
+        game.batch.setProjectionMatrix(game.camera.combined);
+        game.batch.begin();
+
+        // Scale text for readability
+        game.font.getData().setScale(0.2f);
+
+        String message = "Game Over";
+
+        // Use GlyphLayout to center the text properly
+        com.badlogic.gdx.graphics.g2d.GlyphLayout layout = new com.badlogic.gdx.graphics.g2d.GlyphLayout(game.font, message);
+        float x = game.camera.position.x - layout.width / 2;
+        float y = game.camera.position.y + layout.height / 2;
+
+        game.font.setColor(Color.RED);
+        game.font.draw(game.batch, layout, x, y);
+
+        game.font.getData().setScale(1f);
+        game.batch.end();
+    }
+
 
 
 
