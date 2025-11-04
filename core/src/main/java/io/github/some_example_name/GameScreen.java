@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -59,6 +60,8 @@ public class GameScreen implements Screen {
     private final float maxCameraY;
 
     private boolean paused = false;
+    private float elapsedTime = 0f;
+
 
 
 
@@ -280,6 +283,10 @@ public class GameScreen implements Screen {
         float playerCenterY = playerY + playerSize / 2;
 
         game.camera.position.set(playerCenterX, playerCenterY, 0);
+        if (!paused) {
+            elapsedTime += Gdx.graphics.getDeltaTime();
+        }
+
 
         // Clamp camera to boundaries so we don't see beyond map edges
         clampCamera();
@@ -334,25 +341,59 @@ public class GameScreen implements Screen {
         game.batch.draw(frameToDraw, playerX, playerY, drawWidth, drawHeight);
 
         game.batch.end();
+
+        game.batch.setProjectionMatrix(
+            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+        );
+
+        int minutes = (int) (elapsedTime / 60);
+        int seconds = (int) (elapsedTime % 60);
+        String timeText = String.format("Timer: %02d:%02d", minutes, seconds);
+
+        game.batch.begin();
+        game.font.getData().setScale(4f);
+        game.font.setColor(Color.WHITE);
+        float marginX = 20;
+        float marginY = Gdx.graphics.getHeight() - 20;
+        game.font.draw(game.batch, timeText, marginX, marginY);
+        game.font.getData().setScale(1f);
+        game.batch.end();
+
+
+
+
+
     }
     private void drawPauseOverlay() {
-        game.batch.setProjectionMatrix(game.camera.combined);
+
+        game.batch.setProjectionMatrix(
+            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+        );
+
         game.batch.begin();
 
-        // Slightly larger scale so text is readable in world units
-        game.font.getData().setScale(0.3f);
+        // Create a layout to measure text width & height
+        GlyphLayout layout = new GlyphLayout();
+
+        // Set font properties
+        game.font.getData().setScale(5f);
+        game.font.setColor(Color.WHITE);
 
         String pausedText = "PAUSED";
 
-        // Draw roughly centered on screen (world-space)
-        float x = game.camera.position.x - 8f;  // adjust horizontally
-        float y = game.camera.position.y + 2f;    // adjust vertically
+        // Calculate layout
+        layout.setText(game.font, pausedText);
 
-        game.font.setColor(Color.WHITE);
-        game.font.draw(game.batch, pausedText, x, y);
+        // Compute centered position
+        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
+        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
+
+        // Draw centered text
+        game.font.draw(game.batch, layout, x, y);
 
         // Reset scale
         game.font.getData().setScale(1f);
+
         game.batch.end();
     }
 
