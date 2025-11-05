@@ -223,8 +223,7 @@ public class Player extends Sprite {
         float aspectRatio = 49f / 25f;
         float drawWidth = playerSize;
         float drawHeight = playerSize * aspectRatio;
-        setRegion(frameToDraw);
-        super.draw(batch);
+        batch.draw(frameToDraw, playerX, playerY, drawWidth, drawHeight);
     }
 
 }

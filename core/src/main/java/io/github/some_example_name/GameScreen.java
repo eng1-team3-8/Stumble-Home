@@ -178,7 +178,13 @@ public class GameScreen implements Screen {
 
         // Set batch to use camera's coordinate system
         game.batch.setProjectionMatrix(game.camera.combined);
+        game.batch.begin();
 
+        player.draw(game.batch);
+
+        game.batch.end();
+
+        // Now switch to screen coordinates for UI
         game.batch.setProjectionMatrix(
             game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
         );
@@ -188,15 +194,12 @@ public class GameScreen implements Screen {
         String timeText = String.format("%02d:%02d", minutes, seconds);
 
         game.batch.begin();
-
-        player.draw(game.batch);
         game.font.getData().setScale(4f);
         game.font.setColor(Color.WHITE);
         float marginX = 20;
         float marginY = Gdx.graphics.getHeight() - 20;
         game.font.draw(game.batch, timeText, marginX, marginY);
         game.font.getData().setScale(1f);
-
         game.batch.end();
 
     }
