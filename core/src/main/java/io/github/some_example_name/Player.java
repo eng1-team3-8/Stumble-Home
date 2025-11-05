@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -44,7 +45,9 @@ public class Player extends Sprite {
     private final float mapWidth;
     private final float mapHeight;
 
-    public Player(Sprite sprite, float mapWidth, float mapHeight) {
+    TiledMapTileLayer collisionLayer;
+
+    public Player(Sprite sprite, float mapWidth, float mapHeight, TiledMapTileLayer collisionLayer) {
         super(sprite);
 
         //Initialize player animations
@@ -52,6 +55,8 @@ public class Player extends Sprite {
 
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
+
+        this.collisionLayer =  collisionLayer;
     }
 
     private void initializeAnimations() {
@@ -107,7 +112,7 @@ public class Player extends Sprite {
         System.out.println("Frame size: " + frameWidth + "x" + frameHeight);
     }
 
-    public void input(TiledMapTileLayer collisionLayer) {
+    public void input() {
         float moveX = 0;
         float moveY = 0;
         boolean moving = false;
@@ -137,10 +142,10 @@ public class Player extends Sprite {
             moving = true;
         }
 
-        if (moveX != 0 && canMoveTo(playerX + moveX, playerY, collisionLayer)) {
+        if (moveX != 0 && canMoveTo(playerX + moveX, playerY)) {
             playerX += moveX;
         }
-        if (moveY != 0 && canMoveTo(playerX, playerY + moveY, collisionLayer)) {
+        if (moveY != 0 && canMoveTo(playerX, playerY + moveY)) {
             playerY += moveY;
         }
 
@@ -170,14 +175,14 @@ public class Player extends Sprite {
         playerY = MathUtils.clamp(playerY, 0, mapHeight - playerSize);
     }
 
-    private boolean canMoveTo(float x, float y, TiledMapTileLayer collisionLayer) {
-        return isTileBlocked(x, y, collisionLayer) &&
-            isTileBlocked(x + playerSize, y, collisionLayer) &&
-            isTileBlocked(x, y + playerSize, collisionLayer) &&
-            isTileBlocked(x + playerSize, y + playerSize, collisionLayer);
+    private boolean canMoveTo(float x, float y) {
+        return isTileBlocked(x, y) &&
+            isTileBlocked(x + playerSize, y) &&
+            isTileBlocked(x, y + playerSize) &&
+            isTileBlocked(x + playerSize, y + playerSize);
     }
 
-    private boolean isTileBlocked(float x, float y, TiledMapTileLayer collisionLayer) {
+    private boolean isTileBlocked(float x, float y) {
         int tileX = (int) x;
         int tileY = (int) y;
 

@@ -72,7 +72,7 @@ public class GameScreen implements Screen {
         System.out.println("===========================");
 
         //Initialize player
-        player = new Player(new Sprite(new Texture("character.png")), mapWidth, mapHeight);
+        player = new Player(new Sprite(new Texture("character.png")), mapWidth, mapHeight, collisionLayer);
 
         // Position player at start point of map
         player.playerX = mapWidth - 12  - player.playerSize / 2;
@@ -121,7 +121,7 @@ public class GameScreen implements Screen {
     }
 
     private void input() {
-        player.input(collisionLayer);
+        player.input();
     }
 
     private void logic() {
