@@ -45,7 +45,7 @@ public class bottleEvent extends Sprite {
         bottleFrames[3] = new TextureRegion(bottleSheet, 32, 32, frameWidth, frameHeight);
         bottleFrames[4] = new TextureRegion(bottleSheet, 0, 64, frameWidth, frameHeight);
         bottleFrames[5] = new TextureRegion(bottleSheet, 32, 64, frameWidth, frameHeight);
-        Animation<TextureRegion> animation = new Animation<>(0.1f, bottleFrames);
+        Animation<TextureRegion> animation = new Animation<>(0.5f, bottleFrames);
 
         stateTime = 0f;
 
