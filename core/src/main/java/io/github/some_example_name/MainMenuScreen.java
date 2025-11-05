@@ -84,6 +84,10 @@ public class MainMenuScreen implements Screen {
     public void render(float delta){
         ScreenUtils.clear(Color.BLUE);
 
+        game.batch.setProjectionMatrix(
+            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+        );
+
         game.batch.begin();
         if (background != null) {
             game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

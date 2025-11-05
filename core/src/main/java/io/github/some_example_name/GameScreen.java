@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -50,6 +51,7 @@ public class GameScreen implements Screen {
 
     TiledMap map;
     OrthogonalTiledMapRenderer renderer;
+    TiledMapTileLayer collisionLayer;
 
     // Map boundaries
     private final float mapWidth;
@@ -60,7 +62,7 @@ public class GameScreen implements Screen {
     private final float maxCameraY;
 
     private boolean paused = false;
-    private float remainingTime = 10f; //timer is 5min / 300sec
+    private float remainingTime = 20f;
     private boolean timeUp = false;
 
 
@@ -71,9 +73,9 @@ public class GameScreen implements Screen {
         this.game = game;
 
 
-        //load the map, set unit scale to 1/16 (1 unit == 16 pixels)
         map = new TmxMapLoader().load("map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1/16f);
+        collisionLayer = (TiledMapTileLayer) map.getLayers().get("hedge");
 
         // Get map properties FIRST
         int mapWidthInTiles = map.getProperties().get("width", Integer.class);
@@ -200,47 +202,54 @@ public class GameScreen implements Screen {
         if (timeUp){
             drawTimeUpOverlay();
             if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+                dispose();
                 game.setScreen(new MainMenuScreen(game));
             }
-
         }
     }
 
         private void input() {
-        float speed = 5f; // Player movement speed (units per second)
+        float speed = 5f;
         float delta = Gdx.graphics.getDeltaTime();
 
+        float moveX = 0;
+        float moveY = 0;
         boolean moving = false;
 
-        // Move PLAYER with arrow keys and set appropriate animation
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            playerX += speed * delta;
+            moveX = speed * delta;
             currentAnimation = walkRight;
             lastDirection = Direction.RIGHT;
             moving = true;
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            playerX -= speed * delta;
+            moveX = -speed * delta;
             currentAnimation = walkLeft;
             lastDirection = Direction.LEFT;
             moving = true;
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            playerY += speed * delta;
+            moveY = speed * delta;
             currentAnimation = walkUp;
             lastDirection = Direction.UP;
             moving = true;
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            playerY -= speed * delta;
+            moveY = -speed * delta;
             currentAnimation = walkDown;
             lastDirection = Direction.DOWN;
             moving = true;
         }
 
-        // If not moving, set standing pose based on last direction
+        if (moveX != 0 && canMoveTo(playerX + moveX, playerY)) {
+            playerX += moveX;
+        }
+        if (moveY != 0 && canMoveTo(playerX, playerY + moveY)) {
+            playerY += moveY;
+        }
+
         if (!moving) {
-            currentAnimation = null;  // Not animating when standing
+            currentAnimation = null;
             switch (lastDirection) {
                 case LEFT:
                     currentStandingPose = standLeft;
@@ -258,23 +267,38 @@ public class GameScreen implements Screen {
             }
         }
 
-        // Clamp player position to stay within map boundaries
         clampPlayerPosition();
     }
 
     private void clampPlayerPosition() {
-        // Player can't go beyond map edges (0 to mapWidth, 0 to mapHeight)
-        // Account for player size
-        playerX = MathUtils.clamp(
-            playerX,
-            0,  // Left edge
-            mapWidth - playerSize  // Right edge (minus player width)
-        );
-        playerY = MathUtils.clamp(
-            playerY,
-            0,  // Bottom edge
-            mapHeight - playerSize  // Top edge (minus player height)
-        );
+        playerX = MathUtils.clamp(playerX, 0, mapWidth - playerSize);
+        playerY = MathUtils.clamp(playerY, 0, mapHeight - playerSize);
+    }
+
+    private boolean isTileBlocked(float x, float y) {
+        int tileX = (int) x;
+        int tileY = (int) y;
+
+        TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
+        if (cell == null || cell.getTile() == null) return false;
+
+        int tileId = cell.getTile().getId();
+
+        if (tileId == 5) return false;
+
+        if (tileId == 2 || tileId == 3 || tileId == 4 || tileId == 19 || tileId == 20 || tileId == 21 || tileId == 22) {
+            float yInTile = y - tileY;
+            return yInTile < 0.4f;
+        }
+
+        return true;
+    }
+
+    private boolean canMoveTo(float x, float y) {
+        return !isTileBlocked(x, y) &&
+               !isTileBlocked(x + playerSize, y) &&
+               !isTileBlocked(x, y + playerSize) &&
+               !isTileBlocked(x + playerSize, y + playerSize);
     }
 
     private void logic() {
@@ -414,21 +438,21 @@ public class GameScreen implements Screen {
         game.batch.end();
     }
     private void drawTimeUpOverlay() {
-        game.batch.setProjectionMatrix(game.camera.combined);
+        game.batch.setProjectionMatrix(
+            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+        );
         game.batch.begin();
 
-        // Scale text for readability
-        game.font.getData().setScale(0.2f);
+        game.font.getData().setScale(6f);
+        game.font.setColor(Color.RED);
 
         String message = "Game Over";
 
-        // Use GlyphLayout to center the text properly
-        com.badlogic.gdx.graphics.g2d.GlyphLayout layout = new com.badlogic.gdx.graphics.g2d.GlyphLayout(game.font, message);
-        float x = game.camera.position.x - layout.width / 2;
-        float y = game.camera.position.y + layout.height / 2;
+        GlyphLayout layout = new GlyphLayout(game.font, message);
+        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
+        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
 
-        game.font.setColor(Color.RED);
-        game.font.draw(game.batch, layout, x, y);
+        game.font.draw(game.batch, message, x, y);
 
         game.font.getData().setScale(1f);
         game.batch.end();
