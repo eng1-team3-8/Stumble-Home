@@ -34,6 +34,7 @@ public class GameScreen implements Screen {
     private boolean timeUp = false;
 
     private final Player player;
+    private final bottleEvent bottle;
 
     public GameScreen(final StumbleHome game){
         this.game = game;
@@ -82,6 +83,12 @@ public class GameScreen implements Screen {
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
         System.out.println("Camera centered at: " + game.camera.position.x + ", " + game.camera.position.y);
         System.out.println("Player positioned at: " + player.playerX + ", " + player.playerY);
+
+        //EVENTS - Initialize collectible events
+        bottle = new bottleEvent(new Sprite(new Texture("waterBottle.png")));
+        bottle.bottleX = mapWidth - 3 - bottle.bottleSize / 2;
+        bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
+        System.out.println("Water bottle placed at: " + bottle.bottleX + ", " + bottle.bottleY);
     }
 
 
@@ -126,6 +133,15 @@ public class GameScreen implements Screen {
 
     private void logic() {
         player.logic();
+
+        //EVENTS - Update bottle animation and check collision
+        bottle.logic();
+
+        // Check collision between player and water bottle
+        if (bottle.checkCollision(player.playerX, player.playerY, player.playerSize)) {
+            // Player collected the water bottle - becomes sober
+            player.isDrunk = 0;
+        }
 
         // Make camera follow player
         // Camera should be centered on player (add half player size to get center)
@@ -180,6 +196,10 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
 
+        // Draw water bottle first (so it appears behind player)
+        bottle.draw(game.batch);
+
+        // Then draw player
         player.draw(game.batch);
 
         game.batch.end();
@@ -275,7 +295,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        player.characterSheet.dispose();
+        player.getTexture().dispose();
+        bottle.getTexture().dispose();
     }
 }
 
