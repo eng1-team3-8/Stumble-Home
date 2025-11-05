@@ -33,7 +33,7 @@ public class GameScreen implements Screen {
     private float remainingTime = 20f;
     private boolean timeUp = false;
 
-    private Player player;
+    private final Player player;
 
     public GameScreen(final StumbleHome game){
         this.game = game;
