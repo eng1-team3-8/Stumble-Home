@@ -226,9 +226,8 @@ public class Player extends Sprite {
         // Draw the character with proper aspect ratio
         // Frames are 25x49 pixels (width x height), aspect ratio = 49/25 = 1.96
         float aspectRatio = 49f / 25f;
-        float drawWidth = playerSize;
         float drawHeight = playerSize * aspectRatio;
-        batch.draw(frameToDraw, playerX, playerY, drawWidth, drawHeight);
+        batch.draw(frameToDraw, playerX, playerY, playerSize, drawHeight);
     }
 
 }
