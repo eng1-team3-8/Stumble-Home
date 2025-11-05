@@ -36,6 +36,8 @@ public class GameScreen implements Screen {
     private final Player player;
     private final bottleEvent bottle;
 
+    private final bottleEvent bottle;
+
     public GameScreen(final StumbleHome game){
         this.game = game;
 
@@ -69,6 +71,11 @@ public class GameScreen implements Screen {
         // Position player at start point of map
         player.playerX = mapWidth - 12  - player.playerSize / 2;
         player.playerY = mapHeight - 2 - player.playerSize / 2;
+
+        //EVENTS
+        bottle = new bottleEvent(new Sprite(new Texture("waterBottle.png")));
+        bottle.bottleX = mapWidth - 3 - bottle.bottleSize / 2;
+        bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
 
         // Center camera on player position
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
@@ -121,6 +128,7 @@ public class GameScreen implements Screen {
 
     private void logic() {
         player.logic();
+        bottle.logic();
 
         //EVENTS
         bottle.logic();
@@ -189,6 +197,7 @@ public class GameScreen implements Screen {
 
         // Then draw player
         player.draw(game.batch);
+        bottle.draw(game.batch);
 
         game.batch.end();
 
@@ -202,6 +211,9 @@ public class GameScreen implements Screen {
         String timeText = String.format("%02d:%02d", minutes, seconds);
 
         game.batch.begin();
+        player.draw(game.batch);
+        bottle.draw(game.batch);
+
         game.font.getData().setScale(4f);
         game.font.setColor(Color.WHITE);
         float marginX = 20;
