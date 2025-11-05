@@ -26,7 +26,6 @@ public class bottleEvent extends Sprite {
 
         //Initialize bottle animations
         initializeAnimations();
-
     }
 
     private void initializeAnimations() {
