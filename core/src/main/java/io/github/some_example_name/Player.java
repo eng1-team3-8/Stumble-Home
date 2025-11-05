@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -39,8 +38,7 @@ public class Player extends Sprite {
     public float playerY;
     public final float playerSize = 0.8f;
 
-    private float speed = 5f;
-    private float delta = Gdx.graphics.getDeltaTime();
+    private final float delta = Gdx.graphics.getDeltaTime();
 
     // Drunk state: 1 = drunk (reversed controls), 0 = sober (normal controls)
     public int isDrunk = 1;
@@ -110,15 +108,13 @@ public class Player extends Sprite {
         // Set initial standing pose (facing down)
         currentStandingPose = standDown;
         stateTime = 0f;
-
-        System.out.println("Animations initialized successfully!");
-        System.out.println("Frame size: " + frameWidth + "x" + frameHeight);
     }
 
     public void input() {
         float moveX = 0;
         float moveY = 0;
         boolean moving = false;
+        float speed = 5f;
 
         // If isDrunk == 1, controls are reversed
         if (isDrunk == 1) {

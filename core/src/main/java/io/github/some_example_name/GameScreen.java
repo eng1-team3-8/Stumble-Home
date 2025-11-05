@@ -63,15 +63,6 @@ public class GameScreen implements Screen {
         minCameraY = halfViewportHeight;
         maxCameraY = mapHeight - halfViewportHeight;
 
-        // Debug: Print boundary information
-        System.out.println("=== MAP BOUNDARIES DEBUG ===");
-        System.out.println("Map size: " + mapWidth + " x " + mapHeight + " world units");
-        System.out.println("Viewport size: " + game.viewport.getWorldWidth() + " x " + game.viewport.getWorldHeight() + " world units");
-        System.out.println("Camera X range: " + minCameraX + " to " + maxCameraX);
-        System.out.println("Camera Y range: " + minCameraY + " to " + maxCameraY);
-        System.out.println("Camera starting position: " + game.camera.position.x + ", " + game.camera.position.y);
-        System.out.println("===========================");
-
         //Initialize player
         player = new Player(new Sprite(new Texture("character.png")), mapWidth, mapHeight, collisionLayer);
 
@@ -81,14 +72,11 @@ public class GameScreen implements Screen {
 
         // Center camera on player position
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
-        System.out.println("Camera centered at: " + game.camera.position.x + ", " + game.camera.position.y);
-        System.out.println("Player positioned at: " + player.playerX + ", " + player.playerY);
 
-        //EVENTS - Initialize collectible events
+        //EVENTS
         bottle = new bottleEvent(new Sprite(new Texture("waterBottle.png")));
         bottle.bottleX = mapWidth - 3 - bottle.bottleSize / 2;
         bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
-        System.out.println("Water bottle placed at: " + bottle.bottleX + ", " + bottle.bottleY);
     }
 
 
@@ -134,7 +122,7 @@ public class GameScreen implements Screen {
     private void logic() {
         player.logic();
 
-        //EVENTS - Update bottle animation and check collision
+        //EVENTS
         bottle.logic();
 
         // Check collision between player and water bottle
