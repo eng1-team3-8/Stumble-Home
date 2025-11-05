@@ -27,7 +27,6 @@ public class bottleEvent extends Sprite {
 
         //Initialize bottle animations
         initializeAnimations();
-
     }
 
     private void initializeAnimations() {
@@ -48,9 +47,6 @@ public class bottleEvent extends Sprite {
         Animation<TextureRegion> animation = new Animation<>(0.5f, bottleFrames);
 
         stateTime = 0f;
-
-        System.out.println("Animations initialized successfully!");
-        System.out.println("Frame size: " + frameWidth + "x" + frameHeight);
 
         currentAnimation = animation;
     }

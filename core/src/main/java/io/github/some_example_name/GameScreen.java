@@ -30,7 +30,7 @@ public class GameScreen implements Screen {
     private final float maxCameraY;
 
     private boolean paused = false;
-    private float remainingTime = 20f;
+    private float remainingTime = 60f;
     private boolean timeUp = false;
 
     private final Player player;
