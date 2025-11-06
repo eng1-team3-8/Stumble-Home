@@ -11,14 +11,15 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.MathUtils;
 
 public class Player extends Sprite {
-    // Player animation
     public Texture characterSheet;
+
+    // animation arrays
     private Animation<TextureRegion> walkDown;
     private Animation<TextureRegion> walkLeft;
     private Animation<TextureRegion> walkRight;
     private Animation<TextureRegion> walkUp;
 
-    // Standing poses (static, not animated)
+    // standing frames
     private TextureRegion standDown;
     private TextureRegion standLeft;
     private TextureRegion standRight;

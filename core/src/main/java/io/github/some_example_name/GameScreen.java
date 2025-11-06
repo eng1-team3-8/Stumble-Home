@@ -31,11 +31,13 @@ public class GameScreen implements Screen {
 
     private boolean paused = false;
     private float remainingTime = 90f;
-    private boolean timeUp = false;
+    private boolean gameOver = false;
     private boolean reachedFinish = false;
 
     private final Player player;
+
     private final bottleEvent bottle;
+    private final longBoiEvent longBoi;
 
     private float goodEventCounter;
     private float badEventCounter;
@@ -80,6 +82,10 @@ public class GameScreen implements Screen {
         bottle.bottleX = mapWidth - 3 - bottle.bottleSize / 2;
         bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
 
+        longBoi = new longBoiEvent(new Sprite(new Texture("longBoi.png")));
+        longBoi.longX = mapWidth - 4 - longBoi.longSize / 2;
+        longBoi.longY = mapHeight - 22 - longBoi.longSize / 2;
+
         // Center camera on player position
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
     }
@@ -99,7 +105,7 @@ public class GameScreen implements Screen {
         }
 
         // Only run input and logic if not paused and there is enough time left
-        if (!paused && !timeUp) {
+        if (!paused && !gameOver) {
             input();
             logic();
         }
@@ -111,8 +117,8 @@ public class GameScreen implements Screen {
             drawPauseOverlay();
         }
 
-        if (timeUp){
-            drawTimeUpOverlay();
+        if (gameOver){
+            drawGameOverOverlay();
             if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
                 dispose();
                 game.setScreen(new MainMenuScreen(game));
@@ -126,17 +132,33 @@ public class GameScreen implements Screen {
 
     private void logic() {
         player.logic();
-        bottle.logic();
 
-        //EVENTS
+        //events logic
         bottle.logic();
+        longBoi.logic();
+
+        float playerCentreX = player.playerX + player.playerSize / 2;
+        float playerCentreY = player.playerY + player.playerSize / 2;
 
         // Check collision between player and water bottle
-        if (bottle.checkCollision(player.playerX, player.playerY, player.playerSize)) {
+        if (bottle.checkCollision(playerCentreX, playerCentreY)) {
             // Player collected the water bottle - becomes sober
             player.isDrunk = 0;
             goodEventCounter++;
         }
+
+        // check if player near longBoi
+        if (longBoi.checkNear(playerCentreX, playerCentreY)) {
+            // player is near, start walking
+            badEventCounter++;
+        }
+
+        // check if player collided with longBoi
+        if (longBoi.checkCollision(playerCentreX, playerCentreY)) {
+            gameOver = true;
+            drawGameOverOverlay();
+        }
+
 
         // Make camera follow player
         // Camera should be centered on player (add half player size to get center)
@@ -149,7 +171,7 @@ public class GameScreen implements Screen {
                 remainingTime -= Gdx.graphics.getDeltaTime();
                 if (remainingTime <= 0) {
                     remainingTime = 0;
-                    timeUp = true; // trigger popup
+                    gameOver = true; // trigger popup
                 }
             }
 
@@ -171,10 +193,9 @@ public class GameScreen implements Screen {
             player.playerY + player.playerSize > finishZoneY) {
 
             reachedFinish = true;
-            timeUp = true;
+            gameOver = true;
             System.out.println("🏁 Player reached the bottom-left finish zone!");
         }
-
 
         // Clamp camera to boundaries so we don't see beyond map edges
         clampCamera();
@@ -200,7 +221,7 @@ public class GameScreen implements Screen {
 
     private void draw() {
         // Clear the screen with black color
-        ScreenUtils.clear(Color.RED);
+        ScreenUtils.clear(Color.BLACK);
 
         game.camera.update();
 
@@ -211,16 +232,13 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
 
-        // Draw water bottle first (so it appears behind player)
-        bottle.draw(game.batch);
-
-        // Then draw player
         player.draw(game.batch);
         bottle.draw(game.batch);
+        longBoi.draw(game.batch);
 
         game.batch.end();
 
-        // Now switch to screen coordinates for UI
+        // switch to screen coordinates for UI
         game.batch.setProjectionMatrix(
             game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
         );
@@ -230,8 +248,6 @@ public class GameScreen implements Screen {
         String timeText = String.format("%02d:%02d", minutes, seconds);
 
         game.batch.begin();
-        player.draw(game.batch);
-        bottle.draw(game.batch);
 
         game.font.getData().setScale(4f);
         game.font.setColor(Color.WHITE);
@@ -239,6 +255,7 @@ public class GameScreen implements Screen {
         float marginY = Gdx.graphics.getHeight() - 20;
         game.font.draw(game.batch, timeText, marginX, marginY);
         game.font.getData().setScale(1f);
+
         game.batch.end();
 
     }
@@ -275,7 +292,8 @@ public class GameScreen implements Screen {
 
         game.batch.end();
     }
-    private void drawTimeUpOverlay() {
+
+    private void drawGameOverOverlay() {
         game.batch.setProjectionMatrix(
             game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
         );
@@ -295,6 +313,7 @@ public class GameScreen implements Screen {
         game.font.getData().setScale(1f);
         game.batch.end();
     }
+
     private void drawWinOverlay(){
         game.batch.setProjectionMatrix(
             game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
