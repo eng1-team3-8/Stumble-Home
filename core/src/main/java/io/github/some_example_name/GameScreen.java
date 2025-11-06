@@ -30,8 +30,9 @@ public class GameScreen implements Screen {
     private final float maxCameraY;
 
     private boolean paused = false;
-    private float remainingTime = 60f;
+    private float remainingTime = 90f;
     private boolean timeUp = false;
+    private boolean reachedFinish = false;
 
     private final Player player;
     private final bottleEvent bottle;
@@ -143,7 +144,7 @@ public class GameScreen implements Screen {
         float playerCenterY = player.playerY + player.playerSize / 2;
 
         game.camera.position.set(playerCenterX, playerCenterY, 0);
-        if (!paused) {
+        if (!paused && !reachedFinish) {
             if (remainingTime > 0) {
                 remainingTime -= Gdx.graphics.getDeltaTime();
                 if (remainingTime <= 0) {
@@ -152,6 +153,26 @@ public class GameScreen implements Screen {
                 }
             }
 
+        }
+        if (reachedFinish){
+            drawWinOverlay();
+        }
+        float finishZoneX = 0f;        // bottom-left corner
+        float finishZoneY = 0f;
+        float finishZoneWidth = 7f;    // 3 tiles wide
+        float finishZoneHeight = 7f;   // 3 tiles tall
+
+
+
+        if (!reachedFinish &&
+            player.playerX < finishZoneX + finishZoneWidth &&
+            player.playerX + player.playerSize > finishZoneX &&
+            player.playerY < finishZoneY + finishZoneHeight &&
+            player.playerY + player.playerSize > finishZoneY) {
+
+            reachedFinish = true;
+            timeUp = true;
+            System.out.println("🏁 Player reached the bottom-left finish zone!");
         }
 
 
@@ -273,6 +294,27 @@ public class GameScreen implements Screen {
 
         game.font.getData().setScale(1f);
         game.batch.end();
+    }
+    private void drawWinOverlay(){
+        game.batch.setProjectionMatrix(
+            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+        );
+        game.batch.begin();
+
+        game.font.getData().setScale(6f);
+        game.font.setColor(Color.GREEN);
+
+        String message = "YOU WON";
+
+        GlyphLayout layout = new GlyphLayout(game.font, message);
+        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
+        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
+
+        game.font.draw(game.batch, message, x, y);
+
+        game.font.getData().setScale(1f);
+        game.batch.end();
+
     }
 
 
