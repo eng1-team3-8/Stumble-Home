@@ -36,6 +36,10 @@ public class GameScreen implements Screen {
     private final Player player;
     private final bottleEvent bottle;
 
+    private float goodEventCounter;
+    private float badEventCounter;
+    private float invisibleEventCounter;
+
     public GameScreen(final StumbleHome game){
         this.game = game;
 
@@ -130,6 +134,7 @@ public class GameScreen implements Screen {
         if (bottle.checkCollision(player.playerX, player.playerY, player.playerSize)) {
             // Player collected the water bottle - becomes sober
             player.isDrunk = 0;
+            goodEventCounter++;
         }
 
         // Make camera follow player
