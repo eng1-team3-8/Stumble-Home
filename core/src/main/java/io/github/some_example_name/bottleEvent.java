@@ -88,7 +88,6 @@ public class bottleEvent extends Sprite {
 
         if (colliding) {
             collected = true;
-            System.out.println("Water bottle collected! Player is now sober.");
         }
 
         return colliding;

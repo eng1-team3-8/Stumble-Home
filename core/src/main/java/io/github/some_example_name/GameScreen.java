@@ -30,12 +30,16 @@ public class GameScreen implements Screen {
     private final float maxCameraY;
 
     private boolean paused = false;
-    private float remainingTime = 90f;
+    private float remainingTime = 200f;
     private boolean timeUp = false;
     private boolean reachedFinish = false;
+    private boolean hasKeycard = false;
+    private boolean showNoKeycardMessage = false;
+    private float noKeycardMessageTimer = 0f;
 
     private final Player player;
     private final bottleEvent bottle;
+    private final keycardEvent keycard;
 
     private float goodEventCounter;
     private float badEventCounter;
@@ -80,6 +84,10 @@ public class GameScreen implements Screen {
         bottle.bottleX = mapWidth - 3 - bottle.bottleSize / 2;
         bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
 
+        keycard = new keycardEvent(new Sprite(new Texture("keyCard.png")));
+        keycard.keycardX = mapWidth  - 57 - keycard.keycardSize / 2;
+        keycard.keycardY = mapHeight - 6 - keycard.keycardSize / 2;
+
         // Center camera on player position
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
     }
@@ -106,9 +114,12 @@ public class GameScreen implements Screen {
 
         draw();
 
-        // Draw pause overlay if paused
         if (paused) {
             drawPauseOverlay();
+        }
+
+        if (showNoKeycardMessage) {
+            drawNoKeycardMessage();
         }
 
         if (timeUp){
@@ -127,15 +138,18 @@ public class GameScreen implements Screen {
     private void logic() {
         player.logic();
         bottle.logic();
+        keycard.logic();
 
         //EVENTS
         bottle.logic();
 
-        // Check collision between player and water bottle
         if (bottle.checkCollision(player.playerX, player.playerY, player.playerSize)) {
-            // Player collected the water bottle - becomes sober
             player.isDrunk = 0;
             goodEventCounter++;
+        }
+
+        if (keycard.checkCollision(player.playerX, player.playerY, player.playerSize)) {
+            hasKeycard = true;
         }
 
         // Make camera follow player
@@ -157,14 +171,12 @@ public class GameScreen implements Screen {
         if (reachedFinish){
             drawWinOverlay();
         }
-        float finishZoneX = 0f;        // bottom-left corner
+        float finishZoneX = 0f;
         float finishZoneY = 0f;
-        float finishZoneWidth = 7f;    // 3 tiles wide
-        float finishZoneHeight = 7f;   // 3 tiles tall
+        float finishZoneWidth = 7f;
+        float finishZoneHeight = 7f;
 
-
-
-        if (!reachedFinish &&
+        if (!reachedFinish && hasKeycard &&
             player.playerX < finishZoneX + finishZoneWidth &&
             player.playerX + player.playerSize > finishZoneX &&
             player.playerY < finishZoneY + finishZoneHeight &&
@@ -172,11 +184,25 @@ public class GameScreen implements Screen {
 
             reachedFinish = true;
             timeUp = true;
-            System.out.println("🏁 Player reached the bottom-left finish zone!");
         }
 
+        if (!hasKeycard &&
+            player.playerX < finishZoneX + finishZoneWidth &&
+            player.playerX + player.playerSize > finishZoneX &&
+            player.playerY < finishZoneY + finishZoneHeight &&
+            player.playerY + player.playerSize > finishZoneY) {
 
-        // Clamp camera to boundaries so we don't see beyond map edges
+            showNoKeycardMessage = true;
+            noKeycardMessageTimer = 3f;
+        }
+
+        if (showNoKeycardMessage) {
+            noKeycardMessageTimer -= Gdx.graphics.getDeltaTime();
+            if (noKeycardMessageTimer <= 0) {
+                showNoKeycardMessage = false;
+            }
+        }
+
         clampCamera();
     }
 
@@ -213,6 +239,7 @@ public class GameScreen implements Screen {
 
         // Draw water bottle first (so it appears behind player)
         bottle.draw(game.batch);
+        keycard.draw(game.batch);
 
         // Then draw player
         player.draw(game.batch);
@@ -230,9 +257,6 @@ public class GameScreen implements Screen {
         String timeText = String.format("%02d:%02d", minutes, seconds);
 
         game.batch.begin();
-        player.draw(game.batch);
-        bottle.draw(game.batch);
-
         game.font.getData().setScale(4f);
         game.font.setColor(Color.WHITE);
         float marginX = 20;
@@ -317,6 +341,27 @@ public class GameScreen implements Screen {
 
     }
 
+    private void drawNoKeycardMessage(){
+        game.batch.setProjectionMatrix(
+            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+        );
+        game.batch.begin();
+
+        game.font.getData().setScale(3f);
+        game.font.setColor(Color.YELLOW);
+
+        String message = "Find the keycard first!";
+
+        GlyphLayout layout = new GlyphLayout(game.font, message);
+        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
+        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
+
+        game.font.draw(game.batch, message, x, y);
+
+        game.font.getData().setScale(1f);
+        game.batch.end();
+    }
+
 
 
     @Override
@@ -337,6 +382,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         player.getTexture().dispose();
         bottle.getTexture().dispose();
+        keycard.getTexture().dispose();
     }
 }
 
