@@ -36,6 +36,8 @@ public class GameScreen implements Screen {
     private boolean hasKeycard = false;
     private boolean showNoKeycardMessage = false;
     private float noKeycardMessageTimer = 0f;
+    private boolean showBottleMessage = false;
+    private float bottleMessageTimer = 0f;
 
     private final Player player;
     private final bottleEvent bottle;
@@ -122,6 +124,10 @@ public class GameScreen implements Screen {
             drawNoKeycardMessage();
         }
 
+        if (showBottleMessage) {
+            drawBottleMessage();
+        }
+
         if (timeUp){
             drawTimeUpOverlay();
             if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
@@ -146,6 +152,8 @@ public class GameScreen implements Screen {
         if (bottle.checkCollision(player.playerX, player.playerY, player.playerSize)) {
             player.isDrunk = 0;
             goodEventCounter++;
+            showBottleMessage = true;
+            bottleMessageTimer = 3f;
         }
 
         if (keycard.checkCollision(player.playerX, player.playerY, player.playerSize)) {
@@ -200,6 +208,13 @@ public class GameScreen implements Screen {
             noKeycardMessageTimer -= Gdx.graphics.getDeltaTime();
             if (noKeycardMessageTimer <= 0) {
                 showNoKeycardMessage = false;
+            }
+        }
+
+        if (showBottleMessage) {
+            bottleMessageTimer -= Gdx.graphics.getDeltaTime();
+            if (bottleMessageTimer <= 0) {
+                showBottleMessage = false;
             }
         }
 
@@ -351,6 +366,27 @@ public class GameScreen implements Screen {
         game.font.setColor(Color.YELLOW);
 
         String message = "Find the keycard first!";
+
+        GlyphLayout layout = new GlyphLayout(game.font, message);
+        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
+        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
+
+        game.font.draw(game.batch, message, x, y);
+
+        game.font.getData().setScale(1f);
+        game.batch.end();
+    }
+
+    private void drawBottleMessage(){
+        game.batch.setProjectionMatrix(
+            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+        );
+        game.batch.begin();
+
+        game.font.getData().setScale(3f);
+        game.font.setColor(Color.CYAN);
+
+        String message = "Now you're sober! Find a keycard";
 
         GlyphLayout layout = new GlyphLayout(game.font, message);
         float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
