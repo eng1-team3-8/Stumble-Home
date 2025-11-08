@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 public class bottleEvent extends Sprite {
 
     // Bottle animation
@@ -30,7 +33,6 @@ public class bottleEvent extends Sprite {
     }
 
     private void initializeAnimations() {
-        // Frame size: 25x49 pixels
         int frameWidth = 32;
         int frameHeight = 32;
 
@@ -75,16 +77,17 @@ public class bottleEvent extends Sprite {
         }
     }
 
-    public boolean checkCollision(float playerX, float playerY, float playerSize) {
+    public boolean checkCollision(float playerCentreX, float playerCentreY) {
         if (collected) {
             return false;
         }
 
-        // Rectangle collision detection
-        boolean colliding = playerX < bottleX + bottleSize &&
-                           playerX + playerSize > bottleX &&
-                           playerY < bottleY + bottleSize &&
-                           playerY + playerSize > bottleY;
+        boolean colliding;
+        //calculate distance between player centre and bottle centre
+        double distance = sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
+
+        // set nearing to true if player colliding (within 0.8 units of it)
+        colliding = distance < 1;
 
         if (colliding) {
             collected = true;
@@ -93,5 +96,12 @@ public class bottleEvent extends Sprite {
         return colliding;
     }
 
+    private float getCentreX(){
+        return bottleX + bottleSize / 2;
+    }
+
+    private float getCentreY(){
+        return bottleY + bottleSize / 2;
+    }
 
 }

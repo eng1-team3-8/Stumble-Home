@@ -40,7 +40,9 @@ public class GameScreen implements Screen {
     private float bottleMessageTimer = 0f;
 
     private final Player player;
+
     private final bottleEvent bottle;
+    private final longBoiEvent longBoi;
     private final keycardEvent keycard;
 
     private float goodEventCounter;
@@ -86,6 +88,10 @@ public class GameScreen implements Screen {
         bottle.bottleX = mapWidth - 3 - bottle.bottleSize / 2;
         bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
 
+        longBoi = new longBoiEvent(new Sprite(new Texture("longBoi.png")));
+        longBoi.longX = mapWidth - 23 - longBoi.longSize / 2;
+        longBoi.longY = mapHeight - 42 - longBoi.longSize / 2;
+
         keycard = new keycardEvent(new Sprite(new Texture("keyCard.png")));
         keycard.keycardX = mapWidth  - 57 - keycard.keycardSize / 2;
         keycard.keycardY = mapHeight - 6 - keycard.keycardSize / 2;
@@ -98,7 +104,6 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         // start playback of background music when screen is shown
-        //music.play();
     }
 
     @Override
@@ -143,10 +148,16 @@ public class GameScreen implements Screen {
         bottle.logic();
         keycard.logic();
 
-        //EVENTS
+        //events logic
         bottle.logic();
+        longBoi.logic();
 
-        if (bottle.checkCollision(player.playerX, player.playerY, player.playerSize)) {
+        float playerCentreX = player.playerX + player.playerSize / 2;
+        float playerCentreY = player.playerY + player.playerSize / 2;
+
+        // Check collision between player and water bottle
+        if (bottle.checkCollision(playerCentreX, playerCentreY)) {
+            // Player collected the water bottle - becomes sober
             player.isDrunk = 0;
             goodEventCounter++;
             showBottleMessage = true;
@@ -156,6 +167,26 @@ public class GameScreen implements Screen {
         if (keycard.checkCollision(player.playerX, player.playerY, player.playerSize)) {
             hasKeycard = true;
         }
+
+        if (!longBoi.doneWalk) {
+            // check if player near longBoi
+            if (longBoi.checkNear(playerCentreX, playerCentreY)) {
+                // player is near
+                badEventCounter++;
+            }
+
+            if (longBoi.near) {
+                longBoi.walkPath();
+            }
+
+            // check if player collided with longBoi
+            if (longBoi.checkCollision(playerCentreX, playerCentreY)) {
+                gameOver = true;
+                drawGameOverOverlay();
+            }
+        }
+
+
 
         // Make camera follow player
         // Camera should be centered on player (add half player size to get center)
@@ -177,8 +208,9 @@ public class GameScreen implements Screen {
 
         float finishZoneX = 0f;
         float finishZoneY = 0f;
-        float finishZoneWidth = 7f;
-        float finishZoneHeight = 7f;
+        float finishZoneWidth = 7f;    // 3 tiles wide
+        float finishZoneHeight = 7f;   // 3 tiles tall
+
 
         if (!reachedFinish && hasKeycard &&
             player.playerX < finishZoneX + finishZoneWidth &&
@@ -256,7 +288,7 @@ public class GameScreen implements Screen {
     }
     private void draw() {
         // Clear the screen with black color
-        ScreenUtils.clear(Color.RED);
+        ScreenUtils.clear(Color.BLACK);
 
         game.camera.update();
 
@@ -274,10 +306,13 @@ public class GameScreen implements Screen {
         // Then draw player
         player.draw(game.batch);
         bottle.draw(game.batch);
+        if (!longBoi.doneWalk) {
+            longBoi.draw(game.batch);
+        }
 
         game.batch.end();
 
-        // Now switch to screen coordinates for UI
+        // switch to screen coordinates for UI
         game.batch.setProjectionMatrix(
             game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
         );
