@@ -83,8 +83,8 @@ public class GameScreen implements Screen {
         bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
 
         longBoi = new longBoiEvent(new Sprite(new Texture("longBoi.png")));
-        longBoi.longX = mapWidth - 4 - longBoi.longSize / 2;
-        longBoi.longY = mapHeight - 22 - longBoi.longSize / 2;
+        longBoi.longX = mapWidth - 23 - longBoi.longSize / 2;
+        longBoi.longY = mapHeight - 42 - longBoi.longSize / 2;
 
         // Center camera on player position
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
@@ -94,7 +94,6 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         // start playback of background music when screen is shown
-        //music.play();
     }
 
     @Override
@@ -147,17 +146,24 @@ public class GameScreen implements Screen {
             goodEventCounter++;
         }
 
-        // check if player near longBoi
-        if (longBoi.checkNear(playerCentreX, playerCentreY)) {
-            // player is near, start walking
-            badEventCounter++;
+        if (!longBoi.doneWalk) {
+            // check if player near longBoi
+            if (longBoi.checkNear(playerCentreX, playerCentreY)) {
+                // player is near
+                badEventCounter++;
+            }
+
+            if (longBoi.near) {
+                longBoi.walkPath();
+            }
+
+            // check if player collided with longBoi
+            if (longBoi.checkCollision(playerCentreX, playerCentreY)) {
+                gameOver = true;
+                drawGameOverOverlay();
+            }
         }
 
-        // check if player collided with longBoi
-        if (longBoi.checkCollision(playerCentreX, playerCentreY)) {
-            gameOver = true;
-            drawGameOverOverlay();
-        }
 
 
         // Make camera follow player
@@ -234,7 +240,9 @@ public class GameScreen implements Screen {
 
         player.draw(game.batch);
         bottle.draw(game.batch);
-        longBoi.draw(game.batch);
+        if (!longBoi.doneWalk) {
+            longBoi.draw(game.batch);
+        }
 
         game.batch.end();
 

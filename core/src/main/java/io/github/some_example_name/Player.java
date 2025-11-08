@@ -263,5 +263,4 @@ public class Player extends Sprite {
         float drawHeight = playerSize * aspectRatio;
         batch.draw(frameToDraw, playerX, playerY, playerSize, drawHeight);
     }
-
 }

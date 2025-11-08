@@ -22,14 +22,34 @@ public class longBoiEvent extends Sprite {
     // position
     public float longX;
     public float longY;
-    public final float longSize = 1.5f;
+    public final float longSize = 2f;
 
-    private boolean near = false;
+    public boolean near = false;
+
+    // walking loop variables
+    private int xDirection = 70;
+    private int yDirection = 220;
+    private int xDirection2 = 250;
+    private int yDirection2 = 70;
+    private int xDirection3 = 70;
+    private int yDirection3 = 150;
+    private int xDirection4 = 60;
+    private int yDirection4 = 120;
+    private int xLoopCounter = 0;
+    private int yLoopCounter = 0;
+    private int xLoopCounter2 = 0;
+    private int yLoopCounter2 = 0;
+    private int xLoopCounter3 = 0;
+    private int yLoopCounter3 = 0;
+    private int xLoopCounter4 = 0;
+    private int yLoopCounter4 = 0;
+
+    public boolean doneWalk = false;
 
     public boolean collided = false;
 
     // distance to be near long boi for him to start walking
-    public float radius = 4;
+    public float radius = 6;
 
     public longBoiEvent(Sprite sprite) {
         super(sprite);
@@ -51,7 +71,7 @@ public class longBoiEvent extends Sprite {
         TextureRegion[] longFrames = new TextureRegion[2];
         longFrames[0] = new TextureRegion(longSheet, 0, 0, frameWidth, frameHeight);
         longFrames[1] = new TextureRegion(longSheet, 32, 0, frameWidth, frameHeight);
-        Animation<TextureRegion> animation = new Animation<>(0.5f, longFrames);
+        Animation<TextureRegion> animation = new Animation<>(0.3f, longFrames);
 
         stateTime = 0f;
 
@@ -128,5 +148,37 @@ public class longBoiEvent extends Sprite {
             System.out.println("Collided with long boi.");
         }
         return colliding;
+    }
+
+    public void walkPath(){
+        float delta = Gdx.graphics.getDeltaTime();
+        float speed = 3f;
+        if (xLoopCounter < xDirection) {
+            longX += delta*speed;
+            xLoopCounter++;
+        } else if (yLoopCounter < yDirection) {
+            longY += delta*speed;
+            yLoopCounter++;
+        } else if (xLoopCounter2 < xDirection2) {
+            longX -= delta*speed;
+            xLoopCounter2++;
+        } else if (yLoopCounter2 < yDirection2) {
+            longY-= delta*speed;
+            yLoopCounter2++;
+        } else if (xLoopCounter3 < xDirection3) {
+            longX -= delta*speed;
+            xLoopCounter3++;
+        } else if (yLoopCounter3 < yDirection3) {
+            longY += delta*speed;
+            yLoopCounter3++;
+        } else if (xLoopCounter4 < xDirection4) {
+            longX += delta*speed;
+            xLoopCounter4++;
+        } else if (yLoopCounter4 < yDirection4) {
+            longY += delta * speed;
+            yLoopCounter4++;
+        } else {
+            doneWalk = true;
+        }
     }
 }
