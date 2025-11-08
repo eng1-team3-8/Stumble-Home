@@ -116,19 +116,16 @@ public class GameScreen implements Screen {
 
         draw();
 
-        if (paused) {
-            drawPauseOverlay();
-        }
-
         if (showNoKeycardMessage) {
             drawNoKeycardMessage();
         }
-
         if (showBottleMessage) {
             drawBottleMessage();
         }
-
-        if (timeUp){
+        if (paused) {
+            drawPauseOverlay();
+        }
+        if (timeUp && !reachedFinish) {
             drawTimeUpOverlay();
             if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
                 dispose();
@@ -176,9 +173,8 @@ public class GameScreen implements Screen {
             }
 
         }
-        if (reachedFinish){
-            drawWinOverlay();
-        }
+
+
         float finishZoneX = 0f;
         float finishZoneY = 0f;
         float finishZoneWidth = 7f;
@@ -189,9 +185,12 @@ public class GameScreen implements Screen {
             player.playerX + player.playerSize > finishZoneX &&
             player.playerY < finishZoneY + finishZoneHeight &&
             player.playerY + player.playerSize > finishZoneY) {
-
-            reachedFinish = true;
             timeUp = true;
+            paused = true;
+            int score = (int) (remainingTime * 10);
+            reachedFinish = true;
+            game.setScreen(new WinScreen(game, remainingTime, score));
+            dispose();
         }
 
         if (!hasKeycard &&
@@ -238,7 +237,23 @@ public class GameScreen implements Screen {
             );
         }
     }
+    private void drawCenteredText(String text, Color color, float scale) {
+        game.batch.setProjectionMatrix(
+            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+        );
 
+        game.batch.begin();
+        game.font.getData().setScale(scale);
+        game.font.setColor(color);
+
+        GlyphLayout layout = new GlyphLayout(game.font, text);
+        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
+        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
+        game.font.draw(game.batch, layout, x, y);
+
+        game.font.getData().setScale(1f);
+        game.batch.end();
+    }
     private void draw() {
         // Clear the screen with black color
         ScreenUtils.clear(Color.RED);
@@ -283,120 +298,20 @@ public class GameScreen implements Screen {
     }
 
     private void drawPauseOverlay() {
-
-        game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
-
-        game.batch.begin();
-
-        // Create a layout to measure text width & height
-        GlyphLayout layout = new GlyphLayout();
-
-        // Set font properties
-        game.font.getData().setScale(5f);
-        game.font.setColor(Color.WHITE);
-
-        String pausedText = "PAUSED";
-
-        // Calculate layout
-        layout.setText(game.font, pausedText);
-
-        // Compute centered position
-        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
-        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
-
-        // Draw centered text
-        game.font.draw(game.batch, layout, x, y);
-
-        // Reset scale
-        game.font.getData().setScale(1f);
-
-        game.batch.end();
+        drawCenteredText("PAUSED", Color.WHITE, 3f);
     }
     private void drawTimeUpOverlay() {
-        game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
-        game.batch.begin();
-
-        game.font.getData().setScale(6f);
-        game.font.setColor(Color.RED);
-
-        String message = "Game Over";
-
-        GlyphLayout layout = new GlyphLayout(game.font, message);
-        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
-        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
-
-        game.font.draw(game.batch, message, x, y);
-
-        game.font.getData().setScale(1f);
-        game.batch.end();
+        drawCenteredText("Game Over", Color.RED, 3f);
     }
-    private void drawWinOverlay(){
-        game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
-        game.batch.begin();
-
-        game.font.getData().setScale(6f);
-        game.font.setColor(Color.GREEN);
-
-        String message = "YOU WON";
-
-        GlyphLayout layout = new GlyphLayout(game.font, message);
-        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
-        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
-
-        game.font.draw(game.batch, message, x, y);
-
-        game.font.getData().setScale(1f);
-        game.batch.end();
+    private void drawNoKeycardMessage() {
+        drawCenteredText("You need a KeyCard to enter the Door", Color.RED, 3f);
+    }
+    private void drawBottleMessage() {
+        drawCenteredText("you remembered that you don't have the keycard, find it", Color.YELLOW, 2f);
 
     }
-
-    private void drawNoKeycardMessage(){
-        game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
-        game.batch.begin();
-
-        game.font.getData().setScale(3f);
-        game.font.setColor(Color.YELLOW);
-
-        String message = "Find the keycard first!";
-
-        GlyphLayout layout = new GlyphLayout(game.font, message);
-        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
-        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
-
-        game.font.draw(game.batch, message, x, y);
-
-        game.font.getData().setScale(1f);
-        game.batch.end();
-    }
-
-    private void drawBottleMessage(){
-        game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
-        game.batch.begin();
-
-        game.font.getData().setScale(3f);
-        game.font.setColor(Color.CYAN);
-
-        String message = "Now you're sober! Find a keycard";
-
-        GlyphLayout layout = new GlyphLayout(game.font, message);
-        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
-        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
-
-        game.font.draw(game.batch, message, x, y);
-
-        game.font.getData().setScale(1f);
-        game.batch.end();
-    }
+    private void drawKeycardMessage() {
+        drawCenteredText("you have the keyCard now, you can go home now", Color.YELLOW, 2f);}
 
 
 
