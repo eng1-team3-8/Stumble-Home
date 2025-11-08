@@ -145,11 +145,10 @@ public class GameScreen implements Screen {
 
     private void logic() {
         player.logic();
-        bottle.logic();
-        keycard.logic();
 
         //events logic
         bottle.logic();
+        keycard.logic();
         longBoi.logic();
 
         float playerCentreX = player.playerX + player.playerSize / 2;
@@ -164,8 +163,10 @@ public class GameScreen implements Screen {
             bottleMessageTimer = 3f;
         }
 
-        if (keycard.checkCollision(player.playerX, player.playerY, player.playerSize)) {
+        // check collision with keycard
+        if (keycard.checkCollision(playerCentreX, playerCentreY)) {
             hasKeycard = true;
+            drawKeycardMessage();
         }
 
         if (!longBoi.doneWalk) {
@@ -181,11 +182,10 @@ public class GameScreen implements Screen {
 
             // check if player collided with longBoi
             if (longBoi.checkCollision(playerCentreX, playerCentreY)) {
-                gameOver = true;
-                drawGameOverOverlay();
+                timeUp = true;
+                drawTimeUpOverlay();
             }
         }
-
 
 
         // Make camera follow player
@@ -286,6 +286,7 @@ public class GameScreen implements Screen {
         game.font.getData().setScale(1f);
         game.batch.end();
     }
+
     private void draw() {
         // Clear the screen with black color
         ScreenUtils.clear(Color.BLACK);
@@ -299,16 +300,13 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
 
-        // Draw water bottle first (so it appears behind player)
-        bottle.draw(game.batch);
-        keycard.draw(game.batch);
-
         // Then draw player
         player.draw(game.batch);
         bottle.draw(game.batch);
         if (!longBoi.doneWalk) {
             longBoi.draw(game.batch);
         }
+        keycard.draw(game.batch);
 
         game.batch.end();
 
@@ -322,12 +320,14 @@ public class GameScreen implements Screen {
         String timeText = String.format("%02d:%02d", minutes, seconds);
 
         game.batch.begin();
+
         game.font.getData().setScale(4f);
         game.font.setColor(Color.WHITE);
         float marginX = 20;
         float marginY = Gdx.graphics.getHeight() - 20;
         game.font.draw(game.batch, timeText, marginX, marginY);
         game.font.getData().setScale(1f);
+
         game.batch.end();
 
     }
@@ -339,15 +339,14 @@ public class GameScreen implements Screen {
         drawCenteredText("Game Over", Color.RED, 3f);
     }
     private void drawNoKeycardMessage() {
-        drawCenteredText("You need a KeyCard to enter the Door", Color.RED, 3f);
+        drawCenteredText("You need a KeyCard to enter the Door...", Color.RED, 3f);
     }
     private void drawBottleMessage() {
-        drawCenteredText("you remembered that you don't have the keycard, find it", Color.YELLOW, 2f);
+        drawCenteredText("You remembered that you don't have the keycard, find it!", Color.YELLOW, 2f);
 
     }
     private void drawKeycardMessage() {
-        drawCenteredText("you have the keyCard now, you can go home now", Color.YELLOW, 2f);}
-
+        drawCenteredText("You have the keyCard, you can go home now!", Color.YELLOW, 2f);}
 
 
     @Override
@@ -369,6 +368,7 @@ public class GameScreen implements Screen {
         player.getTexture().dispose();
         bottle.getTexture().dispose();
         keycard.getTexture().dispose();
+        longBoi.getTexture().dispose();
     }
 }
 
