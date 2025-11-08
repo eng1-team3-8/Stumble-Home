@@ -151,6 +151,7 @@ public class longBoiEvent extends Sprite {
     }
 
     public void walkPath(){
+        // this is badly written due to time
         float delta = Gdx.graphics.getDeltaTime();
         float speed = 3f;
         if (xLoopCounter < xDirection) {

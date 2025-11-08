@@ -173,7 +173,7 @@ public class GameScreen implements Screen {
             // check if player near longBoi
             if (longBoi.checkNear(playerCentreX, playerCentreY)) {
                 // player is near
-                badEventCounter++;
+                invisibleEventCounter++;
             }
 
             if (longBoi.near) {
