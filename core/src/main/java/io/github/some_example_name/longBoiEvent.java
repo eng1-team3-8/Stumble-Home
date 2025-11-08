@@ -28,7 +28,7 @@ public class longBoiEvent extends Sprite {
 
     // walking loop variables
     private int xDirection = 70;
-    private int yDirection = 220;
+    private int yDirection = 150;
     private int xDirection2 = 250;
     private int yDirection2 = 70;
     private int xDirection3 = 70;
@@ -49,7 +49,7 @@ public class longBoiEvent extends Sprite {
     public boolean collided = false;
 
     // distance to be near long boi for him to start walking
-    public float radius = 6;
+    public float radius = 4;
 
     public longBoiEvent(Sprite sprite) {
         super(sprite);

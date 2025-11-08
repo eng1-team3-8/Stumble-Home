@@ -90,11 +90,11 @@ public class GameScreen implements Screen {
 
         longBoi = new longBoiEvent(new Sprite(new Texture("longBoi.png")));
         longBoi.longX = mapWidth - 23 - longBoi.longSize / 2;
-        longBoi.longY = mapHeight - 42 - longBoi.longSize / 2;
+        longBoi.longY = mapHeight - 38 - longBoi.longSize / 2;
 
         keycard = new keycardEvent(new Sprite(new Texture("keyCard.png")));
         keycard.keycardX = mapWidth  - 57 - keycard.keycardSize / 2;
-        keycard.keycardY = mapHeight - 6 - keycard.keycardSize / 2;
+        keycard.keycardY = mapHeight - 5 - keycard.keycardSize / 2;
 
         // Center camera on player position
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
