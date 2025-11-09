@@ -24,7 +24,7 @@ public class StumbleHome extends Game {
     public OrthographicCamera camera;
 
     /** Viewport height in world units - zoomed for better visibility of player navigation. */
-    final float VIEWPORT_HEIGHT = 12;  // Zoomed in closer to see player navigate paths
+    final float VIEWPORT_HEIGHT = 12;
 
     /** Viewport managing screen-to-world coordinate mapping. */
     public Viewport viewport;

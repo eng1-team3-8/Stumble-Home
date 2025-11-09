@@ -47,7 +47,7 @@ public class MainMenuScreen implements Screen {
     @Override
     public void show() {
 
-        background = new Texture("background.jpg");
+        background = new Texture("MainMenu.png");
         tutorialImage = new Texture("tutorialImage.jpg");
 
         stage = new Stage(new ScreenViewport());
@@ -105,7 +105,7 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void render(float delta){
-        ScreenUtils.clear(Color.BLUE);
+        ScreenUtils.clear(Color.BLACK);
 
         game.batch.setProjectionMatrix(
             game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
@@ -115,10 +115,6 @@ public class MainMenuScreen implements Screen {
         if (background != null) {
             game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
-
-        game.font.draw(game.batch, "Stumble Home!", Gdx.graphics.getWidth() * .32f, Gdx.graphics.getHeight()* 0.9f);
-        game.font.getData().setScale(3f);
-
 
         game.batch.end();
 

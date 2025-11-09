@@ -116,7 +116,6 @@ public class keycardEvent extends Sprite {
 
         if (colliding) {
             collected = true;
-            System.out.println("Keycard collected! You can now exit.");
         }
 
         return colliding;

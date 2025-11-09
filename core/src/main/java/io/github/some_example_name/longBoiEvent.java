@@ -49,7 +49,7 @@ public class longBoiEvent extends Sprite {
     public boolean collided = false;
 
     // distance to be near long boi for him to start walking
-    public float radius = 4;
+    public float radius = 6;
 
     public longBoiEvent(Sprite sprite) {
         super(sprite);
@@ -105,7 +105,6 @@ public class longBoiEvent extends Sprite {
 
         if (nearing) {
             near = true;
-            System.out.println("near long boi.");
         }
         return nearing;
     }
@@ -133,7 +132,7 @@ public class longBoiEvent extends Sprite {
 
     public boolean checkCollision(float playerCentreX, float playerCentreY) {
         if (collided) {
-            return false;
+            return true;
         }
 
         boolean colliding;
@@ -141,11 +140,10 @@ public class longBoiEvent extends Sprite {
         double distance = sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
 
         // set nearing to true if player within (value of radius) of long boi
-        colliding = distance < 1;
+        colliding = distance < 1.3f;
 
         if (colliding) {
             collided = true;
-            System.out.println("Collided with long boi.");
         }
         return colliding;
     }

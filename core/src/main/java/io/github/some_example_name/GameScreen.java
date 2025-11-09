@@ -38,6 +38,8 @@ public class GameScreen implements Screen {
     private float noKeycardMessageTimer = 0f;
     private boolean showBottleMessage = false;
     private float bottleMessageTimer = 0f;
+    private boolean showLongBoiMessage = false;
+    private float longBoiMessageTimer = 0f;
 
     private final Player player;
 
@@ -45,7 +47,9 @@ public class GameScreen implements Screen {
     private final longBoiEvent longBoi;
     private final keycardEvent keycard;
 
-    private int EventCounter;
+    private int hiddenEventCounter = 0;
+    private int helpfulEventCounter = 0;
+    private int hinderingEventCounter = 0;
 
     public GameScreen(final StumbleHome game){
         this.game = game;
@@ -111,7 +115,7 @@ public class GameScreen implements Screen {
             paused = !paused; // flip pause state
         }
 
-        // Only run input and logic if not paused and there is enough time left
+        // Only run player input and logic if not paused and there is enough time left
         if (!paused && !timeUp) {
             input();
             logic();
@@ -127,6 +131,9 @@ public class GameScreen implements Screen {
         }
         if (paused) {
             drawPauseOverlay();
+        }
+        if (showLongBoiMessage) {
+            drawLongBoiMessage();
         }
         if (timeUp && !reachedFinish) {
             drawTimeUpOverlay();
@@ -156,7 +163,7 @@ public class GameScreen implements Screen {
         if (bottle.checkCollision(playerCentreX, playerCentreY, player.playerSize)) {
             // Player collected the water bottle - becomes sober
             player.isDrunk = 0;
-            EventCounter++;
+            helpfulEventCounter++;
             showBottleMessage = true;
             bottleMessageTimer = 3f;
         }
@@ -164,8 +171,7 @@ public class GameScreen implements Screen {
         // check collision with keycard
         if (keycard.checkCollision(playerCentreX, playerCentreY, player.playerSize)) {
             hasKeycard = true;
-            EventCounter++;
-
+            hinderingEventCounter++;
             drawKeycardMessage();
         }
 
@@ -173,7 +179,9 @@ public class GameScreen implements Screen {
             // check if player near longBoi
             if (longBoi.checkNear(playerCentreX, playerCentreY)) {
                 // player is near
-                EventCounter++;
+                showLongBoiMessage = true;
+                longBoiMessageTimer = 2f;
+                hiddenEventCounter++;
             }
 
             if (longBoi.near) {
@@ -249,6 +257,14 @@ public class GameScreen implements Screen {
             }
         }
 
+        if (showLongBoiMessage) {
+            longBoiMessageTimer -= Gdx.graphics.getDeltaTime();
+                if (longBoiMessageTimer <= 0) {
+                    showLongBoiMessage = false;
+                }
+        }
+
+
         clampCamera();
     }
 
@@ -269,6 +285,7 @@ public class GameScreen implements Screen {
             );
         }
     }
+
     private void drawCenteredText(String text, Color color, float scale) {
         game.batch.setProjectionMatrix(
             game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
@@ -303,7 +320,7 @@ public class GameScreen implements Screen {
         // Then draw player
         player.draw(game.batch);
         bottle.draw(game.batch);
-        if (!longBoi.doneWalk) {
+        if (!longBoi.doneWalk & longBoi.near) {
             longBoi.draw(game.batch);
         }
         keycard.draw(game.batch);
@@ -319,37 +336,52 @@ public class GameScreen implements Screen {
         int seconds = (int)(remainingTime % 60);
         String timeText = String.format("%02d:%02d", minutes, seconds);
 
-        int totalEvents = 3;
-        String eventText = "Events: " + EventCounter + "/" + totalEvents;
-
+        int totalEvents = 5;
+        String helpfulEventText = "Helpful events: " + helpfulEventCounter + "/" + totalEvents;
+        String hinderingEventText = "Hindering events: " + hinderingEventCounter + "/" + totalEvents;
+        String hiddenEventText = "Hidden events: " + hiddenEventCounter + "/" + totalEvents;
 
 
         game.batch.begin();
-        game.font.getData().setScale(4f);
+
+        game.font.getData().setScale(3f);
         game.font.setColor(Color.WHITE);
         float marginX = 20;
         float marginY = Gdx.graphics.getHeight() - 20;
+        // draw text for time
         game.font.draw(game.batch, timeText, marginX, marginY);
-        game.font.getData().setScale(3f);
-        game.font.draw(game.batch, eventText, marginX, marginY - 60);
-        game.font.getData().setScale(1f);
+        // draw text for events
+        game.font.getData().setScale(1.5f);
+        game.font.draw(game.batch, helpfulEventText, marginX, 30);
+        game.font.draw(game.batch, hinderingEventText, marginX, 60);
+        game.font.draw(game.batch, hiddenEventText, marginX, 90);
+
+
         game.batch.end();
     }
 
     private void drawPauseOverlay() {
         drawCenteredText("PAUSED", Color.WHITE, 3f);
     }
+
     private void drawTimeUpOverlay() {
         drawCenteredText("Game Over", Color.RED, 3f);
     }
+
     private void drawNoKeycardMessage() {
         drawCenteredText("You need a KeyCard to enter the Door...", Color.RED, 3f);
     }
+
     private void drawBottleMessage() {
         drawCenteredText("You remembered that you don't have the keycard, find it!", Color.YELLOW, 2f);
     }
+
     private void drawKeycardMessage() {
         drawCenteredText("You have the keyCard, you can go home now!", Color.YELLOW, 2f);}
+
+    private void drawLongBoiMessage() {
+        drawCenteredText("It's Long Boi! Avoid him!", Color.RED, 3f);
+    }
 
 
     @Override
