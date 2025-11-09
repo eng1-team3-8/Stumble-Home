@@ -181,14 +181,14 @@ public class GameScreen implements Screen {
                 hiddenEventCounter++;
             }
 
-            if (longBoi.near) {
+            if (longBoi.getNear()) {
                 longBoi.walkPath();
             }
 
             // check if player collided with longBoi
             if (longBoi.checkCollision(playerCentreX, playerCentreY)) {
                 int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
-                game.setScreen(new GameOverScreen(game, remainingTime, 0));
+                game.setScreen(new GameOverScreen(game, remainingTime, score));
             }
         }
 
@@ -317,7 +317,7 @@ public class GameScreen implements Screen {
         // Then draw player
         player.draw(game.batch);
         bottle.draw(game.batch);
-        if (!longBoi.doneWalk & longBoi.near) {
+        if (!longBoi.doneWalk & longBoi.getNear()) {
             longBoi.draw(game.batch);
         }
         keycard.draw(game.batch);

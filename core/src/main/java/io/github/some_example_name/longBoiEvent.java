@@ -24,7 +24,8 @@ public class longBoiEvent extends Sprite {
     public float longY;
     public final float longSize = 2f;
 
-    public boolean near = false;
+    // if player near longBoi
+    private boolean near = false;
 
     // walking loop variables
     private int xDirection = 70;
@@ -146,6 +147,10 @@ public class longBoiEvent extends Sprite {
             collided = true;
         }
         return colliding;
+    }
+
+    public boolean getNear() {
+        return near;
     }
 
     public void walkPath(){

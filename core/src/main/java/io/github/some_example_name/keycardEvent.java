@@ -120,13 +120,4 @@ public class keycardEvent extends Sprite {
 
         return colliding;
     }
-
-    /**
-     * Returns whether the keycard has been collected by the player.
-     *
-     * @return true if collected, false otherwise
-     */
-    public boolean isCollected() {
-        return collected;
-    }
 }
