@@ -32,12 +32,16 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  */
 public class WinScreen implements Screen {
     final StumbleHome game;
+    /** The remaining time (in seconds) when the player won the game. */
     final float remainingTime;
+    /** The player's final score. */
     final int score;
-
+    /** The stage used for rendering UI components such as labels and buttons. */
     Stage stage;
+    /** The skin used for styling UI components. */
     Skin skin;
 
+    /** The skin used for styling UI components. */
     private final Texture background;
     /**
      * Constructs a new {@code WinScreen} instance.

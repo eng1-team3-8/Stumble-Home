@@ -26,12 +26,18 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  *
  */
 public class MainMenuScreen implements Screen {
-    // declaring variables
+
+
     final StumbleHome game;
+    /** Background image for the main menu. */
     private Texture background;
+    /** Image displayed when the tutorial is shown. */
     private Texture tutorialImage;
+    /** Stage used for rendering UI elements such as buttons. */
     private Stage stage;
+    /** Skin used for styling UI components. */
     private Skin skin;
+    /** Flag that determines whether the tutorial image is currently displayed. */
     private boolean showTutorial = false;
 
     public MainMenuScreen(final StumbleHome game) {
