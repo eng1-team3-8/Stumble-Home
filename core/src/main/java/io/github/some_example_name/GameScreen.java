@@ -153,7 +153,7 @@ public class GameScreen implements Screen {
         float playerCentreY = player.playerY + player.playerSize / 2;
 
         // Check collision between player and water bottle
-        if (bottle.checkCollision(playerCentreX, playerCentreY)) {
+        if (bottle.checkCollision(playerCentreX, playerCentreY, player.playerSize)) {
             // Player collected the water bottle - becomes sober
             player.isDrunk = 0;
             EventCounter++;
@@ -162,7 +162,7 @@ public class GameScreen implements Screen {
         }
 
         // check collision with keycard
-        if (keycard.checkCollision(playerCentreX, playerCentreY)) {
+        if (keycard.checkCollision(playerCentreX, playerCentreY, player.playerSize)) {
             hasKeycard = true;
             EventCounter++;
 
