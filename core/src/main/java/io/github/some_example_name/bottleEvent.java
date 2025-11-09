@@ -7,24 +7,41 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
-
+/**
+ * Represents a collectible bottle item that appears in the game world.
+ * When collected by the player, this affects their movement controls.
+ */
 public class bottleEvent extends Sprite {
 
-    // Bottle animation
+    /** Spritesheet texture containing all animation frames for the bottle. */
     public Texture bottleSheet;
 
+    /** The animation sequence currently being displayed. */
     private Animation<TextureRegion> currentAnimation;
+
+    /** Previously displayed animation, used to detect when animation changes. */
     private Animation<TextureRegion> previousAnimation;
+
+    /** Tracks how long the current animation has been playing. */
     private float stateTime;
 
+    /** X-coordinate of the bottle's position on the map. */
     public float bottleX;
+
+    /** Y-coordinate of the bottle's position on the map. */
     public float bottleY;
+
+    /** Size of the bottle sprite when rendered. */
     public final float bottleSize = 1.5f;
 
+    /** Whether the bottle has been picked up by the player. */
     private boolean collected = false;
 
+    /**
+     * Creates a new bottle event at a specific location.
+     *
+     * @param sprite the base sprite containing the bottle texture
+     */
     public bottleEvent(Sprite sprite) {
         super(sprite);
 
@@ -32,7 +49,12 @@ public class bottleEvent extends Sprite {
         initializeAnimations();
     }
 
+    /**
+     * Sets up the bottle's animation frames from the spritesheet.
+     * Extracts 6 frames at 32x32 pixels each and configures the looping animation.
+     */
     private void initializeAnimations() {
+        // Frame size: 25x49 pixels
         int frameWidth = 32;
         int frameHeight = 32;
 
@@ -53,6 +75,10 @@ public class bottleEvent extends Sprite {
         currentAnimation = animation;
     }
 
+    /**
+     * Updates the bottle's animation state each frame.
+     * Only processes animation if the bottle hasn't been collected yet.
+     */
     public void logic() {
         if (!collected) {
             // Reset animation time if animation changed
@@ -66,6 +92,11 @@ public class bottleEvent extends Sprite {
         }
     }
 
+    /**
+     * Renders the bottle to the screen if it hasn't been collected.
+     *
+     * @param batch the sprite batch used for rendering
+     */
     public void draw(SpriteBatch batch) {
         if (!collected) {
             // Determine which frame to draw
@@ -77,17 +108,25 @@ public class bottleEvent extends Sprite {
         }
     }
 
-    public boolean checkCollision(float playerCentreX, float playerCentreY) {
+    /**
+     * Checks whether the player has collided with the bottle using rectangle-based collision.
+     * If a collision is detected, marks the bottle as collected.
+     *
+     * @param playerX the player's x position
+     * @param playerY the player's y position
+     * @param playerSize the player's collision box size
+     * @return true if collision occurred, false otherwise
+     */
+    public boolean checkCollision(float playerX, float playerY, float playerSize) {
         if (collected) {
             return false;
         }
 
-        boolean colliding;
-        //calculate distance between player centre and bottle centre
-        double distance = sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
-
-        // set nearing to true if player colliding (within 0.8 units of it)
-        colliding = distance < 1;
+        // Rectangle collision detection
+        boolean colliding = playerX < bottleX + bottleSize &&
+                           playerX + playerSize > bottleX &&
+                           playerY < bottleY + bottleSize &&
+                           playerY + playerSize > bottleY;
 
         if (colliding) {
             collected = true;
@@ -96,12 +135,5 @@ public class bottleEvent extends Sprite {
         return colliding;
     }
 
-    private float getCentreX(){
-        return bottleX + bottleSize / 2;
-    }
-
-    private float getCentreY(){
-        return bottleY + bottleSize / 2;
-    }
 
 }
