@@ -85,7 +85,10 @@ public class GameScreen implements Screen {
         player.playerX = mapWidth - 12  - player.playerSize / 2;
         player.playerY = mapHeight - 2 - player.playerSize / 2;
 
-        //EVENTS
+        // Center camera on player position
+        game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
+
+        // events
         bottle = new bottleEvent(new Sprite(new Texture("waterBottle.png")));
         bottle.bottleX = mapWidth - 3 - bottle.bottleSize / 2;
         bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
@@ -98,14 +101,11 @@ public class GameScreen implements Screen {
         keycard.keycardX = mapWidth  - 57 - keycard.keycardSize / 2;
         keycard.keycardY = mapHeight - 5 - keycard.keycardSize / 2;
 
-        // Center camera on player position
-        game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
     }
 
 
     @Override
     public void show() {
-        // start playback of background music when screen is shown
     }
 
     @Override
@@ -120,7 +120,6 @@ public class GameScreen implements Screen {
             player.input();
             logic();
         }
-
         draw();
 
         if (showNoKeycardMessage) {
@@ -168,6 +167,7 @@ public class GameScreen implements Screen {
             drawKeycardMessage();
         }
 
+        // if long boi walk not completed, run logic
         if (!longBoi.doneWalk) {
             // check if player near longBoi
             if (longBoi.checkNear(playerCentreX, playerCentreY)) {
@@ -177,6 +177,7 @@ public class GameScreen implements Screen {
                 hiddenEventCounter++;
             }
 
+            // walk long boi as long as 'near' variable set to true
             if (longBoi.getNear()) {
                 longBoi.walkPath();
             }
@@ -188,15 +189,17 @@ public class GameScreen implements Screen {
             }
         }
 
-
         // Make camera follow player
         // Camera should be centered on player (add half player size to get center)
         float playerCenterX = player.playerX + player.playerSize / 2;
         float playerCenterY = player.playerY + player.playerSize / 2;
 
         game.camera.position.set(playerCenterX, playerCenterY, 0);
+
+        // logic for time running out
         if (!paused && !reachedFinish) {
             if (remainingTime > 0) {
+                // decrease time
                 remainingTime -= Gdx.graphics.getDeltaTime();
                 if (remainingTime <= 0) {
                     remainingTime = 0;
@@ -206,13 +209,12 @@ public class GameScreen implements Screen {
 
         }
 
-
         float finishZoneX = 2f;
         float finishZoneY = 6f;
         float finishZoneWidth = 5f;    // 3 tiles wide
         float finishZoneHeight = 3f;   // 3 tiles tall
 
-
+        // if reached finish successfully (has keycard)
         if (!reachedFinish && hasKeycard &&
             player.playerX < finishZoneX + finishZoneWidth &&
             player.playerX + player.playerSize > finishZoneX &&
@@ -226,6 +228,7 @@ public class GameScreen implements Screen {
             dispose();
         }
 
+        // if at finish with no keycard, show no keycard message
         if (!hasKeycard &&
             player.playerX < finishZoneX + finishZoneWidth &&
             player.playerX + player.playerSize > finishZoneX &&
@@ -258,6 +261,7 @@ public class GameScreen implements Screen {
         }
 
 
+
         clampCamera();
     }
 
@@ -277,24 +281,6 @@ public class GameScreen implements Screen {
                 maxCameraY
             );
         }
-    }
-
-    private void drawCenteredText(String text, Color color, float scale) {
-        game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
-
-        game.batch.begin();
-        game.font.getData().setScale(scale);
-        game.font.setColor(color);
-
-        GlyphLayout layout = new GlyphLayout(game.font, text);
-        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
-        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
-        game.font.draw(game.batch, layout, x, y);
-
-        game.font.getData().setScale(1f);
-        game.batch.end();
     }
 
     private void draw() {
@@ -370,6 +356,24 @@ public class GameScreen implements Screen {
 
     private void drawLongBoiMessage() {
         drawCenteredText("It's Long Boi! Avoid him!", Color.RED, 3f);
+    }
+
+    private void drawCenteredText(String text, Color color, float scale) {
+        game.batch.setProjectionMatrix(
+            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+        );
+
+        game.batch.begin();
+        game.font.getData().setScale(scale);
+        game.font.setColor(color);
+
+        GlyphLayout layout = new GlyphLayout(game.font, text);
+        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
+        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
+        game.font.draw(game.batch, layout, x, y);
+
+        game.font.getData().setScale(1f);
+        game.batch.end();
     }
 
 

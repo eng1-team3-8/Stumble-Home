@@ -70,7 +70,6 @@ public class StumbleHome extends Game {
         if (font != null) {
             font.dispose();
         }
-        // need to dispose everything in gameScreen dispose method, as dispose method in
-        // screen class is not automatically called
+        this.screen.dispose();
     }
 }
