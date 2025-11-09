@@ -12,8 +12,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
+/**
+ * The {@code MainMenuScreen} class is the main menu screen for the StumbleHome game.
+ * <p>
+ * It displays three interactive buttons: <b>Play</b>, <b>Tutorial</b>, and <b>Exit</b>.
+ * The screen also supports showing a tutorial image overlay that can be closed by pressing
+ * the ESC key or clicking the on screen.
+ * </p>
+ *
+ * <p>This class implements LibGDX {@link Screen} interface, which shows
+ * methods for managing a screen in a game.</p>
+ *
+ *
+ */
 public class MainMenuScreen implements Screen {
+    // declaring variables
     final StumbleHome game;
     private Texture background;
     private Texture tutorialImage;
@@ -24,6 +37,12 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(final StumbleHome game) {
         this.game = game;
     }
+    /**
+     * Called when this screen becomes the current screen for the game.
+     * <p>
+     * Initializes the background, tutorial image, buttons, and input processing.
+     * </p>
+     */
 
     @Override
     public void show() {
@@ -34,12 +53,12 @@ public class MainMenuScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-        // Added: create buttons
+        // create buttons
         TextButton playButton = new TextButton("Play", skin);
         TextButton tutorialButton = new TextButton("Tutorial", skin);
         TextButton exitButton = new TextButton("Exit", skin);
 
-        // Added: set button positions
+        // set button positions
         float centerX = Gdx.graphics.getWidth() / 2f - 100;
         float startY = Gdx.graphics.getHeight() / 2f + 50;
 
@@ -47,12 +66,12 @@ public class MainMenuScreen implements Screen {
         tutorialButton.setBounds(centerX, startY - 70, 200, 50);
         exitButton.setBounds(centerX, startY - 140, 200, 50);
 
-        // Added: add buttons to stage
+        // adds buttons to stage
         stage.addActor(playButton);
         stage.addActor(tutorialButton);
         stage.addActor(exitButton);
 
-        //  Added: handle Play button click
+        //  Play button click
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -60,7 +79,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        // Added: handle Tutorial button click
+        // Tutorial button click
         tutorialButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -68,7 +87,7 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        // Added: handle Exit button click
+        // Exit button click
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -76,10 +95,14 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        // Added: set stage to receive input
+        // set stage to receive input
         Gdx.input.setInputProcessor(stage);
     }
-
+    /**
+     * Called every frame to render the screen.
+     *
+     * @param delta the time in seconds since the last render.
+     */
     @Override
     public void render(float delta){
         ScreenUtils.clear(Color.BLUE);
@@ -93,7 +116,8 @@ public class MainMenuScreen implements Screen {
             game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
 
-        game.font.draw(game.batch, "Title Screen!", Gdx.graphics.getWidth() * .25f, Gdx.graphics.getHeight()* .75f);
+        game.font.draw(game.batch, "Stumble Home!", Gdx.graphics.getWidth() * .32f, Gdx.graphics.getHeight()* 0.9f);
+        game.font.getData().setScale(3f);
 
 
         game.batch.end();
@@ -105,7 +129,7 @@ public class MainMenuScreen implements Screen {
 
         }
 
-        // Added: draw tutorial popup if active
+        // draw tutorial popup if active
         if (showTutorial && tutorialImage != null) {
             game.batch.begin();
             float screenWidth = Gdx.graphics.getWidth();
@@ -125,6 +149,7 @@ public class MainMenuScreen implements Screen {
             game.batch.end();
         }
         if (showTutorial) {
+            // Close tutorial on ESC or click
             if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.justTouched()) {
                 showTutorial = false; // close tutorial when pressing ESC or clicking
             }
@@ -133,7 +158,10 @@ public class MainMenuScreen implements Screen {
 
 
     }
-
+    /**
+     * Called when this screen is no longer the current screen for the game.
+     * <p>Removes the input processor to prevent input handling when inactive.</p>
+     */
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
