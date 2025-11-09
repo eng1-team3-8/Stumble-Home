@@ -117,7 +117,7 @@ public class GameScreen implements Screen {
 
         // Only run player input and logic if not paused and there is enough time left
         if (!paused && !timeUp) {
-            input();
+            player.input();
             logic();
         }
 
@@ -139,10 +139,6 @@ public class GameScreen implements Screen {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
             game.setScreen(new GameOverScreen(game, remainingTime, score));
         }
-    }
-
-    private void input() {
-        player.input();
     }
 
     private void logic() {
@@ -211,10 +207,10 @@ public class GameScreen implements Screen {
         }
 
 
-        float finishZoneX = 0f;
-        float finishZoneY = 0f;
-        float finishZoneWidth = 7f;    // 3 tiles wide
-        float finishZoneHeight = 7f;   // 3 tiles tall
+        float finishZoneX = 2f;
+        float finishZoneY = 6f;
+        float finishZoneWidth = 5f;    // 3 tiles wide
+        float finishZoneHeight = 3f;   // 3 tiles tall
 
 
         if (!reachedFinish && hasKeycard &&
@@ -314,12 +310,12 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
 
-        // Then draw player
+        // draw player
         player.draw(game.batch);
+
+        // draw events
         bottle.draw(game.batch);
-        if (!longBoi.doneWalk & longBoi.getNear()) {
-            longBoi.draw(game.batch);
-        }
+        longBoi.draw(game.batch);
         keycard.draw(game.batch);
 
         game.batch.end();

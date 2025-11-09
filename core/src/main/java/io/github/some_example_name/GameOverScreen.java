@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
@@ -34,6 +36,8 @@ public class GameOverScreen implements Screen {
 
     Stage stage;
     Skin skin;
+
+    private Texture background;
     /**
      * Constructs a new {@code GameOverScreen} instance.
      *
@@ -49,15 +53,12 @@ public class GameOverScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
+        background = new Texture(Gdx.files.internal("gameOver.png"));
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-         // Create labels
-        Label winLabel = new Label("Game Over!", skin);
-        winLabel.setColor(Color.RED);
-        winLabel.setFontScale(3f);
-        winLabel.setAlignment(Align.center);
 
         Label timeLabel = new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
         Label scoreLabel = new Label("Score: " + score, skin);
+
         // Create restart button
         TextButton restartButton = new TextButton("Restart", skin);
         restartButton.addListener(new ClickListener() {
@@ -66,14 +67,14 @@ public class GameOverScreen implements Screen {
                 game.setScreen(new MainMenuScreen(game));
             }
         });
+
         // Layout using a table
         Table table = new Table();
         table.setFillParent(true);
         table.center();
 
-        table.add(winLabel).padBottom(40).row();
-        table.add(timeLabel).padBottom(20).row();
-        table.add(scoreLabel).padBottom(40).row();
+        table.add(timeLabel).padBottom(10).row();
+        table.add(scoreLabel).padBottom(10).row();
         table.add(restartButton).width(200).height(60);
 
         stage.addActor(table);
@@ -85,8 +86,18 @@ public class GameOverScreen implements Screen {
      */
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        ScreenUtils.clear(Color.BLACK);
+
+        game.batch.setProjectionMatrix(
+            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+        );
+
+        game.batch.begin();
+
+        if (background != null) {
+            game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
+        game.batch.end();
         stage.act(delta);
         stage.draw();
     }

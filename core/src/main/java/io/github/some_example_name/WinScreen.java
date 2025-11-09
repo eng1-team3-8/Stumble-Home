@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
@@ -35,6 +37,8 @@ public class WinScreen implements Screen {
 
     Stage stage;
     Skin skin;
+
+    private final Texture background;
     /**
      * Constructs a new {@code WinScreen} instance.
      *
@@ -50,7 +54,9 @@ public class WinScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
+        background = new Texture("MainMenu.png");
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+
          // Create labels
         Label winLabel = new Label("You returned home!", skin);
         winLabel.setColor(Color.GREEN);
@@ -59,6 +65,7 @@ public class WinScreen implements Screen {
 
         Label timeLabel = new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
         Label scoreLabel = new Label("Score: " + score, skin);
+
         // Create restart button
         TextButton restartButton = new TextButton("Restart", skin);
         restartButton.addListener(new ClickListener() {
@@ -67,6 +74,7 @@ public class WinScreen implements Screen {
                 game.setScreen(new MainMenuScreen(game));
             }
         });
+
         // Layout using a table
         Table table = new Table();
         table.setFillParent(true);
@@ -86,8 +94,19 @@ public class WinScreen implements Screen {
      */
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        ScreenUtils.clear(Color.BLACK);
+
+        game.batch.setProjectionMatrix(
+            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
+        );
+
+        game.batch.begin();
+
+        if (background != null) {
+            game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
+
+        game.batch.end();
         stage.act(delta);
         stage.draw();
     }

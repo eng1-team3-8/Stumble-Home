@@ -85,7 +85,8 @@ public class Player extends Sprite {
     TiledMapTileLayer collisionLayer;
 
     /**
-     * Constructs a new player with the given sprite and map boundaries.
+     * Constructs a new player with the given sprite, map boundaries and layer which contains
+     * hedges in the map. Also calls method to initialize animations.
      *
      * @param sprite the sprite containing the player texture
      * @param mapWidth width of the game map

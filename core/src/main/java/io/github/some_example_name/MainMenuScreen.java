@@ -121,8 +121,6 @@ public class MainMenuScreen implements Screen {
         if (stage != null) {
             stage.act(delta);
             stage.draw();
-
-
         }
 
         // draw tutorial popup if active

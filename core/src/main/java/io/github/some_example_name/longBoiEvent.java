@@ -10,24 +10,40 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
+/**
+ * Handles the Long Boi event movement, animations, and interactions with the game world.
+ */
 public class longBoiEvent extends Sprite {
-    // long boi animation sheet
+    /**
+     * Sprite sheet containing all animation frames.
+     */
     public Texture longSheet;
 
+    /**
+     * Idle animation frame.
+     */
     private TextureRegion idleFrame;
+
+    /** Currently active animation being played. */
     private Animation<TextureRegion> currentAnimation;
+
+    /** Previous animation, used to reset timing when animation changes. */
     private Animation<TextureRegion> previousAnimation;
+
+    /** Time elapsed in the current animation. */
     private float stateTime;
 
-    // position
+    /** Current x position of long boi on map. */
     public float longX;
+    /** Current y position of long boi on map. */
     public float longY;
+    /** Scale of long boi frames. */
     public final float longSize = 2f;
 
-    // if player near longBoi
+    /** Variable which is true when player is in radius of long boi.*/
     private boolean near = false;
 
-    // walking loop variables
+    // the walking loop variables
     private int xDirection = 70;
     private int yDirection = 150;
     private int xDirection2 = 250;
@@ -45,13 +61,20 @@ public class longBoiEvent extends Sprite {
     private int xLoopCounter4 = 0;
     private int yLoopCounter4 = 0;
 
+    /** Variable which is true when long boi has completed the walk. */
     public boolean doneWalk = false;
 
+    /** Variable which is true when player collided with long boi. */
     public boolean collided = false;
 
-    // distance to be near long boi for him to start walking
+    /** Distance between player and long boi to set near to true. */
     public float radius = 6;
 
+    /**
+     * Constructs a new longBoiEvent with given sprite and initialises animations.
+     *
+     * @param sprite the sprite containing long boi texture.
+     */
     public longBoiEvent(Sprite sprite) {
         super(sprite);
 
@@ -59,6 +82,9 @@ public class longBoiEvent extends Sprite {
         initializeAnimations();
     }
 
+    /**
+     * Loads all animation frames from the long boi spritesheet.
+     */
     private void initializeAnimations() {
         int frameWidth = 32;
         int frameHeight = 32;
@@ -79,6 +105,10 @@ public class longBoiEvent extends Sprite {
         currentAnimation = animation;
     }
 
+    /**
+     * Updates the animation state timer each frame. Resets the timer when switching between
+     * different animations. Only does these if player is near long boi.
+     */
     public void logic() {
         if (near) {
             // Reset animation time if animation changed
@@ -92,6 +122,14 @@ public class longBoiEvent extends Sprite {
         }
     }
 
+    /**
+     * Checks whether player's centre is within the radius of long boi's centre. If so, variable
+     * 'near' is set to true.
+     *
+     * @param playerCentreX the centre of the player in x direction.
+     * @param playerCentreY the centre of player in y direction.
+     * @return true if player is near long boi in that frame, false if player is already near or not within radius.
+     */
     public boolean checkNear(float playerCentreX, float playerCentreY) {
         if (near) {
             return false;
@@ -118,19 +156,28 @@ public class longBoiEvent extends Sprite {
         return longY + longSize / 2;
     }
 
+    /**
+     * Renders long boi to the screen if near and not finished walking.
+     *
+     * @param batch the sprite batch used for rendering.
+     */
     public void draw(SpriteBatch batch) {
         TextureRegion frameToDraw;
-        if (!near) {
-            frameToDraw = idleFrame;
-        }
-        else {
+        if (near & !doneWalk) {
             frameToDraw = currentAnimation.getKeyFrame(stateTime, true);
+            // draw long boi
+            batch.draw(frameToDraw, longX, longY, longSize, longSize);
         }
-
-        // draw long boi
-        batch.draw(frameToDraw, longX, longY, longSize, longSize);
     }
 
+    /**
+     * Checks whether player's centre is within 1.3 world units of long boi's centre. If so, variable
+     * 'collided' is set to true.
+     *
+     * @param playerCentreX the centre of the player in x direction.
+     * @param playerCentreY the centre of player in y direction.
+     * @return true if player has collided with long boi
+     */
     public boolean checkCollision(float playerCentreX, float playerCentreY) {
         if (collided) {
             return true;
@@ -153,6 +200,11 @@ public class longBoiEvent extends Sprite {
         return near;
     }
 
+    /**
+     * This function is not very good. It controls the walking of long boi, each 'if' statement is
+     * the different distances long boi walks in the x and y directions in order.
+     * Needs to only execute once per frame hence why it is if statements, otherwise it will just teleport.
+     */
     public void walkPath(){
         // this is badly written due to time
         float delta = Gdx.graphics.getDeltaTime();
