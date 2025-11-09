@@ -34,7 +34,7 @@ public class WinScreen implements Screen {
 
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-        Label winLabel = new Label("YOU WON!", skin);
+        Label winLabel = new Label("You returned home!", skin);
         winLabel.setColor(Color.GREEN);
         winLabel.setFontScale(3f);
         winLabel.setAlignment(Align.center);

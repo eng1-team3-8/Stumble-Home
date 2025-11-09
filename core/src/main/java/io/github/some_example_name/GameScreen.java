@@ -45,9 +45,7 @@ public class GameScreen implements Screen {
     private final longBoiEvent longBoi;
     private final keycardEvent keycard;
 
-    private float goodEventCounter;
-    private float badEventCounter;
-    private float invisibleEventCounter;
+    private int EventCounter;
 
     public GameScreen(final StumbleHome game){
         this.game = game;
@@ -158,7 +156,7 @@ public class GameScreen implements Screen {
         if (bottle.checkCollision(playerCentreX, playerCentreY)) {
             // Player collected the water bottle - becomes sober
             player.isDrunk = 0;
-            goodEventCounter++;
+            EventCounter++;
             showBottleMessage = true;
             bottleMessageTimer = 3f;
         }
@@ -166,6 +164,8 @@ public class GameScreen implements Screen {
         // check collision with keycard
         if (keycard.checkCollision(playerCentreX, playerCentreY)) {
             hasKeycard = true;
+            EventCounter++;
+
             drawKeycardMessage();
         }
 
@@ -173,7 +173,7 @@ public class GameScreen implements Screen {
             // check if player near longBoi
             if (longBoi.checkNear(playerCentreX, playerCentreY)) {
                 // player is near
-                invisibleEventCounter++;
+                EventCounter++;
             }
 
             if (longBoi.near) {
@@ -319,17 +319,21 @@ public class GameScreen implements Screen {
         int seconds = (int)(remainingTime % 60);
         String timeText = String.format("%02d:%02d", minutes, seconds);
 
-        game.batch.begin();
+        int totalEvents = 3;
+        String eventText = "Events: " + EventCounter + "/" + totalEvents;
 
+
+
+        game.batch.begin();
         game.font.getData().setScale(4f);
         game.font.setColor(Color.WHITE);
         float marginX = 20;
         float marginY = Gdx.graphics.getHeight() - 20;
         game.font.draw(game.batch, timeText, marginX, marginY);
+        game.font.getData().setScale(3f);
+        game.font.draw(game.batch, eventText, marginX, marginY - 60);
         game.font.getData().setScale(1f);
-
         game.batch.end();
-
     }
 
     private void drawPauseOverlay() {
@@ -343,7 +347,6 @@ public class GameScreen implements Screen {
     }
     private void drawBottleMessage() {
         drawCenteredText("You remembered that you don't have the keycard, find it!", Color.YELLOW, 2f);
-
     }
     private void drawKeycardMessage() {
         drawCenteredText("You have the keyCard, you can go home now!", Color.YELLOW, 2f);}
