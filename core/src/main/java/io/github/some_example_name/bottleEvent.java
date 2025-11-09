@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 /**
  * Represents a collectible bottle item that appears in the game world.
  * When collected by the player, this affects their movement controls.
@@ -109,30 +112,37 @@ public class bottleEvent extends Sprite {
     }
 
     /**
-     * Checks whether the player has collided with the bottle using rectangle-based collision.
-     * If a collision is detected, marks the bottle as collected.
+     * Checks whether the player has collided with the bottle using pythagoras theorem
+     * between the centres of the bottle and player.
      *
-     * @param playerX the player's x position
-     * @param playerY the player's y position
-     * @param playerSize the player's collision box size
+     * @param playerCentreX the player's centre x position
+     * @param playerCentreY the player's centre y position
      * @return true if collision occurred, false otherwise
      */
-    public boolean checkCollision(float playerX, float playerY, float playerSize) {
+    public boolean checkCollision(float playerCentreX, float playerCentreY) {
         if (collected) {
             return false;
         }
 
-        // Rectangle collision detection
-        boolean colliding = playerX < bottleX + bottleSize &&
-                           playerX + playerSize > bottleX &&
-                           playerY < bottleY + bottleSize &&
-                           playerY + playerSize > bottleY;
+        boolean colliding;
+        //calculate distance between player centre and long boi centre using pythagoras
+        double distance = sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
+
+        // set nearing to true if player within (value of radius) of long boi
+        colliding = distance < 1f;
 
         if (colliding) {
             collected = true;
         }
-
         return colliding;
+    }
+
+    private float getCentreX(){
+        return bottleX + bottleSize / 2;
+    }
+
+    private float getCentreY(){
+        return bottleY + bottleSize / 2;
     }
 
 

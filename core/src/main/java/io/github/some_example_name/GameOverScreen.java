@@ -18,8 +18,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
- * The {@code GameOverScreen} class represents the screen displayed when the player successfully
- * completes the game and returns home.
+ * The {@code GameOverScreen} class represents the screen displayed when the player does not
+ * complete the game and returns home.
  * <p>
  * It shows a message, the player's remaining time, and score.
  * It also includes a "Restart" button that takes the player back to the main menu.
@@ -38,6 +38,7 @@ public class GameOverScreen implements Screen {
     Skin skin;
 
     private Texture background;
+
     /**
      * Constructs a new {@code GameOverScreen} instance.
      *

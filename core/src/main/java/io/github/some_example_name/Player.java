@@ -173,28 +173,28 @@ public class Player extends Sprite {
         // If isDrunk == 1, controls are reversed
         if (isDrunk == 1) {
             // REVERSED CONTROLS
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
                 // RIGHT key -> move LEFT
                 moveX = -speed * delta;
                 currentAnimation = walkLeft;
                 lastDirection = Direction.LEFT;
                 moving = true;
             }
-            else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
                 // LEFT key -> move RIGHT
                 moveX = speed * delta;
                 currentAnimation = walkRight;
                 lastDirection = Direction.RIGHT;
                 moving = true;
             }
-            else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            else if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
                 // UP key -> move DOWN
                 moveY = -speed * delta;
                 currentAnimation = walkDown;
                 lastDirection = Direction.DOWN;
                 moving = true;
             }
-            else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
                 // DOWN key -> move UP
                 moveY = speed * delta;
                 currentAnimation = walkUp;
@@ -203,25 +203,25 @@ public class Player extends Sprite {
             }
         } else {
             // NORMAL CONTROLS
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
                 moveX = speed * delta;
                 currentAnimation = walkRight;
                 lastDirection = Direction.RIGHT;
                 moving = true;
             }
-            else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
                 moveX = -speed * delta;
                 currentAnimation = walkLeft;
                 lastDirection = Direction.LEFT;
                 moving = true;
             }
-            else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            else if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
                 moveY = speed * delta;
                 currentAnimation = walkUp;
                 lastDirection = Direction.UP;
                 moving = true;
             }
-            else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
                 moveY = -speed * delta;
                 currentAnimation = walkDown;
                 lastDirection = Direction.DOWN;

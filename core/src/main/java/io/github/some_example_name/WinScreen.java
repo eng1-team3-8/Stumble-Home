@@ -4,8 +4,6 @@ package io.github.some_example_name;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -41,8 +39,8 @@ public class WinScreen implements Screen {
     /** The skin used for styling UI components. */
     Skin skin;
 
-    /** The skin used for styling UI components. */
     private final Texture background;
+
     /**
      * Constructs a new {@code WinScreen} instance.
      *
@@ -91,6 +89,7 @@ public class WinScreen implements Screen {
 
         stage.addActor(table);
     }
+
     /**
      * Called once per frame to render the win screen.
      *
@@ -114,6 +113,7 @@ public class WinScreen implements Screen {
         stage.act(delta);
         stage.draw();
     }
+
     /**
      * Called when the screen is resized.
      *
@@ -121,6 +121,7 @@ public class WinScreen implements Screen {
      * @param height the new height of the screen in pixels.
      */
     @Override public void resize(int width, int height) { stage.getViewport().update(width, height, true); }
+
     /**
      * Disposes of the screen and frees associated resources.
      * <p>Called when the screen is no longer needed.</p>

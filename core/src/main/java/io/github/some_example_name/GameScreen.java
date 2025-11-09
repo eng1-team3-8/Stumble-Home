@@ -57,7 +57,7 @@ public class GameScreen implements Screen {
     private final float minCameraY;
     /** Maximum Y coordinate for the camera position. */
     private final float maxCameraY;
-    // game status
+
     /** Indicates whether the game is currently paused. */
     private boolean paused = false;
 
@@ -97,6 +97,7 @@ public class GameScreen implements Screen {
     private int hiddenEventCounter = 0;
     private int helpfulEventCounter = 0;
     private int hinderingEventCounter = 0;
+
     /**
      * Constructs the {@code GameScreen} and initializes the map, player, camera,
      * and in-game events.
@@ -110,7 +111,7 @@ public class GameScreen implements Screen {
         renderer = new OrthogonalTiledMapRenderer(map, 1/16f);
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("hedge");
 
-        // Get map properties FIRST
+        // Get map properties first
         int mapWidthInTiles = map.getProperties().get("width", Integer.class);
         int mapHeightInTiles = map.getProperties().get("height", Integer.class);
         int tilePixelWidth = map.getProperties().get("tilewidth", Integer.class);
@@ -159,6 +160,7 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
     }
+
     /**
      * Called once per frame to update and render the game state.
      * <p>
@@ -199,6 +201,7 @@ public class GameScreen implements Screen {
             game.setScreen(new GameOverScreen(game, remainingTime, score));
         }
     }
+
     /**
      * Handles core game logic, including player movement, event interactions,
      * collision detection, and time management.
@@ -215,7 +218,7 @@ public class GameScreen implements Screen {
         float playerCentreY = player.playerY + player.playerSize / 2;
 
         // Check collision between player and water bottle
-        if (bottle.checkCollision(playerCentreX, playerCentreY, player.playerSize)) {
+        if (bottle.checkCollision(playerCentreX, playerCentreY)) {
             // Player collected the water bottle - becomes sober
             player.isDrunk = 0;
             helpfulEventCounter++;
@@ -224,7 +227,7 @@ public class GameScreen implements Screen {
         }
 
         // check collision with keycard
-        if (keycard.checkCollision(playerCentreX, playerCentreY, player.playerSize)) {
+        if (keycard.checkCollision(playerCentreX, playerCentreY)) {
             hasKeycard = true;
             hinderingEventCounter++;
             drawKeycardMessage();
@@ -272,17 +275,8 @@ public class GameScreen implements Screen {
 
         }
 
-        float finishZoneX = 2f;
-        float finishZoneY = 6f;
-        float finishZoneWidth = 5f;    // 3 tiles wide
-        float finishZoneHeight = 3f;   // 3 tiles tall
-
         // if reached finish successfully (has keycard)
-        if (!reachedFinish && hasKeycard &&
-            player.playerX < finishZoneX + finishZoneWidth &&
-            player.playerX + player.playerSize > finishZoneX &&
-            player.playerY < finishZoneY + finishZoneHeight &&
-            player.playerY + player.playerSize > finishZoneY) {
+        if (!reachedFinish && hasKeycard && reachedFinishZone()) {
             timeUp = true;
             paused = true;
             int score = (int) (remainingTime * 10) + (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
@@ -292,12 +286,7 @@ public class GameScreen implements Screen {
         }
 
         // if at finish with no keycard, show no keycard message
-        if (!hasKeycard &&
-            player.playerX < finishZoneX + finishZoneWidth &&
-            player.playerX + player.playerSize > finishZoneX &&
-            player.playerY < finishZoneY + finishZoneHeight &&
-            player.playerY + player.playerSize > finishZoneY) {
-
+        if (!hasKeycard && reachedFinishZone()) {
             showNoKeycardMessage = true;
             noKeycardMessageTimer = 3f;
         }
@@ -323,9 +312,18 @@ public class GameScreen implements Screen {
                 }
         }
 
-
-
         clampCamera();
+    }
+
+    private boolean reachedFinishZone() {
+        float finishZoneX = 2f;
+        float finishZoneY = 6f;
+        float finishZoneWidth = 5f;
+        float finishZoneHeight = 3f;
+        return player.playerX < finishZoneX + finishZoneWidth &&
+            player.playerX + player.playerSize > finishZoneX &&
+            player.playerY < finishZoneY + finishZoneHeight &&
+            player.playerY + player.playerSize > finishZoneY;
     }
 
     private void clampCamera() {
@@ -345,6 +343,7 @@ public class GameScreen implements Screen {
             );
         }
     }
+
     /** Draws all visible elements: map, player, events, and UI text. */
     private void draw() {
         // Clear the screen with black color
@@ -401,25 +400,32 @@ public class GameScreen implements Screen {
 
         game.batch.end();
     }
+
     /** Draws a pause message overlay. */
     private void drawPauseOverlay() {
         drawCenteredText("PAUSED", Color.WHITE, 3f);
     }
+
     /** Displays a message indicating the player lacks the keycard. */
     private void drawNoKeycardMessage() {
         drawCenteredText("You need a KeyCard to enter the Door...", Color.RED, 3f);
     }
+
     /** Displays a message after picking up the water bottle. */
     private void drawBottleMessage() {
         drawCenteredText("You remembered that you don't have the keycard, find it!", Color.YELLOW, 2f);
     }
+
     /** Displays a message after collecting the keycard. */
     private void drawKeycardMessage() {
-        drawCenteredText("You have the keyCard, you can go home now!", Color.YELLOW, 2f);}
+        drawCenteredText("You have the keyCard, you can go home now!", Color.YELLOW, 2f);
+    }
+
     /** Displays a warning message when encountering Long Boi. */
     private void drawLongBoiMessage() {
         drawCenteredText("It's Long Boi! Avoid him!", Color.RED, 3f);
     }
+
     /**
      * Draws text centered on the screen with a given color and scale.
      *

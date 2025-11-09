@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
 /**
  * The {@code MainMenuScreen} class is the main menu screen for the StumbleHome game.
  * <p>
@@ -26,7 +27,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  *
  */
 public class MainMenuScreen implements Screen {
-
 
     final StumbleHome game;
     /** Background image for the main menu. */
@@ -43,18 +43,18 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(final StumbleHome game) {
         this.game = game;
     }
+
     /**
      * Called when this screen becomes the current screen for the game.
      * <p>
      * Initializes the background, tutorial image, buttons, and input processing.
      * </p>
      */
-
     @Override
     public void show() {
 
         background = new Texture("MainMenu.png");
-        tutorialImage = new Texture("tutorialImage.jpg");
+        tutorialImage = new Texture("tutorial.png");
 
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
@@ -158,6 +158,7 @@ public class MainMenuScreen implements Screen {
 
 
     }
+
     /**
      * Called when this screen is no longer the current screen for the game.
      * <p>Removes the input processor to prevent input handling when inactive.</p>

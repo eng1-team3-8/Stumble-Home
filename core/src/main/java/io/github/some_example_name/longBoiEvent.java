@@ -20,7 +20,7 @@ public class longBoiEvent extends Sprite {
     public Texture longSheet;
 
     /**
-     * Idle animation frame.
+     * Idle animation frame. (This has not been used but here in case for future use.)
      */
     private TextureRegion idleFrame;
 
@@ -123,40 +123,6 @@ public class longBoiEvent extends Sprite {
     }
 
     /**
-     * Checks whether player's centre is within the radius of long boi's centre. If so, variable
-     * 'near' is set to true.
-     *
-     * @param playerCentreX the centre of the player in x direction.
-     * @param playerCentreY the centre of player in y direction.
-     * @return true if player is near long boi in that frame, false if player is already near or not within radius.
-     */
-    public boolean checkNear(float playerCentreX, float playerCentreY) {
-        if (near) {
-            return false;
-        }
-
-        boolean nearing;
-        //calculate distance between player centre and long boi centre using pythagoras
-        double distance = sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
-
-        // set nearing to true if player within (value of radius) of long boi
-        nearing = distance < radius;
-
-        if (nearing) {
-            near = true;
-        }
-        return nearing;
-    }
-
-    private float getCentreX(){
-        return longX + longSize / 2;
-    }
-
-    private float getCentreY(){
-        return longY + longSize / 2;
-    }
-
-    /**
      * Renders long boi to the screen if near and not finished walking.
      *
      * @param batch the sprite batch used for rendering.
@@ -194,6 +160,40 @@ public class longBoiEvent extends Sprite {
             collided = true;
         }
         return colliding;
+    }
+
+    /**
+     * Checks whether player's centre is within the radius of long boi's centre. If so, variable
+     * 'near' is set to true.
+     *
+     * @param playerCentreX the centre of the player in x direction.
+     * @param playerCentreY the centre of player in y direction.
+     * @return true if player is near long boi in that frame, false if player is already near or not within radius.
+     */
+    public boolean checkNear(float playerCentreX, float playerCentreY) {
+        if (near) {
+            return false;
+        }
+
+        boolean nearing;
+        //calculate distance between player centre and long boi centre using pythagoras
+        double distance = sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
+
+        // set nearing to true if player within (value of radius) of long boi
+        nearing = distance < radius;
+
+        if (nearing) {
+            near = true;
+        }
+        return nearing;
+    }
+
+    private float getCentreX(){
+        return longX + longSize / 2;
+    }
+
+    private float getCentreY(){
+        return longY + longSize / 2;
     }
 
     public boolean getNear() {

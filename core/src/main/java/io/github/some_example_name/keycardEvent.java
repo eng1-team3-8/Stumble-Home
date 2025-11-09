@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 
 /**
  * Represents a collectible keycard item required to unlock the exit.
@@ -95,29 +98,36 @@ public class keycardEvent extends Sprite {
     }
 
     /**
-     * Checks for collision between the player and the keycard.
-     * If a collision occurs, marks the keycard as collected and prints a message.
+     * Checks whether the player has collided with the keycard using pythagoras theorem
+     * between the centres of the keycard and player.
      *
-     * @param playerX the player's x position
-     * @param playerY the player's y position
-     * @param playerSize the player's collision box size
+     * @param playerCentreX the player's centre x position
+     * @param playerCentreY the player's centre y position
      * @return true if collision occurred, false otherwise
      */
-    public boolean checkCollision(float playerX, float playerY, float playerSize) {
+    public boolean checkCollision(float playerCentreX, float playerCentreY) {
         if (collected) {
             return false;
         }
 
-        // basic rectangle collision
-        boolean colliding = playerX < keycardX + keycardSize &&
-                           playerX + playerSize > keycardX &&
-                           playerY < keycardY + keycardSize &&
-                           playerY + playerSize > keycardY;
+        boolean colliding;
+        //calculate distance between player centre and long boi centre using pythagoras
+        double distance = sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
+
+        // set nearing to true if player within (value of radius) of long boi
+        colliding = distance < 1f;
 
         if (colliding) {
             collected = true;
         }
-
         return colliding;
+    }
+
+    private float getCentreX(){
+        return keycardX + keycardSize / 2;
+    }
+
+    private float getCentreY(){
+        return keycardY + keycardSize / 2;
     }
 }
