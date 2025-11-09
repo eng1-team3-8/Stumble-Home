@@ -7,31 +7,51 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
 
-
-// handles keycard pickup - needed to unlock the exit
+/**
+ * Represents a collectible keycard item required to unlock the exit.
+ * The keycard displays an animated sprite until collected by the player.
+ */
 public class keycardEvent extends Sprite {
 
+    /** Spritesheet texture containing keycard animation frames. */
     public Texture keycardSheet;
+
+    /** Current animation being displayed. */
     private Animation<TextureRegion> currentAnimation;
+
+    /** Previously displayed animation, used to detect animation changes. */
     private Animation<TextureRegion> previousAnimation;
+
+    /** Elapsed time for the current animation. */
     private float stateTime;
 
-    // where the keycard sits on the map
+    /** X-coordinate of the keycard on the map. */
     public float keycardX;
+
+    /** Y-coordinate of the keycard on the map. */
     public float keycardY;
+
+    /** Size of the keycard sprite when rendered. */
     public final float keycardSize = 1.0f;
 
+    /** Whether the player has picked up the keycard. */
     private boolean collected = false;
 
+    /**
+     * Creates a new keycard event with the specified sprite.
+     *
+     * @param sprite the sprite containing the keycard texture
+     */
     public keycardEvent(Sprite sprite) {
         super(sprite);
         initializeAnimations();
     }
 
-    // loads the 3 frames from keyCard.png
+    /**
+     * Extracts animation frames from the keycard spritesheet.
+     * Sets up a 3-frame looping animation.
+     */
     private void initializeAnimations() {
         int frameWidth = 32;
         int frameHeight = 32;
@@ -48,7 +68,10 @@ public class keycardEvent extends Sprite {
         stateTime = 0f;
     }
 
-    // updates animation timer each frame
+    /**
+     * Updates the keycard's animation state each frame.
+     * Only processes animation while the keycard hasn't been collected.
+     */
     public void logic() {
         if (!collected) {
             if (currentAnimation != previousAnimation) {
@@ -59,7 +82,11 @@ public class keycardEvent extends Sprite {
         }
     }
 
-    // draws keycard on screen if not picked up yet
+    /**
+     * Renders the keycard to the screen if it hasn't been collected yet.
+     *
+     * @param batch the sprite batch used for rendering
+     */
     public void draw(SpriteBatch batch) {
         if (!collected) {
             TextureRegion frameToDraw = currentAnimation.getKeyFrame(stateTime, true);
@@ -67,18 +94,25 @@ public class keycardEvent extends Sprite {
         }
     }
 
-    // checks if player touched the keycard
-    public boolean checkCollision(float playerCentreX, float playerCentreY) {
+    /**
+     * Checks for collision between the player and the keycard.
+     * If a collision occurs, marks the keycard as collected and prints a message.
+     *
+     * @param playerX the player's x position
+     * @param playerY the player's y position
+     * @param playerSize the player's collision box size
+     * @return true if collision occurred, false otherwise
+     */
+    public boolean checkCollision(float playerX, float playerY, float playerSize) {
         if (collected) {
             return false;
         }
 
-        boolean colliding;
-        //calculate distance between player centre and long boi centre using pythagoras
-        double distance = sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
-
-        // set nearing to true if player within (value of radius) of long boi
-        colliding = distance < 1;
+        // basic rectangle collision
+        boolean colliding = playerX < keycardX + keycardSize &&
+                           playerX + playerSize > keycardX &&
+                           playerY < keycardY + keycardSize &&
+                           playerY + playerSize > keycardY;
 
         if (colliding) {
             collected = true;
@@ -88,14 +122,11 @@ public class keycardEvent extends Sprite {
         return colliding;
     }
 
-    private float getCentreX(){
-        return keycardX + keycardSize / 2;
-    }
-
-    private float getCentreY(){
-        return keycardY + keycardSize / 2;
-    }
-
+    /**
+     * Returns whether the keycard has been collected by the player.
+     *
+     * @return true if collected, false otherwise
+     */
     public boolean isCollected() {
         return collected;
     }
