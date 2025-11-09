@@ -62,7 +62,7 @@ public class GameScreen implements Screen {
     private boolean paused = false;
 
     /** Remaining time for the player to complete the game (in seconds). */
-    private float remainingTime = 200f;
+    private float remainingTime = 300f;
 
     /** Whether the countdown timer has reached zero. */
     private boolean timeUp = false;
