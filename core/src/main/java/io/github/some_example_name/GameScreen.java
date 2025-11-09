@@ -136,11 +136,8 @@ public class GameScreen implements Screen {
             drawLongBoiMessage();
         }
         if (timeUp && !reachedFinish) {
-            drawTimeUpOverlay();
-            if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-                dispose();
-                game.setScreen(new MainMenuScreen(game));
-            }
+            int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
+            game.setScreen(new GameOverScreen(game, remainingTime, score));
         }
     }
 
@@ -190,8 +187,8 @@ public class GameScreen implements Screen {
 
             // check if player collided with longBoi
             if (longBoi.checkCollision(playerCentreX, playerCentreY)) {
-                timeUp = true;
-                drawTimeUpOverlay();
+                int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
+                game.setScreen(new GameOverScreen(game, remainingTime, 0));
             }
         }
 
@@ -207,7 +204,7 @@ public class GameScreen implements Screen {
                 remainingTime -= Gdx.graphics.getDeltaTime();
                 if (remainingTime <= 0) {
                     remainingTime = 0;
-                    timeUp = true; // trigger popup
+                    timeUp = true;
                 }
             }
 
@@ -227,7 +224,7 @@ public class GameScreen implements Screen {
             player.playerY + player.playerSize > finishZoneY) {
             timeUp = true;
             paused = true;
-            int score = (int) (remainingTime * 10);
+            int score = (int) (remainingTime * 10) + (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
             reachedFinish = true;
             game.setScreen(new WinScreen(game, remainingTime, score));
             dispose();
@@ -362,10 +359,6 @@ public class GameScreen implements Screen {
 
     private void drawPauseOverlay() {
         drawCenteredText("PAUSED", Color.WHITE, 3f);
-    }
-
-    private void drawTimeUpOverlay() {
-        drawCenteredText("Game Over", Color.RED, 3f);
     }
 
     private void drawNoKeycardMessage() {
