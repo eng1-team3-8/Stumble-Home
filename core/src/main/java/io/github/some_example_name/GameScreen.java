@@ -13,27 +13,67 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
-
+/**
+ * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
+ * <p>
+ * It handles player movement, camera control, event interactions, time tracking,
+ * and determines win or loss conditions.
+ * </p>
+ *
+ * <p>The class uses LibGDX's {@link Screen} interface to define game lifecycle
+ * behavior such as rendering, resizing, and disposal.</p>
+ *
+ * <p>In this screen:
+ * <ul>
+ *   <li>The player navigates through a tiled map to reach the finish zone.</li>
+ *   <li>Various events (e.g., bottle, keycard, Long Boi) influence the gameplay.</li>
+ *   <li>A timer counts down, ending the game when it reaches zero.</li>
+ * </ul>
+ * </p>
+ */
 public class GameScreen implements Screen {
+    /** Reference to the main game instance. */
     final StumbleHome game;
 
+    /** The current map being rendered. */
     TiledMap map;
+
+    /** Renders the tiled map using an orthogonal projection. */
     OrthogonalTiledMapRenderer renderer;
+
+    /** Collision layer representing obstacles (e.g., hedges). */
     TiledMapTileLayer collisionLayer;
 
     // Map boundaries
+    /** Width of the map in world units. */
     private final float mapWidth;
+    /** Height of the map in world units. */
     private final float mapHeight;
+    /** Minimum X coordinate for the camera position. */
     private final float minCameraX;
+    /** Maximum X coordinate for the camera position. */
     private final float maxCameraX;
+    /** Minimum Y coordinate for the camera position. */
     private final float minCameraY;
+    /** Maximum Y coordinate for the camera position. */
     private final float maxCameraY;
-
+    // game status
+    /** Indicates whether the game is currently paused. */
     private boolean paused = false;
+
+    /** Remaining time for the player to complete the game (in seconds). */
     private float remainingTime = 200f;
+
+    /** Whether the countdown timer has reached zero. */
     private boolean timeUp = false;
+
+    /** Whether the player has reached the finish zone. */
     private boolean reachedFinish = false;
+
+    /** Whether the player has collected the keycard. */
     private boolean hasKeycard = false;
+
+    /** Message flags and timers for temporary on-screen notifications. */
     private boolean showNoKeycardMessage = false;
     private float noKeycardMessageTimer = 0f;
     private boolean showBottleMessage = false;
@@ -41,16 +81,28 @@ public class GameScreen implements Screen {
     private boolean showLongBoiMessage = false;
     private float longBoiMessageTimer = 0f;
 
+    /** The player character instance. */
     private final Player player;
 
+    /** Interactive event: the water bottle (removes drunkenness). */
     private final bottleEvent bottle;
+
+    /** Interactive event: Long Boi (a moving hazard). */
     private final longBoiEvent longBoi;
+
+    /** Interactive event: keycard (required to win). */
     private final keycardEvent keycard;
 
+    /** Counters for hidden, helpful, and hindering events. */
     private int hiddenEventCounter = 0;
     private int helpfulEventCounter = 0;
     private int hinderingEventCounter = 0;
-
+    /**
+     * Constructs the {@code GameScreen} and initializes the map, player, camera,
+     * and in-game events.
+     *
+     * @param game the main {@link StumbleHome} game instance.
+     */
     public GameScreen(final StumbleHome game){
         this.game = game;
 
@@ -107,7 +159,15 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
     }
-
+    /**
+     * Called once per frame to update and render the game state.
+     * <p>
+     * Handles player input, game logic, event interactions, and draws
+     * all entities and UI elements.
+     * </p>
+     *
+     * @param delta the time (in seconds) since the last render.
+     */
     @Override
     public void render(float delta) {
         // Toggle pause when SPACE is pressed
@@ -139,7 +199,10 @@ public class GameScreen implements Screen {
             game.setScreen(new GameOverScreen(game, remainingTime, score));
         }
     }
-
+    /**
+     * Handles core game logic, including player movement, event interactions,
+     * collision detection, and time management.
+     */
     private void logic() {
         player.logic();
 
@@ -282,7 +345,7 @@ public class GameScreen implements Screen {
             );
         }
     }
-
+    /** Draws all visible elements: map, player, events, and UI text. */
     private void draw() {
         // Clear the screen with black color
         ScreenUtils.clear(Color.BLACK);
@@ -306,7 +369,7 @@ public class GameScreen implements Screen {
 
         game.batch.end();
 
-        // switch to screen coordinates for UI
+        // UI overlay (timer and event counters)
         game.batch.setProjectionMatrix(
             game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
         );
@@ -338,26 +401,32 @@ public class GameScreen implements Screen {
 
         game.batch.end();
     }
-
+    /** Draws a pause message overlay. */
     private void drawPauseOverlay() {
         drawCenteredText("PAUSED", Color.WHITE, 3f);
     }
-
+    /** Displays a message indicating the player lacks the keycard. */
     private void drawNoKeycardMessage() {
         drawCenteredText("You need a KeyCard to enter the Door...", Color.RED, 3f);
     }
-
+    /** Displays a message after picking up the water bottle. */
     private void drawBottleMessage() {
         drawCenteredText("You remembered that you don't have the keycard, find it!", Color.YELLOW, 2f);
     }
-
+    /** Displays a message after collecting the keycard. */
     private void drawKeycardMessage() {
         drawCenteredText("You have the keyCard, you can go home now!", Color.YELLOW, 2f);}
-
+    /** Displays a warning message when encountering Long Boi. */
     private void drawLongBoiMessage() {
         drawCenteredText("It's Long Boi! Avoid him!", Color.RED, 3f);
     }
-
+    /**
+     * Draws text centered on the screen with a given color and scale.
+     *
+     * @param text  the text to display.
+     * @param color the color of the text.
+     * @param scale the scaling factor of the font size.
+     */
     private void drawCenteredText(String text, Color color, float scale) {
         game.batch.setProjectionMatrix(
             game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
@@ -376,7 +445,12 @@ public class GameScreen implements Screen {
         game.batch.end();
     }
 
-
+    /**
+     * Called when the screen size changes (e.g., window resize).
+     *
+     * @param width  the new width in pixels.
+     * @param height the new height in pixels.
+     */
     @Override
     public void resize(int width, int height) {
         game.viewport.update(width, height);
@@ -390,7 +464,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resume() {}
-
+    /** Releases all resources used by this screen. */
     @Override
     public void dispose() {
         player.getTexture().dispose();
