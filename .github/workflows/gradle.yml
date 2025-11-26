@@ -40,4 +40,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: StumbleHome
-        path: build/libs
+        path: lwjgl3/build/libs
