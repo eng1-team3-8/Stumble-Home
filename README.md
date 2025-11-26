@@ -4,8 +4,6 @@ A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://git
 
 This project was generated with a template including simple application launchers and an empty `ApplicationListener` implementation.
 
-# video-game
-
 Repository for developing video game. Cohort 3, Team 8.
 
 -----------------------------------------------------------------------
