@@ -177,6 +177,8 @@ public class MainMenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         game.viewport.update(width, height);
+        // Resizes button hit zones (and more)
+        this.show();
     }
 
     @Override
