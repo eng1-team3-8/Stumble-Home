@@ -146,7 +146,7 @@ public class GameScreen implements Screen {
         bottle.bottleX = mapWidth - 3 - bottle.bottleSize / 2;
         bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
 
-        longBoi = new longBoiEvent(new Sprite(new Texture("longBoi.png")));
+        longBoi = new longBoiEvent(new Sprite(new Texture("longBoi.png")), collisionLayer);
         longBoi.longX = mapWidth - 23 - longBoi.longSize / 2;
         longBoi.longY = mapHeight - 38 - longBoi.longSize / 2;
 
