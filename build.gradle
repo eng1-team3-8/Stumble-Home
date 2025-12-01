@@ -44,7 +44,7 @@ configure(subprojects) {
     }
   }
 
-  
+  // configure checkstyle plugin to use tool version and load google style config from the dependency JAR
   checkstyle {
     toolVersion = checkstyleVersion
     config = resources.text.fromArchiveEntry(configurations.checkstyleRules, 'google_checks.xml')
