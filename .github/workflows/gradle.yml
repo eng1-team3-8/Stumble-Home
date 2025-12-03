@@ -34,16 +34,18 @@ jobs:
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
     - name: Build with Gradle Wrapper
-      run: ./gradlew build
+      run: |
+        cd StumbleHome
+        ./gradlew build
 
     - name: Upload Checkstyle report
       uses: actions/upload-artifact@v4
       with:
         name: checkstyle-report
-        path: lwjgl3/build/reports/checkstyle
+        path: StumbleHome/lib/build/reports/checkstyle
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: StumbleHome
-        path: lwjgl3/build/libs
+        path: StumbleHome/lib/build/libs
