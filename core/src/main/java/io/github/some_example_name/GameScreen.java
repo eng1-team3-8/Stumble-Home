@@ -107,7 +107,7 @@ public class GameScreen implements Screen {
     public GameScreen(final StumbleHome game){
         this.game = game;
 
-        map = new TmxMapLoader().load("map.tmx");
+        map = new TmxMapLoader().load("map2.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1/16f);
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("hedge");
 
