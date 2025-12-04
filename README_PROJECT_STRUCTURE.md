@@ -11,7 +11,7 @@ Structure now:
     - build.gradle
     - src/main/java/
 
-Shared runtime assets are at the repository root in `assets/` and are referenced by the `lib` module.
+Shared runtime assets are located inside the module at `StumbleHome/lib/src/main/assets/` and are packaged by the `lib` module.
 
 How to build:
 
@@ -22,9 +22,10 @@ How to build:
    ./gradlew clean build
    ```
 
-2. Build only the library (faster):
+2. Build only the library (faster) — run this from `StumbleHome/`:
 
    ```bash
+   cd StumbleHome
    ./gradlew :lib:build
    ```
 
