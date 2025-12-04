@@ -1,9 +1,5 @@
 # Stumble-Home
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
-
-This project was generated with a template including simple application launchers and an empty `ApplicationListener` implementation.
-
 Repository for developing video game. Cohort 3, Team 8.
 
 -----------------------------------------------------------------------
@@ -46,16 +42,9 @@ Names:
 
 -----------------------------------------------------------------------
 
-
-## Platforms
-
-This repo is a minimal layout; the game library lives in `StumbleHome/lib`.
-
 ## Build & Run
 
 This repository provides a minimal runnable distribution: the `lib` module is built into a single runnable jar that includes the LWJGL3 backend and native desktop libraries.
-
-Minimal commands (copy-paste):
 
 ```bash
 # from repository root
@@ -68,4 +57,3 @@ java -jar lib/build/libs/StumbleHome-1.0.0.jar
 
 Notes:
 - The produced JAR is at `StumbleHome/lib/build/libs/StumbleHome-<version>.jar` where `<version>` is set in `StumbleHome/gradle.properties` (`projectVersion`).
-- If you need a smaller distribution or per-OS packaging later, we can change the build to produce platform-specific archives instead of a single fat JAR.
