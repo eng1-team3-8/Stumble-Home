@@ -17,28 +17,28 @@ import static java.lang.Math.sqrt;
  */
 public class keycardEvent extends Sprite {
 
-    /** Spritesheet texture containing keycard animation frames. */
+    // Spritesheet texture containing keycard animation frames.
     public Texture keycardSheet;
 
-    /** Current animation being displayed. */
+    // Current animation being displayed.
     private Animation<TextureRegion> currentAnimation;
 
-    /** Previously displayed animation, used to detect animation changes. */
+    // Previously displayed animation, used to detect animation changes.
     private Animation<TextureRegion> previousAnimation;
 
-    /** Elapsed time for the current animation. */
+    // Elapsed time for the current animation.
     private float stateTime;
 
-    /** X-coordinate of the keycard on the map. */
+    // X-coordinate of the keycard on the map.
     public float keycardX;
 
-    /** Y-coordinate of the keycard on the map. */
+    // Y-coordinate of the keycard on the map.
     public float keycardY;
 
-    /** Size of the keycard sprite when rendered. */
+    // Size of the keycard sprite when rendered.
     public final float keycardSize = 1.0f;
 
-    /** Whether the player has picked up the keycard. */
+    // Whether the player has picked up the keycard.
     private boolean collected = false;
 
     /**
