@@ -22,6 +22,10 @@ repositories {
 
 dependencies {
   implementation "com.badlogicgames.gdx:gdx:${project.findProperty('gdxVersion') ?: '1.13.1'}"
+  // Add LWJGL3 backend so the jar can be runnable
+  implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:${project.findProperty('gdxVersion') ?: '1.13.1'}"
+  // Native runtime classifiers for desktop platforms
+  runtimeOnly "com.badlogicgames.gdx:gdx-platform:${project.findProperty('gdxVersion') ?: '1.13.1'}:natives-desktop"
 }
 
 // Keep IDEA/Eclipse output settings similar to previous layout
@@ -44,13 +48,10 @@ tasks.register('generateAssetList') {
 
 processResources.dependsOn 'generateAssetList'
 
-// Create an executable fat JAR for convenience (includes runtime dependencies).
+// Produce a runnable fat JAR that bundles runtime dependencies and sets a Main-Class.
 jar {
-  // name the jar after the project/app rather than 'lib'
   archiveBaseName.set('StumbleHome')
   archiveVersion.set(project.version.toString())
-
-  // Avoid duplicate entries when unpacking dependency jars
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
   // Include runtime dependencies into the jar (fat/uber jar)
@@ -61,7 +62,7 @@ jar {
     exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/MANIFEST.MF'
   }
 
-  // Minimal manifest to allow 'java -jar' if the runtime environment is suitable
+  // Set the launcher Main-Class so `java -jar` works
   manifest {
     attributes(
       'Main-Class': 'io.github.stumblehome.LauncherStub',
@@ -70,7 +71,6 @@ jar {
   }
 
   doLast {
-    // mark the jar executable (best-effort)
     def jarFile = archiveFile.get().asFile
     if (jarFile.exists()) jarFile.setExecutable(true, false)
   }

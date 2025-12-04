@@ -13,20 +13,15 @@ Structure now:
 
 Shared runtime assets are located inside the module at `StumbleHome/lib/src/main/assets/` and are packaged by the `lib` module.
 
-How to build:
+How to build (minimal):
 
-1. Change into the `StumbleHome` folder and use the included wrapper:
+```bash
+# from repository root
+cd StumbleHome
+./gradlew clean build
+```
 
-   ```bash
-   cd StumbleHome
-   ./gradlew clean build
-   ```
+The produced library JAR will be at `StumbleHome/lib/build/libs/StumbleHome-<version>.jar`.
 
-2. Build only the library (faster) — run this from `StumbleHome/`:
-
-   ```bash
-   cd StumbleHome
-   ./gradlew :lib:build
-   ```
-
-If you need to re-add platform launchers (desktop/mobile), add platform modules and update `StumbleHome/settings.gradle`.
+Notes (Option B - library-only):
+- This repository intentionally provides only the library module (no platform). To run the game create an external small Gradle project that depends on the produced JAR and adds the platform backend (LWJGL3). See `README.md` for an example `build.gradle` and `Launcher` class.

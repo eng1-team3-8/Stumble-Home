@@ -1,16 +1,19 @@
 package io.github.stumblehome;
 
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+
 /**
- * Small launcher stub that provides a clear message when running the library JAR directly.
- *
- * The library module doesn't include a platform backend (for example LWJGL3),
- * so this stub intentionally explains how to run the game via a platform launcher.
+ * Minimal launcher that starts the game using LWJGL3 backend so the produced
+ * fat JAR is runnable with `java -jar StumbleHome-<version>.jar`.
  */
 public final class LauncherStub {
     public static void main(String[] args) {
-        System.out.println("This JAR is the StumbleHome game library.");
-        System.out.println("It is not a runnable desktop application by itself.");
-        System.out.println("Create a platform launcher (e.g., an LWJGL3 module) that depends on this library and runs the game.");
-        System.out.println("Alternatively, add a launcher with a Main-Class that creates a backend and starts the game.");
+        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        config.setTitle("StumbleHome");
+        config.setWindowedMode(800, 600);
+        // If StumbleHome class is in the library, instantiate and run
+        new Lwjgl3Application(new StumbleHome(), config);
     }
 }
+

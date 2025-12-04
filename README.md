@@ -51,84 +51,21 @@ Names:
 
 This repo is a minimal layout; the game library lives in `StumbleHome/lib`.
 
-## Gradle
+## Build & Run
 
-This project now contains a minimal Gradle setup inside the `StumbleHome/` folder.
-Use the wrapper located under `StumbleHome/` for building and maintenance.
+This repository provides a minimal runnable distribution: the `lib` module is built into a single runnable jar that includes the LWJGL3 backend and native desktop libraries.
 
-Change into the `StumbleHome/` folder and run commands there, for example:
+Minimal commands (copy-paste):
 
 ```bash
+# from repository root
 cd StumbleHome
-./gradlew clean build
+./gradlew clean :lib:jar
+
+# then run the produced jar
+java -jar lib/build/libs/StumbleHome-1.0.0.jar
 ```
 
-Common useful commands (run inside `StumbleHome/`):
-
-- Full clean + build (recommended before releasing or running CI):
-
-    ```bash
-    ./gradlew clean build
-    ```
-
-- Build only the library module (faster):
-
-    ```bash
-    ./gradlew :lib:build
-    ```
-
-- Produce the library JAR (output in `lib/build/libs`):
-
-    ```bash
-    ./gradlew :lib:jar
-    ```
-
-- Regenerate the assets list (writes `../assets/assets.txt` from module):
-
-    ```bash
-    ./gradlew :lib:generateAssetList
-    ```
-
-- Clean build artifacts:
-
-    ```bash
-    ./gradlew clean
-    ```
-
-- Run unit tests (if any):
-
-    ```bash
-    ./gradlew test
-    ```
-
-- Show runtime dependencies for the library (handy for debugging):
-
-    ```bash
-    ./gradlew :lib:dependencies --configuration runtimeClasspath
-    ```
-
-- Useful flags for debugging builds:
-
-    ```bash
-    ./gradlew <task> --stacktrace --info
-    ./gradlew <task> --scan
-    ```
-
-Notes on running the game
-
-- The repository no longer contains a platform/executable subproject (for example `lwjgl3`). The `StumbleHome` module builds the game library (JAR). To run the game locally you must either:
-   - Re-add or restore a platform module (e.g., a desktop `lwjgl3` module) and use its `:run` task; or
-   - Create a small launcher project that depends on `StumbleHome/lib` and provides a backend (LWJGL3, Android, etc.).
-
-- If you still have an executable JAR / platform, the runnable JAR will typically be in that platform's `build/libs` folder.
-
-CI / packaging
-
-- The repository's GitHub Actions workflow is configured to build the project and upload the library JAR from `StumbleHome/lib/build/libs`.
-
-Tips
-
-- If you see unexpected compile errors after renames, try a clean build (`./gradlew clean build`) and ensure your IDE project files are refreshed (e.g., `./gradlew idea` or reimport the Gradle project in the IDE).
-- Use `./gradlew :StumbleHome:lib:generateAssetList` before building if you changed files in `assets/` so the list stays up to date.
-
-If you'd like, I can add a small `lwjgl3` launcher module as a lightweight example project that depends on `StumbleHome` and provides a runnable desktop launcher. That would let you run `./gradlew :lwjgl3:run` again.
+Notes:
+- The produced JAR is at `StumbleHome/lib/build/libs/StumbleHome-<version>.jar` where `<version>` is set in `StumbleHome/gradle.properties` (`projectVersion`).
+- If you need a smaller distribution or per-OS packaging later, we can change the build to produce platform-specific archives instead of a single fat JAR.
