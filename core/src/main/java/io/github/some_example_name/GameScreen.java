@@ -220,7 +220,7 @@ public class GameScreen implements Screen {
         // Check collision between player and water bottle
         if (bottle.checkCollision(playerCentreX, playerCentreY)) {
             // Player collected the water bottle - becomes sober
-            player.isDrunk = 0;
+            player.isDrunk = false;
             helpfulEventCounter++;
             showBottleMessage = true;
             bottleMessageTimer = 3f;

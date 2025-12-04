@@ -15,73 +15,73 @@ import com.badlogic.gdx.math.MathUtils;
  * Supports both normal and reversed controls depending on the player's state.
  */
 public class Player extends Sprite {
-    /** Spritesheet containing all player animation frames. */
+    // Spritesheet containing all player animation frames.
     public Texture characterSheet;
 
-    /** Walking animation when moving downward. */
+    // Walking animation when moving downward.
     private Animation<TextureRegion> walkDown;
 
-    /** Walking animation when moving left. */
+    // Walking animation when moving left.
     private Animation<TextureRegion> walkLeft;
 
-    /** Walking animation when moving right. */
+    // Walking animation when moving right.
     private Animation<TextureRegion> walkRight;
 
-    /** Walking animation when moving upward. */
+    // Walking animation when moving upward.
     private Animation<TextureRegion> walkUp;
 
-    /** Static frame displayed when standing still facing down. */
+    // Static frame displayed when standing still facing down.
     private TextureRegion standDown;
 
-    /** Static frame displayed when standing still facing left. */
+    // Static frame displayed when standing still facing left.
     private TextureRegion standLeft;
 
-    /** Static frame displayed when standing still facing right. */
+    // Static frame displayed when standing still facing right.
     private TextureRegion standRight;
 
-    /** Static frame displayed when standing still facing up. */
+    // Static frame displayed when standing still facing up.
     private TextureRegion standUp;
 
-    /** Currently active animation being played. */
+    // Currently active animation being played.
     private Animation<TextureRegion> currentAnimation;
 
-    /** Previous animation, used to reset timing when animation changes. */
+    // Previous animation, used to reset timing when animation changes.
     private Animation<TextureRegion> previousAnimation;
 
-    /** The static pose to show when player isn't moving. */
+    // The static pose to show when player isn't moving.
     private TextureRegion currentStandingPose;
 
-    /** Time elapsed in the current animation. */
+    // Time elapsed in the current animation.
     private float stateTime;
 
-    /** Possible directions the player can face. */
+    // Possible directions the player can face.
     private enum Direction { DOWN, LEFT, RIGHT, UP }
 
-    /** The direction the player was last moving or facing. */
+    // The direction the player was last moving or facing.
     private Direction lastDirection = Direction.DOWN;
 
-    /** Current x position of the player on the map. */
+    // Current x position of the player on the map.
     public float playerX;
 
-    /** Current y position of the player on the map. */
+    // Current y position of the player on the map.
     public float playerY;
 
-    /** Size of the player's collision box and sprite. */
+    // Size of the player's collision box and sprite.
     public final float playerSize = 0.8f;
 
-    /** Delta time value for consistent movement speed. */
+    // Delta time value for consistent movement speed.
     private final float delta = Gdx.graphics.getDeltaTime();
 
-    /** Controls whether the player has reversed controls (1 = drunk, 0 = sober). */
-    public int isDrunk = 1;
+    // Controls whether the player has reversed controls (1 = drunk, 0 = sober).
+    public boolean isDrunk = true;
 
-    /** Width of the game map in tiles. */
+    // Width of the game map in tiles.
     private final float mapWidth;
 
-    /** Height of the game map in tiles. */
+    // Height of the game map in tiles.
     private final float mapHeight;
 
-    /** Layer containing collision information from the tiled map. */
+    // Layer containing collision information from the tiled map.
     TiledMapTileLayer collisionLayer;
 
     /**
@@ -171,7 +171,7 @@ public class Player extends Sprite {
         float speed = 5f;
 
         // If isDrunk == 1, controls are reversed
-        if (isDrunk == 1) {
+        if (isDrunk) {
             // REVERSED CONTROLS
             if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
                 // RIGHT key -> move LEFT
