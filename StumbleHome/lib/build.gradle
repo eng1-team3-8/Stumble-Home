@@ -30,9 +30,10 @@ idea.module.testOutputDir = file('build/classes/java/test')
 
 // Generate assets list into project root assets/assets.txt (keeps existing behavior)
 tasks.register('generateAssetList') {
-  inputs.dir("${project.rootDir}/assets/")
-  File assetsFolder = new File("${project.rootDir}/assets/")
-  File assetsFile = new File(assetsFolder, "assets.txt")
+  // Assets are located under this module at src/main/assets
+  inputs.dir('src/main/assets')
+  File assetsFolder = new File(project.projectDir, 'src/main/assets')
+  File assetsFile = new File(assetsFolder, 'assets.txt')
   doLast {
     assetsFile.delete()
     fileTree(assetsFolder).collect { assetsFolder.relativePath(it) }.sort().each {
