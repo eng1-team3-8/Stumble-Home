@@ -29,15 +29,20 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class MainMenuScreen implements Screen {
 
     final StumbleHome game;
-    /** Background image for the main menu. */
+
+    // Background image for the main menu.
     private Texture background;
-    /** Image displayed when the tutorial is shown. */
+
+    // Image displayed when the tutorial is shown.
     private Texture tutorialImage;
-    /** Stage used for rendering UI elements such as buttons. */
+
+    // Stage used for rendering UI elements such as buttons.
     private Stage stage;
-    /** Skin used for styling UI components. */
+
+    // Skin used for styling UI components.
     private Skin skin;
-    /** Flag that determines whether the tutorial image is currently displayed. */
+
+    // Flag that determines whether the tutorial image is currently displayed.
     private boolean showTutorial = false;
 
     public MainMenuScreen(final StumbleHome game) {
@@ -53,9 +58,11 @@ public class MainMenuScreen implements Screen {
     @Override
     public void show() {
 
+        // Textures for the main menu and the tutorial
         background = new Texture("MainMenu.png");
         tutorialImage = new Texture("tutorial.png");
 
+        // Sets up the UI
         stage = new Stage(new ScreenViewport());
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
