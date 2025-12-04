@@ -1,18 +1,31 @@
-9This project has been reorganized so that `StumbleHome/lib` is the primary Java source module.
+This repository is organized as a super-minimal project. The game library and Gradle wrapper live under the `StumbleHome/` folder.
 
 Structure now:
-- gradlew, gradlew.bat, gradle/wrapper/* : Gradle wrapper in project root.
-- settings.gradle : Includes `:StumbleHome:lib` as the included module for the game logic.
-- build.gradle : Minimal root build file with shared properties.
-- StumbleHome/lib/ : The Java library module containing `src/main/java` and its `build.gradle`.
-- assets/ : Shared runtime assets used by the game; `generateAssetList` task will populate `assets/assets.txt`.
+
+- .gitignore, LICENCE, README.md (root)
+- StumbleHome/
+  - settings.gradle
+  - gradlew, gradlew.bat
+  - gradle/
+  - lib/
+    - build.gradle
+    - src/main/java/
+
+Shared runtime assets are at the repository root in `assets/` and are referenced by the `lib` module.
 
 How to build:
 
-- Run the wrapper from the project root:
+1. Change into the `StumbleHome` folder and use the included wrapper:
 
-  ./gradlew :StumbleHome:lib:build
+   ```bash
+   cd StumbleHome
+   ./gradlew clean build
+   ```
 
-Notes:
-- Platform-specific launchers and modules (like `lwjgl3`) were removed from the Gradle multi-project configuration; the game library is built via the `StumbleHome` module.
-  Re-add platform modules and update `settings.gradle` only when you need executable platforms.
+2. Build only the library (faster):
+
+   ```bash
+   ./gradlew :lib:build
+   ```
+
+If you need to re-add platform launchers (desktop/mobile), add platform modules and update `StumbleHome/settings.gradle`.

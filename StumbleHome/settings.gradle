@@ -6,8 +6,7 @@ plugins {
 // Make `triangle:lib` the main module for this project. Include platform modules so
 // the lwjgl3 desktop launcher can run the game.
 rootProject.name = 'stumble-home'
-include 'core', 'StumbleHome:lib'
+include 'lib'
 
-// Explicit project dirs (keeps structure stable)
-project(':StumbleHome:lib').projectDir = file('StumbleHome/lib')
-project(':core').projectDir = file('core')
+// Explicit project dir for the single library module
+project(':lib').projectDir = file('lib')

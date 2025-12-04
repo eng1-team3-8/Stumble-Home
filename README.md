@@ -50,27 +50,85 @@ Names:
 ## Platforms
 
 - `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
 
 ## Gradle
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+This project now contains a minimal Gradle setup inside the `StumbleHome/` folder.
+Use the wrapper located under `StumbleHome/` for building and maintenance.
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+Change into the `StumbleHome/` folder and run commands there, for example:
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+```bash
+cd StumbleHome
+./gradlew clean build
+```
+
+Common useful commands (run inside `StumbleHome/`):
+
+- Full clean + build (recommended before releasing or running CI):
+
+    ```bash
+    ./gradlew clean build
+    ```
+
+- Build only the library module (faster):
+
+    ```bash
+    ./gradlew :lib:build
+    ```
+
+- Produce the library JAR (output in `lib/build/libs`):
+
+    ```bash
+    ./gradlew :lib:jar
+    ```
+
+- Regenerate the assets list (writes `../assets/assets.txt` from module):
+
+    ```bash
+    ./gradlew :lib:generateAssetList
+    ```
+
+- Clean build artifacts:
+
+    ```bash
+    ./gradlew clean
+    ```
+
+- Run unit tests (if any):
+
+    ```bash
+    ./gradlew test
+    ```
+
+- Show runtime dependencies for the library (handy for debugging):
+
+    ```bash
+    ./gradlew :lib:dependencies --configuration runtimeClasspath
+    ```
+
+- Useful flags for debugging builds:
+
+    ```bash
+    ./gradlew <task> --stacktrace --info
+    ./gradlew <task> --scan
+    ```
+
+Notes on running the game
+
+- The repository no longer contains a platform/executable subproject (for example `lwjgl3`). The `StumbleHome` module builds the game library (JAR). To run the game locally you must either:
+   - Re-add or restore a platform module (e.g., a desktop `lwjgl3` module) and use its `:run` task; or
+   - Create a small launcher project that depends on `StumbleHome/lib` and provides a backend (LWJGL3, Android, etc.).
+
+- If you still have an executable JAR / platform, the runnable JAR will typically be in that platform's `build/libs` folder.
+
+CI / packaging
+
+- The repository's GitHub Actions workflow is configured to build the project and upload the library JAR from `StumbleHome/lib/build/libs`.
+
+Tips
+
+- If you see unexpected compile errors after renames, try a clean build (`./gradlew clean build`) and ensure your IDE project files are refreshed (e.g., `./gradlew idea` or reimport the Gradle project in the IDE).
+- Use `./gradlew :StumbleHome:lib:generateAssetList` before building if you changed files in `assets/` so the list stays up to date.
+
+If you'd like, I can add a small `lwjgl3` launcher module as a lightweight example project that depends on `StumbleHome` and provides a runnable desktop launcher. That would let you run `./gradlew :lwjgl3:run` again.
