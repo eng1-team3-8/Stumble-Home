@@ -34,9 +34,9 @@ idea.module.testOutputDir = file('build/classes/java/test')
 
 // Generate assets list into project root assets/assets.txt (keeps existing behavior)
 tasks.register('generateAssetList') {
-  // Assets are located under this module at src/main/assets
-  inputs.dir('src/main/assets')
-  File assetsFolder = new File(project.projectDir, 'src/main/assets')
+  // Use the standard resources directory so assets are included in the JAR
+  inputs.dir('src/main/resources')
+  File assetsFolder = new File(project.projectDir, 'src/main/resources')
   File assetsFile = new File(assetsFolder, 'assets.txt')
   doLast {
     assetsFile.delete()
