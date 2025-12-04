@@ -14,19 +14,19 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  */
 public class StumbleHome extends Game {
 
-    /** Batch used for drawing sprites and textures. */
+    // Batch used for drawing sprites and textures.
     public SpriteBatch batch;
 
-    /** Font used for rendering text on screen. */
+    // Font used for rendering text on screen.
     public BitmapFont font;
 
-    /** Camera for rendering the game world. */
+    // Camera for rendering the game world.
     public OrthographicCamera camera;
 
-    /** Viewport height in world units - zoomed for better visibility of player navigation. */
+    // Viewport height in world units - zoomed for better visibility of player navigation.
     final float VIEWPORT_HEIGHT = 12;
 
-    /** Viewport managing screen-to-world coordinate mapping. */
+    // Viewport managing screen-to-world coordinate mapping.
     public Viewport viewport;
 
 
