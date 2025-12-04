@@ -1,0 +1,46 @@
+plugins {
+  id 'java-library'
+  id 'idea'
+  id 'eclipse'
+}
+
+group = 'io.github.stumblehome'
+version = project.findProperty('projectVersion') ?: '1.0.0'
+ext.appName = 'Maze-game'
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+  maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
+  maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+  implementation "com.badlogicgames.gdx:gdx:${project.findProperty('gdxVersion') ?: '1.13.1'}"
+}
+
+// Keep IDEA/Eclipse output settings similar to previous layout
+idea.module.outputDir = file('build/classes/java/main')
+idea.module.testOutputDir = file('build/classes/java/test')
+
+// Generate assets list into project root assets/assets.txt (keeps existing behavior)
+tasks.register('generateAssetList') {
+  inputs.dir("${project.rootDir}/assets/")
+  File assetsFolder = new File("${project.rootDir}/assets/")
+  File assetsFile = new File(assetsFolder, "assets.txt")
+  doLast {
+    assetsFile.delete()
+    fileTree(assetsFolder).collect { assetsFolder.relativePath(it) }.sort().each {
+      assetsFile.append(it + "\n")
+    }
+  }
+}
+
+processResources.dependsOn 'generateAssetList'
+
+// Keep jar defaults; no executable packaging here.

@@ -1,10 +1,20 @@
+plugins {
+  id 'java-library'
+  id 'eclipse'
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-eclipse.project.name = appName + '-core'
+eclipse.project.name = (project.findProperty('appName') ?: 'Maze-game') + '-core'
 
 dependencies {
-  api "com.badlogicgames.gdx:gdx:$gdxVersion"
+  api "com.badlogicgames.gdx:gdx:${project.findProperty('gdxVersion') ?: '1.13.1'}"
 
-  if(enableGraalNative == 'true') {
-    implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
+  if(project.findProperty('enableGraalNative') == 'true') {
+    implementation "io.github.berstanio:gdx-svmhelper-annotations:${project.findProperty('graalHelperVersion')}"
   }
 }
