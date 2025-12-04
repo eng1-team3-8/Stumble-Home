@@ -24,7 +24,7 @@ public class longBoiEvent extends Sprite {
     /**
      * Idle animation frame. (This has not been used but here in case for future use.)
      */
-    private TextureRegion idleFrame;
+//    private TextureRegion idleFrame;
 
     /** Currently active animation being played. */
     private Animation<TextureRegion> currentAnimation;
@@ -75,7 +75,7 @@ public class longBoiEvent extends Sprite {
     /** Height of the game map in tiles. */
     private float mapHeight;
 
-    
+
     /**
      * Constructs a new longBoiEvent with given sprite and initialises animations.
      *
@@ -107,7 +107,7 @@ public class longBoiEvent extends Sprite {
         longSheet = this.getTexture();
 
         // set idle frame
-        idleFrame = new TextureRegion(longSheet, 0, 32, frameWidth, frameHeight);
+//        idleFrame = new TextureRegion(longSheet, 0, 32, frameWidth, frameHeight);
 
         // walking frames
         TextureRegion[] longFrames = new TextureRegion[2];
