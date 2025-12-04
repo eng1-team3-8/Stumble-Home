@@ -42,8 +42,8 @@ public class longBoiEvent extends Sprite {
     private final float longBoxHeight = 1.024f;
 
     // Offset to centre the collision box
-    private float longBoxOffsetX = (longSize - longBoxWidth) / 2f;
-    private float longBoxOffsetY = 0f;
+    private final float longBoxOffsetX = (longSize - longBoxWidth) / 2f;
+    private final float longBoxOffsetY = 0f;
 
     // Variable which is true when player is in radius of long boi.
     private boolean near = false;
@@ -263,7 +263,7 @@ public class longBoiEvent extends Sprite {
             longX -= delta*speed;
             prev_move_LR = "left";
         }
-        else if (temp.equals("left-side")){;
+        else if (temp.equals("left-side")){
             longX -= delta*speed;
             prev_move_LR = "right";
         }
