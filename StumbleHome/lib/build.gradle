@@ -44,4 +44,34 @@ tasks.register('generateAssetList') {
 
 processResources.dependsOn 'generateAssetList'
 
-// Keep jar defaults; no executable packaging here.
+// Create an executable fat JAR for convenience (includes runtime dependencies).
+jar {
+  // name the jar after the project/app rather than 'lib'
+  archiveBaseName.set('StumbleHome')
+  archiveVersion.set(project.version.toString())
+
+  // Avoid duplicate entries when unpacking dependency jars
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  // Include runtime dependencies into the jar (fat/uber jar)
+  from {
+    configurations.runtimeClasspath.findAll { it.exists() }.collect { it.isDirectory() ? it : zipTree(it) }
+  } {
+    // exclude signature and manifest files from dependency jars so our manifest remains
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/MANIFEST.MF'
+  }
+
+  // Minimal manifest to allow 'java -jar' if the runtime environment is suitable
+  manifest {
+    attributes(
+      'Main-Class': 'io.github.stumblehome.LauncherStub',
+      'Enable-Native-Access': 'ALL-UNNAMED'
+    )
+  }
+
+  doLast {
+    // mark the jar executable (best-effort)
+    def jarFile = archiveFile.get().asFile
+    if (jarFile.exists()) jarFile.setExecutable(true, false)
+  }
+}

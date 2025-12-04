@@ -1,2 +1,4 @@
 Manifest-Version: 1.0
+Main-Class: io.github.stumblehome.LauncherStub
+Enable-Native-Access: ALL-UNNAMED
 
