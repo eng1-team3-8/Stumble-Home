@@ -187,7 +187,7 @@ public class Player extends Sprite {
                 lastDirection = Direction.RIGHT;
                 moving = true;
             }
-            else if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
                 // UP key -> move DOWN
                 moveY = -speed * delta;
                 currentAnimation = walkDown;
@@ -215,7 +215,7 @@ public class Player extends Sprite {
                 lastDirection = Direction.LEFT;
                 moving = true;
             }
-            else if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
                 moveY = speed * delta;
                 currentAnimation = walkUp;
                 lastDirection = Direction.UP;
