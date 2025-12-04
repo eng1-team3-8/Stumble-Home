@@ -1,4 +1,3 @@
-.gitkeep
 Blank.png
 MainMenu.png
 character.png

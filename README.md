@@ -49,7 +49,7 @@ Names:
 
 ## Platforms
 
-- `core`: Main module with the application logic shared by all platforms.
+This repo is a minimal layout; the game library lives in `StumbleHome/lib`.
 
 ## Gradle
 
