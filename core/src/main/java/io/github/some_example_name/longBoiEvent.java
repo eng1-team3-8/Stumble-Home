@@ -16,30 +16,25 @@ import static java.lang.Math.sqrt;
  * Handles the Long Boi event movement, animations, and interactions with the game world.
  */
 public class longBoiEvent extends Sprite {
-    /**
-     * Sprite sheet containing all animation frames.
-     */
+    // Sprite sheet containing all animation frames.
     public Texture longSheet;
 
-    /**
-     * Idle animation frame. (This has not been used but here in case for future use.)
-     */
-//    private TextureRegion idleFrame;
-
-    /** Currently active animation being played. */
+    // Currently active animation being played.
     private Animation<TextureRegion> currentAnimation;
 
-    /** Previous animation, used to reset timing when animation changes. */
+    // Previous animation, used to reset timing when animation changes.
     private Animation<TextureRegion> previousAnimation;
 
-    /** Time elapsed in the current animation. */
+    // Time elapsed in the current animation.
     private float stateTime;
 
-    /** Current x position of long boi on map. */
+    // Current x position of long boi on map.
     public float longX;
-    /** Current y position of long boi on map. */
+
+    // Current y position of long boi on map.
     public float longY;
-    /** Scale of long boi frames. */
+
+    // Scale of long boi frames.
     public final float longSize = 2f;
 
     // Size of longBoi collision box
@@ -50,29 +45,29 @@ public class longBoiEvent extends Sprite {
     private float longBoxOffsetX = (longSize - longBoxWidth) / 2f;
     private float longBoxOffsetY = 0f;
 
-    /** Variable which is true when player is in radius of long boi.*/
+    // Variable which is true when player is in radius of long boi.
     private boolean near = false;
 
-    /** Variable which is true when long boi has completed the walk. */
+    // Variable which is true when long boi has completed the walk.
     public boolean doneWalk = false;
 
-    /** Variable which is true when player collided with long boi. */
+    // Variable which is true when player collided with long boi.
     public boolean collided = false;
 
-    /** Distance between player and long boi to set near to true. */
+    // Distance between player and long boi to set near to true.
     public float radius = 6;
 
-    /** Layer containing collision information from the tiled map. */
+    // Layer containing collision information from the tiled map.
     TiledMapTileLayer collisionLayer;
 
     // Previous movement storage vars
     String prev_move_LR = ""; // Left / right
     String prev_move_UD = ""; // Up / down
 
-    /** Width of the game map in tiles. */
+    // Width of the game map in tiles.
     private float mapWidth;
 
-    /** Height of the game map in tiles. */
+    // Height of the game map in tiles.
     private float mapHeight;
 
 
@@ -107,7 +102,7 @@ public class longBoiEvent extends Sprite {
         longSheet = this.getTexture();
 
         // set idle frame
-//        idleFrame = new TextureRegion(longSheet, 0, 32, frameWidth, frameHeight);
+        //idleFrame = new TextureRegion(longSheet, 0, 32, frameWidth, frameHeight);
 
         // walking frames
         TextureRegion[] longFrames = new TextureRegion[2];
