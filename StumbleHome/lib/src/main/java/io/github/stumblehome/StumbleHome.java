@@ -29,7 +29,6 @@ public class StumbleHome extends Game {
     /** Viewport managing screen-to-world coordinate mapping. */
     public Viewport viewport;
 
-
     /**
      * Called when the game is first created.
      * Initializes rendering resources, sets up the camera and viewport,
@@ -45,9 +44,9 @@ public class StumbleHome extends Game {
 
         // create orthographic camera
         camera = new OrthographicCamera();
-        viewport = new FitViewport(VIEWPORT_HEIGHT*aspectRatio, VIEWPORT_HEIGHT, camera);
+        viewport = new FitViewport(VIEWPORT_HEIGHT * aspectRatio, VIEWPORT_HEIGHT, camera);
         viewport.apply();
-        camera.position.set(viewport.getWorldWidth()/2, VIEWPORT_HEIGHT/2, 0);
+        camera.position.set(viewport.getWorldWidth() / 2, VIEWPORT_HEIGHT / 2, 0);
         camera.update();
 
         this.setScreen(new MainMenuScreen(this));
@@ -57,7 +56,7 @@ public class StumbleHome extends Game {
      * Renders the current screen.
      * Delegates to the active screen's render method.
      */
-    public void render(){
+    public void render() {
         super.render();
     }
 
@@ -65,7 +64,7 @@ public class StumbleHome extends Game {
      * Cleans up resources when the game is closed.
      * Disposes of the sprite batch and font to prevent memory leaks.
      */
-    public void dispose(){
+    public void dispose() {
         batch.dispose();
         if (font != null) {
             font.dispose();

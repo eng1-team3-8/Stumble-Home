@@ -4,13 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
@@ -78,28 +78,31 @@ public class MainMenuScreen implements Screen {
         stage.addActor(exitButton);
 
         //  Play button click
-        playButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameScreen(game));
-            }
-        });
+        playButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        game.setScreen(new GameScreen(game));
+                    }
+                });
 
         // Tutorial button click
-        tutorialButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                showTutorial = true; // show popup when clicked
-            }
-        });
+        tutorialButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        showTutorial = true; // show popup when clicked
+                    }
+                });
 
         // Exit button click
-        exitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
-            }
-        });
+        exitButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        Gdx.app.exit();
+                    }
+                });
 
         // set stage to receive input
         Gdx.input.setInputProcessor(stage);
@@ -110,12 +113,14 @@ public class MainMenuScreen implements Screen {
      * @param delta the time in seconds since the last render.
      */
     @Override
-    public void render(float delta){
+    public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
 
         game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
+                game.camera
+                        .projection
+                        .cpy()
+                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         game.batch.begin();
         if (background != null) {
@@ -137,7 +142,9 @@ public class MainMenuScreen implements Screen {
             float imgWidth = tutorialImage.getWidth();
             float imgHeight = tutorialImage.getHeight();
 
-            float scale = Math.min(screenWidth / imgWidth, screenHeight / imgHeight) * 0.8f; // 80% of screen
+            float scale =
+                    Math.min(screenWidth / imgWidth, screenHeight / imgHeight)
+                            * 0.8f; // 80% of screen
             float drawWidth = imgWidth * scale;
             float drawHeight = imgHeight * scale;
 
@@ -154,9 +161,6 @@ public class MainMenuScreen implements Screen {
                 showTutorial = false; // close tutorial when pressing ESC or clicking
             }
         }
-
-
-
     }
 
     /**

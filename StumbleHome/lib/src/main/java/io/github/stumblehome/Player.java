@@ -55,7 +55,12 @@ public class Player extends Sprite {
     private float stateTime;
 
     /** Possible directions the player can face. */
-    private enum Direction { DOWN, LEFT, RIGHT, UP }
+    private enum Direction {
+        DOWN,
+        LEFT,
+        RIGHT,
+        UP
+    }
 
     /** The direction the player was last moving or facing. */
     private Direction lastDirection = Direction.DOWN;
@@ -93,16 +98,17 @@ public class Player extends Sprite {
      * @param mapHeight height of the game map
      * @param collisionLayer the tile layer used for collision detection
      */
-    public Player(Sprite sprite, float mapWidth, float mapHeight, TiledMapTileLayer collisionLayer) {
+    public Player(
+            Sprite sprite, float mapWidth, float mapHeight, TiledMapTileLayer collisionLayer) {
         super(sprite);
 
-        //Initialize player animations
+        // Initialize player animations
         initializeAnimations();
 
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
 
-        this.collisionLayer =  collisionLayer;
+        this.collisionLayer = collisionLayer;
     }
 
     /**
@@ -179,22 +185,22 @@ public class Player extends Sprite {
                 currentAnimation = walkLeft;
                 lastDirection = Direction.LEFT;
                 moving = true;
-            }
-            else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
+            } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
+                    || Gdx.input.isKeyPressed(Input.Keys.A)) {
                 // LEFT key -> move RIGHT
                 moveX = speed * delta;
                 currentAnimation = walkRight;
                 lastDirection = Direction.RIGHT;
                 moving = true;
-            }
-            else if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
+            } else if (Gdx.input.isKeyPressed(Input.Keys.UP)
+                    || Gdx.input.isKeyPressed(Input.Keys.W)) {
                 // UP key -> move DOWN
                 moveY = -speed * delta;
                 currentAnimation = walkDown;
                 lastDirection = Direction.DOWN;
                 moving = true;
-            }
-            else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
+            } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)
+                    || Gdx.input.isKeyPressed(Input.Keys.S)) {
                 // DOWN key -> move UP
                 moveY = speed * delta;
                 currentAnimation = walkUp;
@@ -208,20 +214,20 @@ public class Player extends Sprite {
                 currentAnimation = walkRight;
                 lastDirection = Direction.RIGHT;
                 moving = true;
-            }
-            else if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
+            } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
+                    || Gdx.input.isKeyPressed(Input.Keys.A)) {
                 moveX = -speed * delta;
                 currentAnimation = walkLeft;
                 lastDirection = Direction.LEFT;
                 moving = true;
-            }
-            else if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
+            } else if (Gdx.input.isKeyPressed(Input.Keys.UP)
+                    || Gdx.input.isKeyPressed(Input.Keys.W)) {
                 moveY = speed * delta;
                 currentAnimation = walkUp;
                 lastDirection = Direction.UP;
                 moving = true;
-            }
-            else if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S)) {
+            } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)
+                    || Gdx.input.isKeyPressed(Input.Keys.S)) {
                 moveY = -speed * delta;
                 currentAnimation = walkDown;
                 lastDirection = Direction.DOWN;
@@ -274,10 +280,10 @@ public class Player extends Sprite {
      * @return true if the move is valid, false if blocked
      */
     private boolean canMoveTo(float x, float y) {
-        return isTileBlocked(x, y) &&
-            isTileBlocked(x + playerSize, y) &&
-            isTileBlocked(x, y + playerSize) &&
-            isTileBlocked(x + playerSize, y + playerSize);
+        return isTileBlocked(x, y)
+                && isTileBlocked(x + playerSize, y)
+                && isTileBlocked(x, y + playerSize)
+                && isTileBlocked(x + playerSize, y + playerSize);
     }
 
     /**
@@ -299,7 +305,13 @@ public class Player extends Sprite {
 
         if (tileId == 5) return true;
 
-        if (tileId == 2 || tileId == 3 || tileId == 4 || tileId == 19 || tileId == 20 || tileId == 21 || tileId == 22) {
+        if (tileId == 2
+                || tileId == 3
+                || tileId == 4
+                || tileId == 19
+                || tileId == 20
+                || tileId == 21
+                || tileId == 22) {
             float yInTile = y - tileY;
             return !(yInTile < 0.4f);
         }
@@ -344,5 +356,4 @@ public class Player extends Sprite {
         float drawHeight = playerSize * aspectRatio;
         batch.draw(frameToDraw, playerX, playerY, playerSize, drawHeight);
     }
-
 }

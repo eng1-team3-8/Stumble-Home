@@ -1,6 +1,5 @@
 package io.github.stumblehome;
 
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -59,23 +58,25 @@ public class WinScreen implements Screen {
         background = new Texture("MainMenu.png");
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-         // Create labels
+        // Create labels
         Label winLabel = new Label("You returned home!", skin);
         winLabel.setColor(Color.GREEN);
         winLabel.setFontScale(3f);
         winLabel.setAlignment(Align.center);
 
-        Label timeLabel = new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
+        Label timeLabel =
+                new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
         Label scoreLabel = new Label("Score: " + score, skin);
 
         // Create restart button
         TextButton restartButton = new TextButton("Restart", skin);
-        restartButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game));
-            }
-        });
+        restartButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        game.setScreen(new MainMenuScreen(game));
+                    }
+                });
 
         // Layout using a table
         Table table = new Table();
@@ -100,8 +101,10 @@ public class WinScreen implements Screen {
         ScreenUtils.clear(Color.BLACK);
 
         game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
+                game.camera
+                        .projection
+                        .cpy()
+                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         game.batch.begin();
 
@@ -120,15 +123,30 @@ public class WinScreen implements Screen {
      * @param width  the new width of the screen in pixels.
      * @param height the new height of the screen in pixels.
      */
-    @Override public void resize(int width, int height) { stage.getViewport().update(width, height, true); }
+    @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+    }
 
     /**
      * Disposes of the screen and frees associated resources.
      * <p>Called when the screen is no longer needed.</p>
      */
-    @Override public void dispose() { stage.dispose(); skin.dispose(); }
-    @Override public void show() {}
-    @Override public void hide() {}
-    @Override public void pause() {}
-    @Override public void resume() {}
+    @Override
+    public void dispose() {
+        stage.dispose();
+        skin.dispose();
+    }
+
+    @Override
+    public void show() {}
+
+    @Override
+    public void hide() {}
+
+    @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
 }
