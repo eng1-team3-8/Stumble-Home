@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AssetTests extends AbstractHeadlessGdxTest {
     @Test
     public void testLongBoiTextureAtlasExists() {
-        new longBoiEvent();
         assertTrue(Gdx.files.internal(longBoiEvent.ASSET).exists(), "LongBoi texture atlas should exist");
     }
 }

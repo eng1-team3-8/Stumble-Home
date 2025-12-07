@@ -273,7 +273,7 @@ public class Player extends Sprite {
      * @param y the target y position
      * @return true if the move is valid, false if blocked
      */
-    private boolean canMoveTo(float x, float y) {
+    public boolean canMoveTo(float x, float y) {
         return isTileBlocked(x, y) &&
             isTileBlocked(x + playerSize, y) &&
             isTileBlocked(x, y + playerSize) &&
