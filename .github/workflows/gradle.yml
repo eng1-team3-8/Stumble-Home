@@ -36,7 +36,7 @@ jobs:
       - name: Run Spotless check
         run: |
           cd StumbleHome
-          ./gradlew --no-daemon --stacktrace :lib:spotlessCheck
+          ./gradlew --no-daemon --stacktrace spotlessCheck
 
       - name: Build with Gradle Wrapper
         run: |
