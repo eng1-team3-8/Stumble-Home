@@ -24,6 +24,7 @@ gradle-app.setting
 **/build/reports/problems/
 StumbleHome/lib/build/libs/
 StumbleHome/build/reports/problems/
+StumbleHome/lib/build/**
 
 # Editor/IDE
 .vscode/
