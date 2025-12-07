@@ -2,14 +2,15 @@ package io.github.stumblehome.headless;
 
 import com.badlogic.gdx.Gdx;
 // Change for test
-// import uk.ac.york.cs.eng1.gemo.Ship;
+import io.github.some_example_name.longBoiEvent;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AssetTests extends AbstractHeadlessGdxTest {
     @Test
-    public void testShipAssetExists() {
-        System.out.println("T");;
+    public void testLongBoiTextureAtlasExists() {
+        new longBoiEvent();
+        assertTrue(Gdx.files.internal(longBoiEvent.ASSET).exists(), "LongBoi texture atlas should exist");
     }
 }

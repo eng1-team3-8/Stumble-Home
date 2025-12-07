@@ -74,6 +74,7 @@ public class longBoiEvent extends Sprite {
 
     /** Height of the game map in tiles. */
     private float mapHeight;
+    public static final String ASSET = "longBoi.png";
 
     
     /**
@@ -95,6 +96,14 @@ public class longBoiEvent extends Sprite {
         // initialize position from the provided sprite (keeps the sprite where caller placed it)
         this.longX = sprite.getX();
         this.longY = sprite.getY();
+    }
+
+    /**
+     * Constructs a new longBoiEvent with given sprite and initialises animations.
+     *
+     * @param sprite the sprite containing long boi texture.
+     */
+    public longBoiEvent() {
     }
 
     /**
