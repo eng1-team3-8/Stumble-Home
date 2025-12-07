@@ -85,12 +85,9 @@ jobs:
         with:
           name: lib-ubuntu-latest.jar
           path: .
-
-      - name: Debug Ubuntu artifact structure
-        run: ls -la StumbleHome/lib/build/libs/
       
       - name: Rename Ubuntu Build
-        run: mv StumbleHome/lib/build/libs/StumbleHome-1.0.0.jar lib-ubuntu.jar
+        run: mv StumbleHome-1.0.0.jar lib-ubuntu.jar
 
       # Windows
       - name: Download Windows Build
@@ -100,7 +97,7 @@ jobs:
           path: .
 
       - name: Rename Windows Build
-        run: mv StumbleHome/lib/build/libs/StumbleHome-1.0.0.jar lib-windows.jar
+        run: mv StumbleHome-1.0.0.jar lib-windows.jar
 
       # MacOS
       - name: Download MacOS Build
@@ -110,7 +107,7 @@ jobs:
           path: .
 
       - name: Rename MacOS Build
-        run: mv StumbleHome/lib/build/libs/StumbleHome-1.0.0.jar lib-macos.jar
+        run: mv StumbleHome-1.0.0.jar lib-macos.jar
 
       - name: Release
         uses: softprops/action-gh-release@v2
