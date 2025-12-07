@@ -5,8 +5,6 @@ Repository for developing video game. Cohort 3, Team 8.
 -----------------------------------------------------------------------
 Note you must use **Adoptium's Temurin® Java 17**:
 
-- This is the version the modules technical requirements state we must use, check **JAVASETUP.md** for setup
-  instructions
 - To test you are using the right version, run the file: **CheckJDKVersion.java**
     - Expect results like this:
         - Java Version: 17.0.16
