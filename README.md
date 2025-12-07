@@ -45,7 +45,7 @@ Names:
 This repository provides a minimal runnable distribution: the `lib` module is built into a single runnable jar that
 includes the LWJGL3 backend and native desktop libraries.
 
-For full build, formatting, and contribution instructions see `CONTRIBUTION.md` in the repository root.
+For full build, formatting, and contribution instructions see `CONTRIBUTING.md` in the repository root.
 
 ### Running from source
 
