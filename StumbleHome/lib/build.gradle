@@ -2,6 +2,7 @@ plugins {
   id 'java-library'
   id 'idea'
   id 'jacoco'
+  id 'checkstyle'
 }
 
 project.group = 'io.github.stumblehome'
@@ -20,12 +21,30 @@ repositories {
   maven { url = uri('https://jitpack.io') }
 }
 
+def checkstyleVersion = '10.4'
+
+configurations {
+  checkstyleRules
+}
+
 dependencies {
   implementation "com.badlogicgames.gdx:gdx:${project.findProperty('gdxVersion') ?: '1.13.1'}"
   // Add LWJGL3 backend so the jar can be runnable
   implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:${project.findProperty('gdxVersion') ?: '1.13.1'}"
   // Native runtime classifiers for desktop platforms
   runtimeOnly "com.badlogicgames.gdx:gdx-platform:${project.findProperty('gdxVersion') ?: '1.13.1'}:natives-desktop"
+  checkstyleRules(
+    "com.puppycrawl.tools:checkstyle:${checkstyleVersion}") {
+    transitive = false
+  }
+}
+
+checkstyle {
+  toolVersion = checkstyleVersion
+  config = resources.text.fromArchiveEntry(
+    configurations.checkstyleRules,
+    'google_checks.xml'
+  )
 }
 
 // Keep IDEA output settings similar to previous layout
@@ -75,3 +94,4 @@ jar {
     if (jarFile.exists()) jarFile.setExecutable(true, false)
   }
 }
+
