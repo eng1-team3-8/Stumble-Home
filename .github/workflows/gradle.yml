@@ -85,7 +85,10 @@ jobs:
         with:
           name: lib-ubuntu-latest.jar
           path: .
-  
+
+      - name: Debug Ubuntu artifact structure
+        run: ls -la StumbleHome/lib/build/libs/
+      
       - name: Rename Ubuntu Build
         run: mv StumbleHome/lib/build/libs/StumbleHome-1.0.0.jar lib-ubuntu.jar
 
