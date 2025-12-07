@@ -99,14 +99,6 @@ public class longBoiEvent extends Sprite {
     }
 
     /**
-     * Constructs a new longBoiEvent with given sprite and initialises animations.
-     *
-     * @param sprite the sprite containing long boi texture.
-     */
-    public longBoiEvent() {
-    }
-
-    /**
      * Loads all animation frames from the long boi spritesheet.
      */
     private void initializeAnimations() {
