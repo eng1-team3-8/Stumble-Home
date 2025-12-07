@@ -37,6 +37,14 @@ jobs:
       run: |
         cd StumbleHome
         ./gradlew build
+      with:
+        arguments: build jacocoTestReport
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: StumbleHome
+        path: StumbleHome/lib/build/libs
 
     - name: Upload Checkstyle report
       uses: actions/upload-artifact@v4
@@ -44,8 +52,8 @@ jobs:
         name: checkstyle-report
         path: StumbleHome/lib/build/reports/checkstyle
 
-    - name: Upload build artifacts
+    - name: Upload JaCoCo report
       uses: actions/upload-artifact@v4
       with:
-        name: StumbleHome
-        path: StumbleHome/lib/build/libs
+        name: jacoco-report
+        path: StumbleHome/lib/build/reports/jacoco/test/html
