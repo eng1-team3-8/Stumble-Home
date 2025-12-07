@@ -8,7 +8,6 @@ buildscript {
   }
   dependencies {
 
-
   }
 }
 
@@ -27,7 +26,29 @@ allprojects {
 
 configure(subprojects) {
   apply plugin: 'java-library'
+  apply plugin: 'checkstyle'
   sourceCompatibility = 8
+
+  // Define checkstyle version variable that supports JDK 17
+  def checkstyleVersion = '10.12.4'
+
+  // configuration checkstyleRules to fetch the checkstyle JAR with google rules
+  configurations {
+    checkstyleRules
+  }
+
+  // adds checkstyle dependency to checkstyleRules configuration with transitive dependencies off
+  dependencies {
+    checkstyleRules("com.puppycrawl.tools:checkstyle:${checkstyleVersion}") {
+      transitive = false
+    }
+  }
+
+  // configure checkstyle plugin to use tool version and load google style config from the dependency JAR
+  checkstyle {
+    toolVersion = checkstyleVersion
+    config = resources.text.fromArchiveEntry(configurations.checkstyleRules, 'google_checks.xml')
+  }
 
   // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
   // The article can be helpful when using assets.txt in your project.
