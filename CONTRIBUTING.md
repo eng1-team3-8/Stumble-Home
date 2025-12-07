@@ -56,4 +56,4 @@ After running `spotlessApply`, re-run the build command above.
 
 - Always use the Gradle wrapper (`./gradlew`) — it ensures a consistent Gradle version across contributors and CI.
 - Use Java 11+ when running Gradle locally (CI uses Java 17) to avoid incompatibilities with some plugin versions.
-- Run `./gradlew spotlessCheck` before pushing or create a pre-commit hook that runs `spotlessApply`.
+- Run `./gradlew spotlessCheck` before pushing.
