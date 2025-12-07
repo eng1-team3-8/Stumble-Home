@@ -47,13 +47,26 @@ jobs:
         run: |
           cd StumbleHome
           ./gradlew.bat --no-daemon --stacktrace build jacocoTestReport
+
+      # build script to incorporate -XstartOnFirstThread flag for ease
+      - name: Create macOS run script
+        if: runner.os != 'Windows'
+        run: |
+          cat > StumbleHome/lib/build/libs/run-stumblehome-mac.sh << 'EOF'
+          #!/usr/bin/env bash
+          DIR="$(cd "$(dirname "$0")" && pwd)"
+          java -XstartOnFirstThread -jar "$DIR/StumbleHome-1.0.0.jar"
+          EOF
+          chmod +x StumbleHome/lib/build/libs/run-stumblehome-mac.sh
   
-      # OS-specific lib JAR artifact
+      # OS-specific lib JAR artifact upload
       - name: Upload library JAR
         uses: actions/upload-artifact@v4
         with:
           name: lib-${{ matrix.os }}.jar
-          path: StumbleHome/lib/build/libs/StumbleHome-1.0.0.jar
+          path: |
+            StumbleHome/lib/build/libs/StumbleHome-1.0.0.jar
+            StumbleHome/lib/build/libs/run-stumblehome-mac.sh
   
       # OS-specific JaCoCO report
       - name: Upload JaCoCo report
