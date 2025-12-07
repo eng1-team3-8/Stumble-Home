@@ -3,6 +3,7 @@ plugins {
   id 'idea'
   id 'jacoco'
   id 'checkstyle'
+  id 'com.diffplug.spotless' version '8.1.0'
 }
 
 project.group = 'io.github.stumblehome'
@@ -46,6 +47,16 @@ checkstyle {
     'google_checks.xml'
   )
 }
+
+spotless {
+  java {
+    target 'src/main/java/**/*.java', 'src/test/java/**/*.java'
+    googleJavaFormat('1.15.0').aosp().reflowLongStrings().formatJavadoc(false).reorderImports(false).groupArtifact('com.google.googlejavaformat:google-java-format')
+  }
+}
+
+// Ensure formatting is checked as part of the standard 'check' lifecycle
+check.dependsOn 'spotlessCheck'
 
 // Keep IDEA output settings similar to previous layout
 idea.module.outputDir = file('build/classes/java/main')
@@ -94,4 +105,3 @@ jar {
     if (jarFile.exists()) jarFile.setExecutable(true, false)
   }
 }
-
