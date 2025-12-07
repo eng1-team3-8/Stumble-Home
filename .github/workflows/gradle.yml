@@ -15,43 +15,106 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest] 
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: read
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+  
+      # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
+      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+  
+      - name: Build with Gradle Wrapper (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          cd StumbleHome
+          ./gradlew --no-daemon --stacktrace build jacocoTestReport
+  
+      - name: Build with Gradle Wrapper (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cd StumbleHome
+          ./gradlew.bat --no-daemon --stacktrace build jacocoTestReport
+  
+      # OS-specific lib JAR artifact
+      - name: Upload library JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: lib-${{ matrix.os }}.jar
+          path: StumbleHome/lib/build/libs/StumbleHome.jar
+  
+      # OS-specific JaCoCO report
+      - name: Upload JaCoCo report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report-${{ matrix.os }}
+          path: StumbleHome/lib/build/reports/jacoco/test/html
+  
+      # Only upload ubuntu build checkstyle report
+      - name: Upload Checkstyle report
+        if: startsWith(matrix.os, 'ubuntu')
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkstyle-report
+          path: StumbleHome/lib/build/reports/checkstyle
 
-    # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
-    # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+  
+    steps:
+      - uses: actions/checkout@v4
+  
+      # download JAR artifact for each OS created by matrix
+      # Ubuntu
+      - name: Download Ubuntu Build
+        uses: actions/download-artifact@v4
+        with:
+          name: lib-ubuntu-latest.jar
+          path: .
+  
+      - name: Rename Ubuntu Build
+        run: mv StumbleHome/lib/build/libs/StumbleHome.jar lib-ubuntu.jar
 
-    - name: Build with Gradle Wrapper
-      run: |
-        cd StumbleHome
-        ./gradlew --no-daemon --stacktrace build jacocoTestReport
+      # Windows
+      - name: Download Windows Build
+        uses: actions/download-artifact@v4
+        with:
+          name: lib-windows-latest.jar
+          path: .
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: StumbleHome
-        path: StumbleHome/lib/build/libs
+      - name: Rename Windows Build
+        run: mv StumbleHome/lib/build/libs/StumbleHome.jar lib-windows.jar
 
-    - name: Upload Checkstyle report
-      uses: actions/upload-artifact@v4
-      with:
-        name: checkstyle-report
-        path: StumbleHome/lib/build/reports/checkstyle
+      # MacOS
+      - name: Download MacOS Build
+        uses: actions/download-artifact@v4
+        with:
+          name: lib-macos-latest.jar
+          path: .
 
-    - name: Upload JaCoCo report
-      uses: actions/upload-artifact@v4
-      with:
-        name: jacoco-report
-        path: StumbleHome/lib/build/reports/jacoco/test/html
+      - name: Rename MacOS Build
+        run: mv StumbleHome/lib/build/libs/StumbleHome.jar lib-macos.jar
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            lib-ubuntu.jar
+            lib-windows.jar
+            lib-macos.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
