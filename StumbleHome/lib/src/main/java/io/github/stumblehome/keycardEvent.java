@@ -1,15 +1,14 @@
 package io.github.stumblehome;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
-
 
 /**
  * Represents a collectible keycard item required to unlock the exit.
@@ -111,8 +110,9 @@ public class keycardEvent extends Sprite {
         }
 
         boolean colliding;
-        //calculate distance between player centre and long boi centre using pythagoras
-        double distance = sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
+        // calculate distance between player centre and long boi centre using pythagoras
+        double distance =
+                sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
 
         // set nearing to true if player within (value of radius) of long boi
         colliding = distance < 1f;
@@ -123,11 +123,11 @@ public class keycardEvent extends Sprite {
         return colliding;
     }
 
-    private float getCentreX(){
+    private float getCentreX() {
         return keycardX + keycardSize / 2;
     }
 
-    private float getCentreY(){
+    private float getCentreY() {
         return keycardY + keycardSize / 2;
     }
 }

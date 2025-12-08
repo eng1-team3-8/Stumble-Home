@@ -1,10 +1,8 @@
 package io.github.stumblehome;
 
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -57,17 +54,19 @@ public class GameOverScreen implements Screen {
         background = new Texture(Gdx.files.internal("gameOver.png"));
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-        Label timeLabel = new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
+        Label timeLabel =
+                new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
         Label scoreLabel = new Label("Score: " + score, skin);
 
         // Create restart button
         TextButton restartButton = new TextButton("Restart", skin);
-        restartButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game));
-            }
-        });
+        restartButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        game.setScreen(new MainMenuScreen(game));
+                    }
+                });
 
         // Layout using a table
         Table table = new Table();
@@ -90,8 +89,10 @@ public class GameOverScreen implements Screen {
         ScreenUtils.clear(Color.BLACK);
 
         game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
+                game.camera
+                        .projection
+                        .cpy()
+                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         game.batch.begin();
 
@@ -108,14 +109,29 @@ public class GameOverScreen implements Screen {
      * @param width  the new width of the screen in pixels.
      * @param height the new height of the screen in pixels.
      */
-    @Override public void resize(int width, int height) { stage.getViewport().update(width, height, true); }
+    @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+    }
     /**
      * Disposes of the screen and frees associated resources.
      * <p>Called when the screen is no longer needed.</p>
      */
-    @Override public void dispose() { stage.dispose(); skin.dispose(); }
-    @Override public void show() {}
-    @Override public void hide() {}
-    @Override public void pause() {}
-    @Override public void resume() {}
+    @Override
+    public void dispose() {
+        stage.dispose();
+        skin.dispose();
+    }
+
+    @Override
+    public void show() {}
+
+    @Override
+    public void hide() {}
+
+    @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
 }

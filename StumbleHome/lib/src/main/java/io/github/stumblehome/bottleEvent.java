@@ -1,14 +1,14 @@
 package io.github.stumblehome;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
 
 /**
  * Represents a collectible bottle item that appears in the game world.
@@ -48,7 +48,7 @@ public class bottleEvent extends Sprite {
     public bottleEvent(Sprite sprite) {
         super(sprite);
 
-        //Initialize bottle animations
+        // Initialize bottle animations
         initializeAnimations();
     }
 
@@ -125,8 +125,9 @@ public class bottleEvent extends Sprite {
         }
 
         boolean colliding;
-        //calculate distance between player centre and long boi centre using pythagoras
-        double distance = sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
+        // calculate distance between player centre and long boi centre using pythagoras
+        double distance =
+                sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
 
         // set nearing to true if player within (value of radius) of long boi
         colliding = distance < 1f;
@@ -137,13 +138,11 @@ public class bottleEvent extends Sprite {
         return colliding;
     }
 
-    private float getCentreX(){
+    private float getCentreX() {
         return bottleX + bottleSize / 2;
     }
 
-    private float getCentreY(){
+    private float getCentreY() {
         return bottleY + bottleSize / 2;
     }
-
-
 }

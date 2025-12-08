@@ -16,4 +16,3 @@ public final class LauncherStub {
         new Lwjgl3Application(new StumbleHome(), config);
     }
 }
-

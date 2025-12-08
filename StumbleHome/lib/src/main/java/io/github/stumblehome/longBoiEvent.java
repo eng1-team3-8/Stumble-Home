@@ -1,14 +1,14 @@
 package io.github.stumblehome;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
 
 /**
  * Handles the Long Boi event movement, animations, and interactions with the game world.
@@ -150,8 +150,9 @@ public class longBoiEvent extends Sprite {
         }
 
         boolean colliding;
-        //calculate distance between player centre and long boi centre using pythagoras
-        double distance = sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
+        // calculate distance between player centre and long boi centre using pythagoras
+        double distance =
+                sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
 
         // set nearing to true if player within (value of radius) of long boi
         colliding = distance < 1.3f;
@@ -176,8 +177,9 @@ public class longBoiEvent extends Sprite {
         }
 
         boolean nearing;
-        //calculate distance between player centre and long boi centre using pythagoras
-        double distance = sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
+        // calculate distance between player centre and long boi centre using pythagoras
+        double distance =
+                sqrt(pow(playerCentreX - getCentreX(), 2) + pow(playerCentreY - getCentreY(), 2));
 
         // set nearing to true if player within (value of radius) of long boi
         nearing = distance < radius;
@@ -188,11 +190,11 @@ public class longBoiEvent extends Sprite {
         return nearing;
     }
 
-    private float getCentreX(){
+    private float getCentreX() {
         return longX + longSize / 2;
     }
 
-    private float getCentreY(){
+    private float getCentreY() {
         return longY + longSize / 2;
     }
 
@@ -205,30 +207,30 @@ public class longBoiEvent extends Sprite {
      * the different distances long boi walks in the x and y directions in order.
      * Needs to only execute once per frame hence why it is if statements, otherwise it will just teleport.
      */
-    public void walkPath(){
+    public void walkPath() {
         // this is badly written due to time
         float delta = Gdx.graphics.getDeltaTime();
         float speed = 3f;
         if (xLoopCounter < xDirection) {
-            longX += delta*speed;
+            longX += delta * speed;
             xLoopCounter++;
         } else if (yLoopCounter < yDirection) {
-            longY += delta*speed;
+            longY += delta * speed;
             yLoopCounter++;
         } else if (xLoopCounter2 < xDirection2) {
-            longX -= delta*speed;
+            longX -= delta * speed;
             xLoopCounter2++;
         } else if (yLoopCounter2 < yDirection2) {
-            longY-= delta*speed;
+            longY -= delta * speed;
             yLoopCounter2++;
         } else if (xLoopCounter3 < xDirection3) {
-            longX -= delta*speed;
+            longX -= delta * speed;
             xLoopCounter3++;
         } else if (yLoopCounter3 < yDirection3) {
-            longY += delta*speed;
+            longY += delta * speed;
             yLoopCounter3++;
         } else if (xLoopCounter4 < xDirection4) {
-            longX += delta*speed;
+            longX += delta * speed;
             xLoopCounter4++;
         } else if (yLoopCounter4 < yDirection4) {
             longY += delta * speed;

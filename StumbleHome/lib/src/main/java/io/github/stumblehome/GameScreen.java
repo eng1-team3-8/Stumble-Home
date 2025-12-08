@@ -13,6 +13,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
+
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
  * <p>
@@ -75,6 +76,7 @@ public class GameScreen implements Screen {
 
     /** Message flags and timers for temporary on-screen notifications. */
     private boolean showNoKeycardMessage = false;
+
     private float noKeycardMessageTimer = 0f;
     private boolean showBottleMessage = false;
     private float bottleMessageTimer = 0f;
@@ -95,6 +97,7 @@ public class GameScreen implements Screen {
 
     /** Counters for hidden, helpful, and hindering events. */
     private int hiddenEventCounter = 0;
+
     private int helpfulEventCounter = 0;
     private int hinderingEventCounter = 0;
 
@@ -104,11 +107,11 @@ public class GameScreen implements Screen {
      *
      * @param game the main {@link StumbleHome} game instance.
      */
-    public GameScreen(final StumbleHome game){
+    public GameScreen(final StumbleHome game) {
         this.game = game;
 
         map = new TmxMapLoader().load("map.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map, 1/16f);
+        renderer = new OrthogonalTiledMapRenderer(map, 1 / 16f);
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("hedge");
 
         // Get map properties first
@@ -131,11 +134,16 @@ public class GameScreen implements Screen {
         minCameraY = halfViewportHeight;
         maxCameraY = mapHeight - halfViewportHeight;
 
-        //Initialize player
-        player = new Player(new Sprite(new Texture("character.png")), mapWidth, mapHeight, collisionLayer);
+        // Initialize player
+        player =
+                new Player(
+                        new Sprite(new Texture("character.png")),
+                        mapWidth,
+                        mapHeight,
+                        collisionLayer);
 
         // Position player at start point of map
-        player.playerX = mapWidth - 12  - player.playerSize / 2;
+        player.playerX = mapWidth - 12 - player.playerSize / 2;
         player.playerY = mapHeight - 2 - player.playerSize / 2;
 
         // Center camera on player position
@@ -151,15 +159,12 @@ public class GameScreen implements Screen {
         longBoi.longY = mapHeight - 38 - longBoi.longSize / 2;
 
         keycard = new keycardEvent(new Sprite(new Texture("keyCard.png")));
-        keycard.keycardX = mapWidth  - 57 - keycard.keycardSize / 2;
+        keycard.keycardX = mapWidth - 57 - keycard.keycardSize / 2;
         keycard.keycardY = mapHeight - 5 - keycard.keycardSize / 2;
-
     }
-
 
     @Override
-    public void show() {
-    }
+    public void show() {}
 
     /**
      * Called once per frame to update and render the game state.
@@ -209,7 +214,7 @@ public class GameScreen implements Screen {
     private void logic() {
         player.logic();
 
-        //events logic
+        // events logic
         bottle.logic();
         keycard.logic();
         longBoi.logic();
@@ -272,14 +277,16 @@ public class GameScreen implements Screen {
                     timeUp = true;
                 }
             }
-
         }
 
         // if reached finish successfully (has keycard)
         if (!reachedFinish && hasKeycard && reachedFinishZone()) {
             timeUp = true;
             paused = true;
-            int score = (int) (remainingTime * 10) + (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
+            int score =
+                    (int) (remainingTime * 10)
+                            + (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter)
+                                    * 50;
             reachedFinish = true;
             game.setScreen(new WinScreen(game, remainingTime, score));
             dispose();
@@ -307,9 +314,9 @@ public class GameScreen implements Screen {
 
         if (showLongBoiMessage) {
             longBoiMessageTimer -= Gdx.graphics.getDeltaTime();
-                if (longBoiMessageTimer <= 0) {
-                    showLongBoiMessage = false;
-                }
+            if (longBoiMessageTimer <= 0) {
+                showLongBoiMessage = false;
+            }
         }
 
         clampCamera();
@@ -320,27 +327,21 @@ public class GameScreen implements Screen {
         float finishZoneY = 6f;
         float finishZoneWidth = 5f;
         float finishZoneHeight = 3f;
-        return player.playerX < finishZoneX + finishZoneWidth &&
-            player.playerX + player.playerSize > finishZoneX &&
-            player.playerY < finishZoneY + finishZoneHeight &&
-            player.playerY + player.playerSize > finishZoneY;
+        return player.playerX < finishZoneX + finishZoneWidth
+                && player.playerX + player.playerSize > finishZoneX
+                && player.playerY < finishZoneY + finishZoneHeight
+                && player.playerY + player.playerSize > finishZoneY;
     }
 
     private void clampCamera() {
         // Only clamp if map is larger than viewport in each dimension
         if (mapWidth >= game.viewport.getWorldWidth()) {
-            game.camera.position.x = MathUtils.clamp(
-                game.camera.position.x,
-                minCameraX,
-                maxCameraX
-            );
+            game.camera.position.x =
+                    MathUtils.clamp(game.camera.position.x, minCameraX, maxCameraX);
         }
         if (mapHeight >= game.viewport.getWorldHeight()) {
-            game.camera.position.y = MathUtils.clamp(
-                game.camera.position.y,
-                minCameraY,
-                maxCameraY
-            );
+            game.camera.position.y =
+                    MathUtils.clamp(game.camera.position.y, minCameraY, maxCameraY);
         }
     }
 
@@ -370,18 +371,20 @@ public class GameScreen implements Screen {
 
         // UI overlay (timer and event counters)
         game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
+                game.camera
+                        .projection
+                        .cpy()
+                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
-        int minutes = (int)(remainingTime / 60);
-        int seconds = (int)(remainingTime % 60);
+        int minutes = (int) (remainingTime / 60);
+        int seconds = (int) (remainingTime % 60);
         String timeText = String.format("%02d:%02d", minutes, seconds);
 
         int totalEvents = 5;
         String helpfulEventText = "Helpful events: " + helpfulEventCounter + "/" + totalEvents;
-        String hinderingEventText = "Hindering events: " + hinderingEventCounter + "/" + totalEvents;
+        String hinderingEventText =
+                "Hindering events: " + hinderingEventCounter + "/" + totalEvents;
         String hiddenEventText = "Hidden events: " + hiddenEventCounter + "/" + totalEvents;
-
 
         game.batch.begin();
 
@@ -396,7 +399,6 @@ public class GameScreen implements Screen {
         game.font.draw(game.batch, helpfulEventText, marginX, 30);
         game.font.draw(game.batch, hinderingEventText, marginX, 60);
         game.font.draw(game.batch, hiddenEventText, marginX, 90);
-
 
         game.batch.end();
     }
@@ -413,7 +415,8 @@ public class GameScreen implements Screen {
 
     /** Displays a message after picking up the water bottle. */
     private void drawBottleMessage() {
-        drawCenteredText("You remembered that you don't have the keycard, find it!", Color.YELLOW, 2f);
+        drawCenteredText(
+                "You remembered that you don't have the keycard, find it!", Color.YELLOW, 2f);
     }
 
     /** Displays a message after collecting the keycard. */
@@ -435,8 +438,10 @@ public class GameScreen implements Screen {
      */
     private void drawCenteredText(String text, Color color, float scale) {
         game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
+                game.camera
+                        .projection
+                        .cpy()
+                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         game.batch.begin();
         game.font.getData().setScale(scale);
@@ -479,4 +484,3 @@ public class GameScreen implements Screen {
         longBoi.getTexture().dispose();
     }
 }
-
