@@ -1,8 +1,11 @@
+import io.github.fourlastor.construo.Target
+
 plugins {
   id 'java-library'
   id 'idea'
   id 'jacoco'
-  id 'checkstyle'
+  id 'com.diffplug.spotless' version '8.1.0'
+  id "io.github.fourlastor.construo" version "2.1.0"
 }
 
 project.group = 'io.github.stumblehome'
@@ -21,31 +24,26 @@ repositories {
   maven { url = uri('https://jitpack.io') }
 }
 
-def checkstyleVersion = '10.4'
-
-configurations {
-  checkstyleRules
-}
-
 dependencies {
   implementation "com.badlogicgames.gdx:gdx:${project.findProperty('gdxVersion') ?: '1.13.1'}"
   // Add LWJGL3 backend so the jar can be runnable
   implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:${project.findProperty('gdxVersion') ?: '1.13.1'}"
   // Native runtime classifiers for desktop platforms
   runtimeOnly "com.badlogicgames.gdx:gdx-platform:${project.findProperty('gdxVersion') ?: '1.13.1'}:natives-desktop"
-  checkstyleRules(
-    "com.puppycrawl.tools:checkstyle:${checkstyleVersion}") {
-    transitive = false
+}
+
+spotless {
+  java {
+    target 'src/main/java/**/*.java', 'src/test/java/**/*.java'
+    leadingTabsToSpaces(2)
+    trimTrailingWhitespace()
+    endWithNewline()
+    googleJavaFormat('1.15.0').aosp().reflowLongStrings().formatJavadoc(false).reorderImports(false).groupArtifact('com.google.googlejavaformat:google-java-format')
   }
 }
 
-checkstyle {
-  toolVersion = checkstyleVersion
-  config = resources.text.fromArchiveEntry(
-    configurations.checkstyleRules,
-    'google_checks.xml'
-  )
-}
+// Ensure formatting is checked as part of the standard 'check' lifecycle
+check.dependsOn 'spotlessCheck'
 
 // Keep IDEA output settings similar to previous layout
 idea.module.outputDir = file('build/classes/java/main')
@@ -95,3 +93,28 @@ jar {
   }
 }
 
+// configures construo plugin to produce macOS .app version of game
+construo {
+  // executable/bundle names
+  name.set("stumblehome")
+  humanName.set("Stumble Home")
+
+  // main class (can be omitted if inferred from jar manifest)
+  mainClass.set("io.github.stumblehome.LauncherStub")
+  outputDir.set(rootProject.layout.buildDirectory.dir("construo/dist"))
+
+  targets.configure {
+    create("macM1", Target.MacOs) {
+      architecture.set(Target.Architecture.AARCH64)
+      jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.11%2B9/OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.11_9.tar.gz")
+      identifier.set("io.github.stumblehome.StumbleHome")
+      macIcon.set(project.file("src/main/resources/MainMenu.png"))
+    }
+  }
+
+  roast {
+    // macOS: run JVM on first thread (needed for LWJGL), this defaults to true but you can be explicit
+    runOnFirstThread.set(true)
+    // optional: vmArgs.addAll("-Xmx1G")
+  }
+}
