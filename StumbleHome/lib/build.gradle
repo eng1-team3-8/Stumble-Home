@@ -101,7 +101,7 @@ construo {
 
   // main class (can be omitted if inferred from jar manifest)
   mainClass.set("io.github.stumblehome.LauncherStub")
-  outputDir.set(rootProject.layout.buildDirectory.dir("construo/dist"))
+  outputDir.set(rootProject.layout.buildDirectory.dir("construo"))
 
   targets.configure {
     create("macM1", Target.MacOs) {
