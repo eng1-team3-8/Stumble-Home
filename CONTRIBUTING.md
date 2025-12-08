@@ -1,4 +1,4 @@
-# CONTRIBUTION GUIDE
+# CONTRIBUTING GUIDE
 
 ## Quick summary
 
@@ -54,6 +54,5 @@ After running `spotlessApply`, re-run the build command above.
 
 ### 3 Best practices:
 
-- Always use the Gradle wrapper (`./gradlew`) — it ensures a consistent Gradle version across contributors and CI.
-- Use Java 11+ when running Gradle locally (CI uses Java 17) to avoid incompatibilities with some plugin versions.
+- Always use the Gradle wrapper (`./gradlew`).
 - Run `./gradlew spotlessCheck` before pushing.
