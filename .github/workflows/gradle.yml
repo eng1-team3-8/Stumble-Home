@@ -51,7 +51,7 @@ jobs:
       - name: Build macOS app bundle
         if: runner.os == 'macOS'
         run: |
-          cd StumbleHome/lib
+          cd StumbleHome
           ./gradlew --no-daemon --stacktrace buildMacAppBundleMacM1
 
       - name: Upload macOS bundle
