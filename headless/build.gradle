@@ -21,7 +21,11 @@ eclipse.project.name = appName + '-headless'
 
 dependencies {
   implementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-  implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+  implementation project(':core')
+  
+  // Provide native libs for tests only
+  testRuntimeOnly "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+
   implementation project(':core')
 
   // CHANGED: add JUnit 5 and Mockito to the dependencies
