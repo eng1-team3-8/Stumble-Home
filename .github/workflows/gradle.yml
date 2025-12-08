@@ -52,14 +52,21 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           cd StumbleHome
-          ./gradlew --no-daemon --stacktrace buildMacAppBundleMacM1
+          ./gradlew --no-daemon --stacktrace packageMacM1
+
+      - name: Extract macOS app and remove zip
+        if: runner.os == 'macOS'
+        run: |
+          cd StumbleHome/build/construo
+          unzip -o stumblehome-macM1.zip -d .
+          rm stumblehome-macM1.zip
 
       - name: Upload macOS bundle
         if: runner.os == 'macOS'
         uses: actions/upload-artifact@v4
         with:
           name: macos-app
-          path: StumbleHome/lib/build/construo/macM1/Stumble Home.app
+          path: StumbleHome/build/construo
   
       # OS-specific lib JAR artifact upload
       - name: Upload library JAR
