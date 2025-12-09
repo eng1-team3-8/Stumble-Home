@@ -13,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
@@ -28,23 +27,14 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  * methods for managing a screen in a game.</p>
  *
  */
-public class WinScreen implements Screen {
-    final StumbleHome game;
+public class WinScreen extends MenuScreen {
 
     // The remaining time (in seconds) when the player won the game.
     final float remainingTime;
 
     // The player's final score.
     final int score;
-
-    // The stage used for rendering UI components such as labels and buttons.
-    Stage stage;
-
-    // The skin used for styling UI components.
-    Skin skin;
-
-    private final Texture background;
-
+    
     /**
      * Constructs a new {@code WinScreen} instance.
      *
@@ -95,30 +85,6 @@ public class WinScreen implements Screen {
     }
 
     /**
-     * Called once per frame to render the win screen.
-     *
-     * @param delta the time in seconds since the last render.
-     */
-    @Override
-    public void render(float delta) {
-        ScreenUtils.clear(Color.BLACK);
-
-        game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
-
-        game.batch.begin();
-
-        if (background != null) {
-            game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        }
-
-        game.batch.end();
-        stage.act(delta);
-        stage.draw();
-    }
-
-    /**
      * Called when the screen is resized.
      *
      * @param width  the new width of the screen in pixels.
@@ -133,6 +99,4 @@ public class WinScreen implements Screen {
     @Override public void dispose() { stage.dispose(); skin.dispose(); }
     @Override public void show() {}
     @Override public void hide() {}
-    @Override public void pause() {}
-    @Override public void resume() {}
 }

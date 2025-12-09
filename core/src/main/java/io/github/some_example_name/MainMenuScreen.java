@@ -3,8 +3,6 @@ package io.github.some_example_name;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -26,21 +24,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  *
  *
  */
-public class MainMenuScreen implements Screen {
-
-    final StumbleHome game;
-
-    // Background image for the main menu.
-    private Texture background;
-
+public class MainMenuScreen extends MenuScreen {
     // Image displayed when the tutorial is shown.
     private Texture tutorialImage;
-
-    // Stage used for rendering UI elements such as buttons.
-    private Stage stage;
-
-    // Skin used for styling UI components.
-    private Skin skin;
 
     // Flag that determines whether the tutorial image is currently displayed.
     private boolean showTutorial = false;
@@ -118,25 +104,16 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public void render(float delta){
-        ScreenUtils.clear(Color.BLACK);
-
-        game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
-
-        game.batch.begin();
-        if (background != null) {
-            game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        }
-
-        game.batch.end();
-
-        if (stage != null) {
-            stage.act(delta);
-            stage.draw();
-        }
+        super.render(delta);
 
         // draw tutorial popup if active
+        render_tutorial();
+    }
+
+    /**
+     * renders the tutorial page if it is not active, removes it if esc is pressed
+     */
+    private void render_tutorial() {
         if (showTutorial && tutorialImage != null) {
             game.batch.begin();
             float screenWidth = Gdx.graphics.getWidth();
@@ -144,7 +121,9 @@ public class MainMenuScreen implements Screen {
             float imgWidth = tutorialImage.getWidth();
             float imgHeight = tutorialImage.getHeight();
 
-            float scale = Math.min(screenWidth / imgWidth, screenHeight / imgHeight) * 0.8f; // 80% of screen
+            float scale = Math.min(screenWidth / imgWidth, screenHeight / imgHeight) * 0.8f; 
+            // 80% of screen
+
             float drawWidth = imgWidth * scale;
             float drawHeight = imgHeight * scale;
 
@@ -161,9 +140,6 @@ public class MainMenuScreen implements Screen {
                 showTutorial = false; // close tutorial when pressing ESC or clicking
             }
         }
-
-
-
     }
 
     /**
@@ -174,12 +150,6 @@ public class MainMenuScreen implements Screen {
     public void hide() {
         Gdx.input.setInputProcessor(null);
     }
-
-    @Override
-    public void pause() {}
-
-    @Override
-    public void resume() {}
 
     @Override
     public void resize(int width, int height) {
