@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import io.github.some_example_name.Screens.MainMenuScreen;
+
 /**
  * Main game class that initializes core rendering resources and manages screen transitions.
  * Sets up the camera, viewport, and rendering batch used throughout the game.

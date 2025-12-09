@@ -1,4 +1,4 @@
-package io.github.some_example_name;
+package io.github.some_example_name.Screens;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import io.github.some_example_name.StumbleHome;
 
 public abstract class MenuScreen implements Screen {
     protected StumbleHome game;

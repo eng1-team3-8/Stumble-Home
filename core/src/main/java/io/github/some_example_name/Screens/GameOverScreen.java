@@ -1,9 +1,8 @@
-package io.github.some_example_name;
+package io.github.some_example_name.Screens;
 
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,14 +11,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import io.github.some_example_name.StumbleHome;
+
 /**
- * The {@code WinScreen} class represents the screen displayed when the player successfully
- * completes the game and returns home.
+ * The {@code GameOverScreen} class represents the screen displayed when the player does not
+ * complete the game and returns home.
  * <p>
- * It shows a congratulatory message, the player's remaining time, and score.
+ * It shows a message, the player's remaining time, and score.
  * It also includes a "Restart" button that takes the player back to the main menu.
  * </p>
  *
@@ -27,22 +27,18 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  * methods for managing a screen in a game.</p>
  *
  */
-public class WinScreen extends MenuScreen {
-
-    // The remaining time (in seconds) when the player won the game.
+public class GameOverScreen extends MenuScreen {
     final float remainingTime;
-
-    // The player's final score.
     final int score;
-    
+
     /**
-     * Constructs a new {@code WinScreen} instance.
+     * Constructs a new {@code GameOverScreen} instance.
      *
      * @param game the main {@link StumbleHome} game instance.
-     * @param remainingTime the remaining time (in seconds) when the player won.
+     * @param remainingTime the remaining time (in seconds) when the player lost.
      * @param score the player's final score.
      */
-    public WinScreen(StumbleHome game, float remainingTime, int score) {
+    public GameOverScreen(StumbleHome game, float remainingTime, int score) {
         this.game = game;
         this.remainingTime = remainingTime;
         this.score = score;
@@ -50,14 +46,8 @@ public class WinScreen extends MenuScreen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        background = new Texture("MainMenu.png");
+        background = new Texture(Gdx.files.internal("gameOver.png"));
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-
-         // Create labels
-        Label winLabel = new Label("You returned home!", skin);
-        winLabel.setColor(Color.GREEN);
-        winLabel.setFontScale(3f);
-        winLabel.setAlignment(Align.center);
 
         Label timeLabel = new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
         Label scoreLabel = new Label("Score: " + score, skin);
@@ -76,9 +66,8 @@ public class WinScreen extends MenuScreen {
         table.setFillParent(true);
         table.center();
 
-        table.add(winLabel).padBottom(40).row();
-        table.add(timeLabel).padBottom(20).row();
-        table.add(scoreLabel).padBottom(40).row();
+        table.add(timeLabel).padBottom(10).row();
+        table.add(scoreLabel).padBottom(10).row();
         table.add(restartButton).width(200).height(60);
 
         stage.addActor(table);
@@ -91,7 +80,6 @@ public class WinScreen extends MenuScreen {
      * @param height the new height of the screen in pixels.
      */
     @Override public void resize(int width, int height) { stage.getViewport().update(width, height, true); }
-
     /**
      * Disposes of the screen and frees associated resources.
      * <p>Called when the screen is no longer needed.</p>

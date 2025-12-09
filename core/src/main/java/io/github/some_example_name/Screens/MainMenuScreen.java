@@ -1,4 +1,4 @@
-package io.github.some_example_name;
+package io.github.some_example_name.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
+import io.github.some_example_name.StumbleHome;
 
 /**
  * The {@code MainMenuScreen} class is the main menu screen for the StumbleHome game.

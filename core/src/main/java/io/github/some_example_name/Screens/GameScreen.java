@@ -1,4 +1,4 @@
-package io.github.some_example_name;
+package io.github.some_example_name.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -13,6 +13,12 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import io.github.some_example_name.Player;
+import io.github.some_example_name.StumbleHome;
+import io.github.some_example_name.bottleEvent;
+import io.github.some_example_name.keycardEvent;
+import io.github.some_example_name.longBoiEvent;
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
  * <p>
@@ -220,7 +226,7 @@ public class GameScreen implements Screen {
         // Check collision between player and water bottle
         if (bottle.checkCollision(playerCentreX, playerCentreY)) {
             // Player collected the water bottle - becomes sober
-            player.isDrunk = false;
+            player.SwapControls();
             helpfulEventCounter++;
             showBottleMessage = true;
             bottleMessageTimer = 3f;
