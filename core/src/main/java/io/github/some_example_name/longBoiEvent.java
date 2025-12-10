@@ -247,27 +247,6 @@ public class longBoiEvent extends Sprite {
         else{
             prev_move_UD = "";
         }
-
-        // Handles collisions with edge of map
-        // These are actually not collisions but co-ordinate
-        // restrictions so have to be handled separately
-        String temp = clampLongBoiPosition();
-        if (temp.equals("base")){
-            longY += delta*speed;
-            prev_move_UD = "up";
-        }
-        else if (temp.equals("top")){
-            longY += delta*speed;
-            prev_move_UD = "down";
-        }
-        else if (temp.equals("right-side")){
-            longX -= delta*speed;
-            prev_move_LR = "left";
-        }
-        else if (temp.equals("left-side")){
-            longX -= delta*speed;
-            prev_move_LR = "right";
-        }
     }
 
     /**
@@ -312,31 +291,5 @@ public class longBoiEvent extends Sprite {
         }
 
         return false;
-    }
-
-    /**
-     * Keeps Long Boi within map boundaries by constraining position values
-     * Returns edge of map collided with
-     */
-    private String clampLongBoiPosition() {
-        float prevX = longX;
-        float prevY = longY;
-
-        longX = MathUtils.clamp(longX, 0, mapWidth - longBoxWidth);
-        longY = MathUtils.clamp(longY, 0, mapHeight - longBoxHeight);
-
-        if (longX != prevX && prevX < 1){
-            return "left-side";
-        }
-        else if (longX != prevX && prevX > 67){
-            return "right-side";
-        }
-        else if (longY != prevY && prevY > 48){
-            return "top";
-        }
-        else if (longY != prevY && prevY < 1){
-            return "base";
-        }
-        return "";
     }
 }
