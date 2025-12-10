@@ -1,4 +1,4 @@
-package io.github.some_example_name;
+package io.github.some_example_name.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -13,6 +13,12 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import io.github.some_example_name.Player;
+import io.github.some_example_name.StumbleHome;
+import io.github.some_example_name.bottleEvent;
+import io.github.some_example_name.keycardEvent;
+import io.github.some_example_name.longBoiEvent;
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
  * <p>
@@ -32,48 +38,48 @@ import com.badlogic.gdx.utils.ScreenUtils;
  * </p>
  */
 public class GameScreen implements Screen {
-    /** Reference to the main game instance. */
+    // Reference to the main game instance.
     final StumbleHome game;
 
-    /** The current map being rendered. */
+    // The current map being rendered.
     TiledMap map;
 
-    /** Renders the tiled map using an orthogonal projection. */
+    // Renders the tiled map using an orthogonal projection.
     OrthogonalTiledMapRenderer renderer;
 
-    /** Collision layer representing obstacles (e.g., hedges). */
+    // Collision layer representing obstacles (e.g., hedges).
     TiledMapTileLayer collisionLayer;
 
     // Map boundaries
-    /** Width of the map in world units. */
+    // Width of the map in world units.
     private final float mapWidth;
-    /** Height of the map in world units. */
+    // Height of the map in world units.
     private final float mapHeight;
-    /** Minimum X coordinate for the camera position. */
+    // Minimum X coordinate for the camera position.
     private final float minCameraX;
-    /** Maximum X coordinate for the camera position. */
+    // Maximum X coordinate for the camera position.
     private final float maxCameraX;
-    /** Minimum Y coordinate for the camera position. */
+    // Minimum Y coordinate for the camera position.
     private final float minCameraY;
-    /** Maximum Y coordinate for the camera position. */
+    // Maximum Y coordinate for the camera position.
     private final float maxCameraY;
 
-    /** Indicates whether the game is currently paused. */
+    // Indicates whether the game is currently paused.
     private boolean paused = false;
 
-    /** Remaining time for the player to complete the game (in seconds). */
+    // Remaining time for the player to complete the game (in seconds).
     private float remainingTime = 300f;
 
-    /** Whether the countdown timer has reached zero. */
+    // Whether the countdown timer has reached zero.
     private boolean timeUp = false;
 
-    /** Whether the player has reached the finish zone. */
+    // Whether the player has reached the finish zone.
     private boolean reachedFinish = false;
 
-    /** Whether the player has collected the keycard. */
+    // Whether the player has collected the keycard.
     private boolean hasKeycard = false;
 
-    /** Message flags and timers for temporary on-screen notifications. */
+    // Message flags and timers for temporary on-screen notifications.
     private boolean showNoKeycardMessage = false;
     private float noKeycardMessageTimer = 0f;
     private boolean showBottleMessage = false;
@@ -81,19 +87,19 @@ public class GameScreen implements Screen {
     private boolean showLongBoiMessage = false;
     private float longBoiMessageTimer = 0f;
 
-    /** The player character instance. */
+    // The player character instance.
     private final Player player;
 
-    /** Interactive event: the water bottle (removes drunkenness). */
+    // Interactive event: the water bottle (removes drunkenness).
     private final bottleEvent bottle;
 
-    /** Interactive event: Long Boi (a moving hazard). */
+    // Interactive event: Long Boi (a moving hazard).
     private final longBoiEvent longBoi;
 
-    /** Interactive event: keycard (required to win). */
+    // Interactive event: keycard (required to win).
     private final keycardEvent keycard;
 
-    /** Counters for hidden, helpful, and hindering events. */
+    // Counters for hidden, helpful, and hindering events.
     private int hiddenEventCounter = 0;
     private int helpfulEventCounter = 0;
     private int hinderingEventCounter = 0;
@@ -107,7 +113,7 @@ public class GameScreen implements Screen {
     public GameScreen(final StumbleHome game){
         this.game = game;
 
-        map = new TmxMapLoader().load("map.tmx");
+        map = new TmxMapLoader().load("map2.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1/16f);
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("hedge");
 
@@ -220,7 +226,7 @@ public class GameScreen implements Screen {
         // Check collision between player and water bottle
         if (bottle.checkCollision(playerCentreX, playerCentreY)) {
             // Player collected the water bottle - becomes sober
-            player.isDrunk = 0;
+            player.SwapControls();
             helpfulEventCounter++;
             showBottleMessage = true;
             bottleMessageTimer = 3f;
