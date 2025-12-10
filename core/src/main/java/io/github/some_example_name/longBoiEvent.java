@@ -69,6 +69,7 @@ public class longBoiEvent extends Sprite {
 
     // Height of the game map in tiles.
     private float mapHeight;
+    public static final String ASSET = "longBoi.png";
 
 
     /**
