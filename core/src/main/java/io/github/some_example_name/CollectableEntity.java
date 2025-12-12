@@ -1,5 +1,10 @@
 package io.github.some_example_name;
 
-public class CollectableEntity extends NonPlayerEntity{
-    
+import com.badlogic.gdx.graphics.Texture;
+
+public class CollectableEntity extends NonPlayerEntity {
+
+    public CollectableEntity(Texture texture) {
+        super(texture);
+    }
 }
