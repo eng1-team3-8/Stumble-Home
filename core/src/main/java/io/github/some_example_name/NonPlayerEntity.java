@@ -17,7 +17,7 @@ public abstract class NonPlayerEntity extends Entity {
         TextureRegion[] texture_frames = new TextureRegion[num_animations];
         for (int frame = 0; frame < num_animations; frame++) {
             for (int side_frame = 0; side_frame < 2; side_frame++) {
-                texture_frames[frame] = new TextureRegion(getTexture(), frame_width * side_frame, 
+                texture_frames[frame] = new TextureRegion(getTexture(), frame_width * side_frame,
                     frame_height * (int) (frame / 2), frame_width, frame_height);
                 frame++;
             }
@@ -26,14 +26,14 @@ public abstract class NonPlayerEntity extends Entity {
         state_time = 0f;
     }
 
-    
-    private float getCentreX(){
+
+    protected float getCentreX(){
         return x_pos + frame_size / 2;
     }
 
-    private float getCentreY(){
+    protected float getCentreY(){
         return y_pos + frame_size / 2;
     }
 
-    
+
 }
