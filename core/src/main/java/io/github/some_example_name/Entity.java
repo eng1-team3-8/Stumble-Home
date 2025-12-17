@@ -25,10 +25,10 @@ public abstract class Entity extends Sprite{
     protected float state_time;
 
     // The current X position of the entity
-    public float x_pos;
+    protected float x_pos;
 
     // The current Y position of the entity
-    public float y_pos;
+    protected float y_pos;
 
     // Size of the entity frames when rendered
     public final float frame_size;
@@ -47,10 +47,26 @@ public abstract class Entity extends Sprite{
      */
     public abstract void logic();
 
-    /**
-     * Renders the player character using the appropriate animation frame or standing pose.
-     *
-     * @param batch the sprite batch to draw with
-     */
+//    /**
+//     * Renders the player character using the appropriate animation frame or standing pose.
+//     *
+//     * @param batch the sprite batch to draw with
+//     */
 //    public abstract void draw(SpriteBatch batch);
+
+    public float getX_pos() {
+        return x_pos;
+    }
+
+    public void setX_pos(float x_pos) {
+        this.x_pos = x_pos;
+    }
+
+    public float getY_pos() {
+        return y_pos;
+    }
+
+    public void setY_pos(float y_pos) {
+        this.y_pos = y_pos;
+    }
 }
