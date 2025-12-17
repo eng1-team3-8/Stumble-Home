@@ -33,6 +33,9 @@ public abstract class Entity extends Sprite{
     // Size of the entity frames when rendered
     public final float frame_size;
 
+    // The sprite batch
+    public SpriteBatch batch;
+
     public Entity(Sprite sprite, float size){
         super(sprite);
         frame_size = size;
@@ -43,11 +46,11 @@ public abstract class Entity extends Sprite{
      * Resets the timer when switching between different animations.
      */
     public abstract void logic();
-    
+
     /**
      * Renders the player character using the appropriate animation frame or standing pose.
      *
      * @param batch the sprite batch to draw with
      */
-    public abstract void draw(SpriteBatch batch);
+//    public abstract void draw(SpriteBatch batch);
 }
