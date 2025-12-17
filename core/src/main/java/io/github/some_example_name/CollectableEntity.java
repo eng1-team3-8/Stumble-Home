@@ -44,6 +44,16 @@ public abstract class CollectableEntity extends NonPlayerEntity{
         this.isColliding = distance < 1f;
     }
 
+    /**
+     * Draws the entity, if it hasn't been collected yet
+     * @param batch
+     */
+    public void drawEntity(SpriteBatch batch){
+        if (!this.isCollected){
+            this.draw(batch);
+        }
+    }
+
 
     @Override
     public void logic() {
