@@ -28,8 +28,8 @@ public abstract class CollectableEntity extends NonPlayerEntity{
      * If so, it updates the isColliding parameter.
      * It works by using pythagoras' theorem to calculate the straight line distance between the player and the entity
      *
-     * @param playerX
-     * @param playerY
+     * @param playerX float: the x coordinate of the player
+     * @param playerY float: the y coordinate of the player
      */
     public void checkColliding(float playerX, float playerY){
         // Checks if the entity has already been collected
@@ -46,7 +46,7 @@ public abstract class CollectableEntity extends NonPlayerEntity{
 
     /**
      * Draws the entity, if it hasn't been collected yet
-     * @param batch
+     * @param batch SpriteBatch: The spritebatch that will be drawn on
      */
     public void drawEntity(SpriteBatch batch){
         if (!this.isCollected){
