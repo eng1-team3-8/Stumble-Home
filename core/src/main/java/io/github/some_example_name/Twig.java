@@ -4,10 +4,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Twig extends CollidableEntity{
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 
-    public Twig(Texture texture){
-        super(texture);
+public class Twig extends CollectableEntity {
+
+    public Twig(Texture texture, Sprite sprite, float size, int frame_width, int frame_height, int num_animations){
+        super(texture, sprite, size, frame_width, frame_height, num_animations);
     }
+
+
 
 }
