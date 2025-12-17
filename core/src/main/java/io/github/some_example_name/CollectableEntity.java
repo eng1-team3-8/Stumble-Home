@@ -7,6 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
+/**
+ * This is a class that creates entities that can be collected
+ * @author Lenny, Isaac
+ */
 public abstract class CollectableEntity extends NonPlayerEntity{
 
     // Boolean value to see if the entity is colliding with the player
@@ -19,6 +23,14 @@ public abstract class CollectableEntity extends NonPlayerEntity{
         super(sprite, size, frame_width, frame_height, num_animations);
     }
 
+    /**
+     * This method checks if the player is within a certain distance of the centre of the entity.
+     * If so, it updates the isColliding parameter.
+     * It works by using pythagoras' theorem to calculate the straight line distance between the player and the entity
+     *
+     * @param playerX
+     * @param playerY
+     */
     public void checkColliding(float playerX, float playerY){
         // Checks if the entity has already been collected
         if (this.isCollected){
@@ -29,7 +41,7 @@ public abstract class CollectableEntity extends NonPlayerEntity{
         double distance = sqrt(pow(playerX - this.getCentreX(), 2) + pow(playerY - this.getCentreY(), 2));
 
         // Sets the colliding variable to true if the player is within a certain distance
-        this.isCollected = distance < 1f;
+        this.isColliding = distance < 1f;
     }
 
 
