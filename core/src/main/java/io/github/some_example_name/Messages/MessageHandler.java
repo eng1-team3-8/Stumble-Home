@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import io.github.some_example_name.StumbleHome;
 
 public class MessageHandler {
-    StumbleHome game;
-    Map<Messages, MessageID> messages;
+    private StumbleHome game;
+    private Map<Messages, MessageID> messages;
 
     public MessageHandler(StumbleHome game) {
         this.game = game;
@@ -29,18 +29,26 @@ public class MessageHandler {
         return false;
     }
 
-    public float updateMessage(float time_left, Messages message) {
-        if (time_left <= 0) {
-            return 0;
+    public void updateMessages() {
+        for (Messages msg : Messages.values()) {
+            if (!(messages.get(msg).time_left <= 0)) {
+                drawCenteredText(messages.get(msg));
+                shift_time(msg, -Gdx.graphics.getDeltaTime());
+            }
         }
-        drawCenteredText(messages.get(message));
-        return time_left - Gdx.graphics.getDeltaTime();
     }
 
     public void updateMessage(boolean show_msg, Messages message) {
         if (show_msg) {
             drawCenteredText(messages.get(message));
         }
+    }
+
+    public void set_time(Messages msg, float new_time) {
+        messages.get(msg).time_left = new_time;
+    }
+    public void shift_time(Messages msg, float time_difference) {
+        messages.get(msg).time_left += time_difference;
     }
     /**
      * Draws text centered on the screen with a given color and scale.

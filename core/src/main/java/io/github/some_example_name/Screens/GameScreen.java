@@ -16,6 +16,9 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.github.some_example_name.*;
 
 import java.io.Console;
@@ -85,10 +88,6 @@ public class GameScreen implements Screen {
 
     // Message timers for temporary on-screen notifications.
     private MessageHandler msg;
-    private float no_keycard_message_timer = 0f;
-    private float remember_keycard_timer = 0f;
-    private float longboi_message_timer = 0f;
-    private float obtain_keycard_timer = 0f;
 
     // The player character instance.
     private final Player player;
@@ -174,11 +173,6 @@ public class GameScreen implements Screen {
         // Twig event
         twig = new Twig(new Texture("Sprites/Stick.png"), 1f, new float[]{63f, 47f});
 
-
-        // Twig event
-        twig = new Twig(new Texture("Sprites/Stick.png"), 1f, new float[]{63f, 47f});
-
-
         // message handler
         msg = new MessageHandler(game);
         msg.addMessage(Messages.PAUSED, "PAUSED", Color.WHITE, 2f);
@@ -190,7 +184,6 @@ public class GameScreen implements Screen {
             "You remembered that you don't have the keycard, find it!", Color.RED, 2f);
         msg.addMessage(Messages.LONGBOIAPPEAR, 
             "It's Long Boi! Avoid him!", Color.RED, 2f);
-
     }
 
 
@@ -224,11 +217,8 @@ public class GameScreen implements Screen {
         }
         draw();
 
-        no_keycard_message_timer = msg.updateMessage(no_keycard_message_timer, Messages.NOKEYCARD);
-        remember_keycard_timer = msg.updateMessage(remember_keycard_timer, Messages.REMEMBERKEYCARD);
+        msg.updateMessages();
         msg.updateMessage(paused, Messages.PAUSED);
-        longboi_message_timer = msg.updateMessage(longboi_message_timer, Messages.LONGBOIAPPEAR);
-        obtain_keycard_timer = msg.updateMessage(obtain_keycard_timer, Messages.PICKUPKEYCARD);
 
         if (timeUp && !reachedFinish) {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
@@ -258,14 +248,14 @@ public class GameScreen implements Screen {
             // Player collected the water bottle - becomes sober
             player.SwapControls();
             helpfulEventCounter++;
-            remember_keycard_timer = 3f;
+            msg.set_time(Messages.REMEMBERKEYCARD, 3f);
         }
 
         // check collision with keycard
         if (keycard.checkCollision(playerCentreX, playerCentreY)) {
             hasKeycard = true;
             hinderingEventCounter++;
-            obtain_keycard_timer = 3f;
+            msg.set_time(Messages.PICKUPKEYCARD, 3f);
         }
 
         // Check collision with twig
@@ -282,7 +272,7 @@ public class GameScreen implements Screen {
             // check if player near longBoi
             if (longBoi.checkNear(playerCentreX, playerCentreY)) {
                 // player is near
-                longboi_message_timer = 2f;
+                msg.set_time(Messages.LONGBOIAPPEAR, 2f);
                 hiddenEventCounter++;
             }
 
@@ -333,7 +323,7 @@ public class GameScreen implements Screen {
 
         // if at finish with no keycard, show no keycard message
         if (!hasKeycard && reachedFinishZone()) {
-            no_keycard_message_timer = 3f;
+            msg.set_time(Messages.NOKEYCARD, 3f);
         }
 
         clampCamera();
