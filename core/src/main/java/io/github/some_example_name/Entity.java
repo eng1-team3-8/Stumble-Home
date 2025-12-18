@@ -36,9 +36,19 @@ public abstract class Entity extends Sprite{
     // The sprite batch
     public SpriteBatch batch;
 
-    public Entity(Sprite sprite, float size){
-        super(sprite);
-        frame_size = size;
+    /**
+     * The base constructor of the entity
+     * @param texture Texture: The texture of the entity
+     * @param size float: The size of the entity
+     * @param position float[X,Y]: An array of the coordinates of the entity. Array position 0 is X, position 1 is Y.
+     */
+    public Entity(Texture texture, float size, float[] position){
+        super(texture); // Creates the sprite with the texture
+        this.frame_size = size;
+        this.setSize(size, size);
+        this.setPosition(position[0], position[1]); // Sets the position of the sprite using the array
+        this.x_pos = position[0];
+        this.y_pos = position[1];
     }
 
     /**
@@ -47,26 +57,4 @@ public abstract class Entity extends Sprite{
      */
     public abstract void logic();
 
-//    /**
-//     * Renders the player character using the appropriate animation frame or standing pose.
-//     *
-//     * @param batch the sprite batch to draw with
-//     */
-//    public abstract void draw(SpriteBatch batch);
-
-    public float getX_pos() {
-        return x_pos;
-    }
-
-    public void setX_pos(float x_pos) {
-        this.x_pos = x_pos;
-    }
-
-    public float getY_pos() {
-        return y_pos;
-    }
-
-    public void setY_pos(float y_pos) {
-        this.y_pos = y_pos;
-    }
 }

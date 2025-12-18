@@ -57,6 +57,7 @@ public class MainMenuScreen extends MenuScreen {
         // create buttons
         TextButton playButton = new TextButton("Play", skin);
         TextButton tutorialButton = new TextButton("Tutorial", skin);
+        TextButton leaderBoardButton = new TextButton("Leaderboard", skin);
         TextButton exitButton = new TextButton("Exit", skin);
 
         // set button positions
@@ -65,11 +66,13 @@ public class MainMenuScreen extends MenuScreen {
 
         playButton.setBounds(centerX, startY, 200, 50);
         tutorialButton.setBounds(centerX, startY - 70, 200, 50);
-        exitButton.setBounds(centerX, startY - 140, 200, 50);
+        leaderBoardButton.setBounds(centerX, startY - 140, 200, 50);
+        exitButton.setBounds(centerX, startY - 210, 200, 50);
 
         // adds buttons to stage
         stage.addActor(playButton);
         stage.addActor(tutorialButton);
+        stage.addActor(leaderBoardButton);
         stage.addActor(exitButton);
 
         //  Play button click
@@ -85,6 +88,14 @@ public class MainMenuScreen extends MenuScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 showTutorial = true; // show popup when clicked
+            }
+        });
+
+        // Tutorial button click
+        leaderBoardButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new Leaderboard(game));
             }
         });
 

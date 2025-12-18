@@ -1,8 +1,10 @@
 package io.github.some_example_name.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -14,11 +16,11 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import io.github.some_example_name.Player;
-import io.github.some_example_name.StumbleHome;
-import io.github.some_example_name.bottleEvent;
-import io.github.some_example_name.keycardEvent;
-import io.github.some_example_name.longBoiEvent;
+import io.github.some_example_name.*;
+
+import java.io.Console;
+import java.util.logging.FileHandler;
+
 import io.github.some_example_name.Messages.MessageHandler;
 import io.github.some_example_name.Messages.Messages;
 /**
@@ -100,10 +102,15 @@ public class GameScreen implements Screen {
     // Interactive event: keycard (required to win).
     private final keycardEvent keycard;
 
+    // Interactive event: Twig (slows down walking)
+    private final Twig twig;
+
     // Counters for hidden, helpful, and hindering events.
     private int hiddenEventCounter = 0;
     private int helpfulEventCounter = 0;
     private int hinderingEventCounter = 0;
+
+    private float time;
 
     /**
      * Constructs the {@code GameScreen} and initializes the map, player, camera,
@@ -149,17 +156,28 @@ public class GameScreen implements Screen {
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
 
         // events
+        // Bottle event (not reimplemented yet)
         bottle = new bottleEvent(new Sprite(new Texture("waterBottle.png")));
         bottle.bottleX = mapWidth - 3 - bottle.bottleSize / 2;
         bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
 
+        // LongBoi event
         longBoi = new longBoiEvent(new Sprite(new Texture("longBoi.png")), collisionLayer);
         longBoi.longX = mapWidth - 23 - longBoi.longSize / 2;
         longBoi.longY = mapHeight - 38 - longBoi.longSize / 2;
 
+        // Keycard event (not reimplemented yet)
         keycard = new keycardEvent(new Sprite(new Texture("keyCard.png")));
         keycard.keycardX = mapWidth  - 57 - keycard.keycardSize / 2;
         keycard.keycardY = mapHeight - 5 - keycard.keycardSize / 2;
+
+        // Twig event
+        twig = new Twig(new Texture("Sprites/Stick.png"), 1f, new float[]{63f, 47f});
+
+
+        // Twig event
+        twig = new Twig(new Texture("Sprites/Stick.png"), 1f, new float[]{63f, 47f});
+
 
         // message handler
         msg = new MessageHandler(game);
@@ -191,6 +209,9 @@ public class GameScreen implements Screen {
      */
     @Override
     public void render(float delta) {
+        // Increments the cloack
+        this.time += Gdx.graphics.getDeltaTime();
+
         // Toggle pause when SPACE is pressed
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             paused = !paused; // flip pause state
@@ -213,6 +234,8 @@ public class GameScreen implements Screen {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
             game.setScreen(new GameOverScreen(game, remainingTime, score));
         }
+
+
     }
 
     /**
@@ -244,6 +267,15 @@ public class GameScreen implements Screen {
             hinderingEventCounter++;
             obtain_keycard_timer = 3f;
         }
+
+        // Check collision with twig
+        if (twig.checkColliding(playerCentreX, playerCentreY)) {
+            hinderingEventCounter++;
+            player.slowDownPlayer(.5f);
+        }
+
+
+        System.out.println(player.player_speed);
 
         // if long boi walk not completed, run logic
         if (!longBoi.doneWalk) {
@@ -290,7 +322,10 @@ public class GameScreen implements Screen {
         if (!reachedFinish && hasKeycard && reachedFinishZone()) {
             timeUp = true;
             paused = true;
+
             int score = (int) (remainingTime * 10) + (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
+            saveLeaderBoardScore(score, "P2");
+
             reachedFinish = true;
             game.setScreen(new WinScreen(game, remainingTime, score));
             dispose();
@@ -354,6 +389,7 @@ public class GameScreen implements Screen {
         bottle.draw(game.batch);
         longBoi.draw(game.batch);
         keycard.draw(game.batch);
+        twig.drawEntity(game.batch);
 
         game.batch.end();
 
@@ -417,5 +453,10 @@ public class GameScreen implements Screen {
         keycard.getTexture().dispose();
         longBoi.getTexture().dispose();
     }
+
+    private void saveLeaderBoardScore(int score, String playerName){
+        FileHandle writeFile = Gdx.files.local("leaderBoard.csv");
+        writeFile.writeString(playerName + "," + Integer.toString(score) + "\n", true);
+    };
 }
 

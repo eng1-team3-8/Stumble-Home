@@ -19,8 +19,30 @@ public abstract class CollectableEntity extends NonPlayerEntity{
     // Boolean value to see if the entity has been collected
     boolean isCollected = false;
 
-    public CollectableEntity(Texture texture, Sprite sprite, float size, int frame_width, int frame_height, int num_animations){
-        super(sprite, size, frame_width, frame_height, num_animations);
+    // Boolean value to see if the event caused by the collision has been triggered yet
+    boolean isTriggered = false;
+
+    /**
+     * A constructor for entities that have animations
+     * @param texture Texture: The texture of the entity
+     * @param size float: The size of the entity
+     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X, and 1 is Y.
+     * @param frame_width integer: The frame width of the animation
+     * @param frame_height integer: The frame height of the animation
+     * @param num_animations integer: The number of animations
+     */
+    public CollectableEntity(Texture texture, float size, float[] position, int frame_width, int frame_height, int num_animations){
+        super(texture, size, position, frame_width, frame_height, num_animations);
+    }
+
+    /**
+     * A constructor for entities that don't have any animations
+     * @param texture Texture: The texture of the entity
+     * @param size float: The size of the entity
+     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X, and 1 is Y.
+     */
+    public CollectableEntity(Texture texture, float size, float[] position){
+        super(texture, size, position);
     }
 
     /**
@@ -31,10 +53,10 @@ public abstract class CollectableEntity extends NonPlayerEntity{
      * @param playerX float: the x coordinate of the player
      * @param playerY float: the y coordinate of the player
      */
-    public void checkColliding(float playerX, float playerY){
+    public boolean checkColliding(float playerX, float playerY){
         // Checks if the entity has already been collected
         if (this.isCollected){
-            return;
+            return false;
         }
 
         // Calculates the distance between the player and the entity using pythagoras
@@ -42,6 +64,12 @@ public abstract class CollectableEntity extends NonPlayerEntity{
 
         // Sets the colliding variable to true if the player is within a certain distance
         this.isColliding = distance < 1f;
+
+        if (this.isColliding){
+            this.isCollected = true;
+        }
+
+        return this.isColliding;
     }
 
     /**
