@@ -14,11 +14,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-import io.github.some_example_name.Player;
-import io.github.some_example_name.StumbleHome;
-import io.github.some_example_name.bottleEvent;
-import io.github.some_example_name.keycardEvent;
-import io.github.some_example_name.longBoiEvent;
+import io.github.some_example_name.*;
+
+import java.io.Console;
+
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
  * <p>
@@ -99,6 +98,9 @@ public class GameScreen implements Screen {
     // Interactive event: keycard (required to win).
     private final keycardEvent keycard;
 
+    // Interactive event: Twig (slows down walking)
+    private final Twig twig;
+
     // Counters for hidden, helpful, and hindering events.
     private int hiddenEventCounter = 0;
     private int helpfulEventCounter = 0;
@@ -148,17 +150,24 @@ public class GameScreen implements Screen {
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
 
         // events
+        // Bottle event (not reimplemented yet)
         bottle = new bottleEvent(new Sprite(new Texture("waterBottle.png")));
         bottle.bottleX = mapWidth - 3 - bottle.bottleSize / 2;
         bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
 
+        // LongBoi event
         longBoi = new longBoiEvent(new Sprite(new Texture("longBoi.png")), collisionLayer);
         longBoi.longX = mapWidth - 23 - longBoi.longSize / 2;
         longBoi.longY = mapHeight - 38 - longBoi.longSize / 2;
 
+        // Keycard event (not reimplemented yet)
         keycard = new keycardEvent(new Sprite(new Texture("keyCard.png")));
         keycard.keycardX = mapWidth  - 57 - keycard.keycardSize / 2;
         keycard.keycardY = mapHeight - 5 - keycard.keycardSize / 2;
+
+        // Twig event
+        twig = new Twig(new Texture("Sprites/Stick.png"), 1f, new float[]{63f, 47f});
+
 
     }
 
@@ -206,6 +215,8 @@ public class GameScreen implements Screen {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
             game.setScreen(new GameOverScreen(game, remainingTime, score));
         }
+
+
     }
 
     /**
@@ -237,6 +248,11 @@ public class GameScreen implements Screen {
             hasKeycard = true;
             hinderingEventCounter++;
             drawKeycardMessage();
+        }
+
+        // Check collision with twig
+        if (twig.checkColliding(playerCentreX, playerCentreY)) {
+            ;
         }
 
         // if long boi walk not completed, run logic
@@ -371,6 +387,7 @@ public class GameScreen implements Screen {
         bottle.draw(game.batch);
         longBoi.draw(game.batch);
         keycard.draw(game.batch);
+        twig.drawEntity(game.batch);
 
         game.batch.end();
 
