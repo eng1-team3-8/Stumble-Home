@@ -110,6 +110,7 @@ public class GameScreen implements Screen {
     private int hinderingEventCounter = 0;
 
     private float time;
+    private final String playerName;
 
     /**
      * Constructs the {@code GameScreen} and initializes the map, player, camera,
@@ -117,8 +118,9 @@ public class GameScreen implements Screen {
      *
      * @param game the main {@link StumbleHome} game instance.
      */
-    public GameScreen(final StumbleHome game){
+    public GameScreen(final StumbleHome game, final String playerName){
         this.game = game;
+        this.playerName = playerName;
 
         map = new TmxMapLoader().load("map2.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1/16f);
@@ -264,9 +266,6 @@ public class GameScreen implements Screen {
             player.slowDownPlayer(.5f);
         }
 
-
-        System.out.println(player.player_speed);
-
         // if long boi walk not completed, run logic
         if (!longBoi.doneWalk) {
             // check if player near longBoi
@@ -314,7 +313,7 @@ public class GameScreen implements Screen {
             paused = true;
 
             int score = (int) (remainingTime * 10) + (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
-            saveLeaderBoardScore(score, "P2");
+            saveLeaderBoardScore(score);
 
             reachedFinish = true;
             game.setScreen(new WinScreen(game, remainingTime, score));
@@ -444,7 +443,7 @@ public class GameScreen implements Screen {
         longBoi.getTexture().dispose();
     }
 
-    private void saveLeaderBoardScore(int score, String playerName){
+    private void saveLeaderBoardScore(int score){
         FileHandle writeFile = Gdx.files.local("leaderBoard.csv");
         writeFile.writeString(playerName + "," + Integer.toString(score) + "\n", true);
     };

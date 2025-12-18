@@ -73,6 +73,15 @@ public class WinScreen extends MenuScreen {
             }
         });
 
+        // Create restart button
+        TextButton leaderBoardButton = new TextButton("Leaderboard", skin);
+        leaderBoardButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new Leaderboard(game));
+            }
+        });
+
         // Layout using a table
         Table table = new Table();
         table.setFillParent(true);
@@ -81,7 +90,8 @@ public class WinScreen extends MenuScreen {
         table.add(winLabel).padBottom(40).row();
         table.add(timeLabel).padBottom(20).row();
         table.add(scoreLabel).padBottom(40).row();
-        table.add(restartButton).width(200).height(60);
+        table.add(restartButton).padBottom(40).width(200).height(60).row();
+        table.add(leaderBoardButton).width(200).height(60).row();
 
         stage.addActor(table);
     }

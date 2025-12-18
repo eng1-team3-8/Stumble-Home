@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -33,6 +34,8 @@ public class MainMenuScreen extends MenuScreen {
     // Flag that determines whether the tutorial image is currently displayed.
     private boolean showTutorial = false;
 
+    TextField playerNameInput;
+
     public MainMenuScreen(final StumbleHome game) {
         this.game = game;
     }
@@ -45,7 +48,6 @@ public class MainMenuScreen extends MenuScreen {
      */
     @Override
     public void show() {
-
         // Textures for the main menu and the tutorial
         background = new Texture("MainMenu.png");
         tutorialImage = new Texture("tutorial.png");
@@ -64,10 +66,16 @@ public class MainMenuScreen extends MenuScreen {
         float centerX = Gdx.graphics.getWidth() / 2f - 100;
         float startY = Gdx.graphics.getHeight() / 2f + 50;
 
+        playerNameInput = new TextField("", skin);
+        playerNameInput.setBounds(centerX, startY + 60, 200, 50);
+        playerNameInput.setAlignment(1);
+        playerNameInput.setMessageText("Enter Player Name");
+        stage.addActor(playerNameInput);
+
         playButton.setBounds(centerX, startY, 200, 50);
-        tutorialButton.setBounds(centerX, startY - 70, 200, 50);
-        leaderBoardButton.setBounds(centerX, startY - 140, 200, 50);
-        exitButton.setBounds(centerX, startY - 210, 200, 50);
+        tutorialButton.setBounds(centerX, startY - 60, 200, 50);
+        leaderBoardButton.setBounds(centerX, startY - 120, 200, 50);
+        exitButton.setBounds(centerX, startY - 180, 200, 50);
 
         // adds buttons to stage
         stage.addActor(playButton);
@@ -79,7 +87,12 @@ public class MainMenuScreen extends MenuScreen {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameScreen(game));
+                if (playerNameInput.getText().equals("")){
+                    // Display warning to enter username
+                }
+                else {
+                    game.setScreen(new GameScreen(game, playerNameInput.getText()));
+                }
             }
         });
 

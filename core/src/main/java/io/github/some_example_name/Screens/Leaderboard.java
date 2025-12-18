@@ -1,5 +1,8 @@
 package io.github.some_example_name.Screens;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
@@ -26,19 +29,37 @@ public class Leaderboard extends MenuScreen{
 
         String boardData = readLeaderBoard();
         String[] splitBoard = boardData.split("\n");
+        List<String[]> ordered = new ArrayList<>();
 
         Table leaderboard = new Table();
+        Label tempRow = new Label("Leaderboard:", skin);
+        tempRow.setFontScale(5f);
+        leaderboard.add(tempRow).pad(15);
+        leaderboard.row();
 
         for (String s : splitBoard){
             String[] tempData = s.split(",");
+
             if (tempData.length >= 2) {
-                System.out.println(tempData[1]);
-                Label tempRow = new Label(tempData[0] + ": " + tempData[1], skin);
-                tempRow.setFontScale(3f);
-                leaderboard.add(tempRow).pad(10);
-                leaderboard.row();
-        }
+                if (ordered.size() > 0){
+                    int pos = 0;
+                    while (Integer.valueOf(ordered.get(pos)[1]) > Integer.valueOf(tempData[1])){
+                        pos += 1;
+                    }
+                    ordered.add(pos, tempData);
+                }
+                else{
+                    ordered.add(tempData);
+                }
             }
+        }
+
+        for (String[] s : ordered){
+            tempRow = new Label(s[0] + ": " + s[1], skin);
+            tempRow.setFontScale(3f);
+            leaderboard.add(tempRow).pad(10);
+            leaderboard.row();
+        }
 
         this.scrollPane = new ScrollPane(leaderboard, skin);
         scrollPane.setFillParent(true);
@@ -77,7 +98,7 @@ public class Leaderboard extends MenuScreen{
         stage.draw();
 
         // Escape button click
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyPressed(Input.Keys.ENTER)){
             this.dispose();
             game.setScreen(new MainMenuScreen(game));
         }
