@@ -19,6 +19,8 @@ import io.github.some_example_name.StumbleHome;
 import io.github.some_example_name.bottleEvent;
 import io.github.some_example_name.keycardEvent;
 import io.github.some_example_name.longBoiEvent;
+import io.github.some_example_name.Messages.MessageHandler;
+import io.github.some_example_name.Messages.Messages;
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
  * <p>
@@ -79,13 +81,12 @@ public class GameScreen implements Screen {
     // Whether the player has collected the keycard.
     private boolean hasKeycard = false;
 
-    // Message flags and timers for temporary on-screen notifications.
-    private boolean showNoKeycardMessage = false;
-    private float noKeycardMessageTimer = 0f;
-    private boolean showBottleMessage = false;
-    private float bottleMessageTimer = 0f;
-    private boolean showLongBoiMessage = false;
-    private float longBoiMessageTimer = 0f;
+    // Message timers for temporary on-screen notifications.
+    private MessageHandler msg;
+    private float no_keycard_message_timer = 0f;
+    private float remember_keycard_timer = 0f;
+    private float longboi_message_timer = 0f;
+    private float obtain_keycard_timer = 0f;
 
     // The player character instance.
     private final Player player;
@@ -160,6 +161,18 @@ public class GameScreen implements Screen {
         keycard.keycardX = mapWidth  - 57 - keycard.keycardSize / 2;
         keycard.keycardY = mapHeight - 5 - keycard.keycardSize / 2;
 
+        // message handler
+        msg = new MessageHandler(game);
+        msg.addMessage(Messages.PAUSED, "PAUSED", Color.WHITE, 2f);
+        msg.addMessage(Messages.NOKEYCARD, 
+            "You need a KeyCard to enter the Door...", Color.RED, 2f);
+        msg.addMessage(Messages.PICKUPKEYCARD, 
+            "You have the keyCard, you can go home now!", Color.YELLOW, 2f);
+        msg.addMessage(Messages.REMEMBERKEYCARD, 
+            "You remembered that you don't have the keycard, find it!", Color.RED, 2f);
+        msg.addMessage(Messages.LONGBOIAPPEAR, 
+            "It's Long Boi! Avoid him!", Color.RED, 2f);
+
     }
 
 
@@ -190,18 +203,12 @@ public class GameScreen implements Screen {
         }
         draw();
 
-        if (showNoKeycardMessage) {
-            drawNoKeycardMessage();
-        }
-        if (showBottleMessage) {
-            drawBottleMessage();
-        }
-        if (paused) {
-            drawPauseOverlay();
-        }
-        if (showLongBoiMessage) {
-            drawLongBoiMessage();
-        }
+        no_keycard_message_timer = msg.updateMessage(no_keycard_message_timer, Messages.NOKEYCARD);
+        remember_keycard_timer = msg.updateMessage(remember_keycard_timer, Messages.REMEMBERKEYCARD);
+        msg.updateMessage(paused, Messages.PAUSED);
+        longboi_message_timer = msg.updateMessage(longboi_message_timer, Messages.LONGBOIAPPEAR);
+        obtain_keycard_timer = msg.updateMessage(obtain_keycard_timer, Messages.PICKUPKEYCARD);
+
         if (timeUp && !reachedFinish) {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
             game.setScreen(new GameOverScreen(game, remainingTime, score));
@@ -228,15 +235,14 @@ public class GameScreen implements Screen {
             // Player collected the water bottle - becomes sober
             player.SwapControls();
             helpfulEventCounter++;
-            showBottleMessage = true;
-            bottleMessageTimer = 3f;
+            remember_keycard_timer = 3f;
         }
 
         // check collision with keycard
         if (keycard.checkCollision(playerCentreX, playerCentreY)) {
             hasKeycard = true;
             hinderingEventCounter++;
-            drawKeycardMessage();
+            obtain_keycard_timer = 3f;
         }
 
         // if long boi walk not completed, run logic
@@ -244,8 +250,7 @@ public class GameScreen implements Screen {
             // check if player near longBoi
             if (longBoi.checkNear(playerCentreX, playerCentreY)) {
                 // player is near
-                showLongBoiMessage = true;
-                longBoiMessageTimer = 2f;
+                longboi_message_timer = 2f;
                 hiddenEventCounter++;
             }
 
@@ -293,29 +298,7 @@ public class GameScreen implements Screen {
 
         // if at finish with no keycard, show no keycard message
         if (!hasKeycard && reachedFinishZone()) {
-            showNoKeycardMessage = true;
-            noKeycardMessageTimer = 3f;
-        }
-
-        if (showNoKeycardMessage) {
-            noKeycardMessageTimer -= Gdx.graphics.getDeltaTime();
-            if (noKeycardMessageTimer <= 0) {
-                showNoKeycardMessage = false;
-            }
-        }
-
-        if (showBottleMessage) {
-            bottleMessageTimer -= Gdx.graphics.getDeltaTime();
-            if (bottleMessageTimer <= 0) {
-                showBottleMessage = false;
-            }
-        }
-
-        if (showLongBoiMessage) {
-            longBoiMessageTimer -= Gdx.graphics.getDeltaTime();
-                if (longBoiMessageTimer <= 0) {
-                    showLongBoiMessage = false;
-                }
+            no_keycard_message_timer = 3f;
         }
 
         clampCamera();
@@ -404,56 +387,6 @@ public class GameScreen implements Screen {
         game.font.draw(game.batch, hiddenEventText, marginX, 90);
 
 
-        game.batch.end();
-    }
-
-    /** Draws a pause message overlay. */
-    private void drawPauseOverlay() {
-        drawCenteredText("PAUSED", Color.WHITE, 3f);
-    }
-
-    /** Displays a message indicating the player lacks the keycard. */
-    private void drawNoKeycardMessage() {
-        drawCenteredText("You need a KeyCard to enter the Door...", Color.RED, 3f);
-    }
-
-    /** Displays a message after picking up the water bottle. */
-    private void drawBottleMessage() {
-        drawCenteredText("You remembered that you don't have the keycard, find it!", Color.YELLOW, 2f);
-    }
-
-    /** Displays a message after collecting the keycard. */
-    private void drawKeycardMessage() {
-        drawCenteredText("You have the keyCard, you can go home now!", Color.YELLOW, 2f);
-    }
-
-    /** Displays a warning message when encountering Long Boi. */
-    private void drawLongBoiMessage() {
-        drawCenteredText("It's Long Boi! Avoid him!", Color.RED, 3f);
-    }
-
-    /**
-     * Draws text centered on the screen with a given color and scale.
-     *
-     * @param text  the text to display.
-     * @param color the color of the text.
-     * @param scale the scaling factor of the font size.
-     */
-    private void drawCenteredText(String text, Color color, float scale) {
-        game.batch.setProjectionMatrix(
-            game.camera.projection.cpy().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
-        );
-
-        game.batch.begin();
-        game.font.getData().setScale(scale);
-        game.font.setColor(color);
-
-        GlyphLayout layout = new GlyphLayout(game.font, text);
-        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
-        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
-        game.font.draw(game.batch, layout, x, y);
-
-        game.font.getData().setScale(1f);
         game.batch.end();
     }
 
