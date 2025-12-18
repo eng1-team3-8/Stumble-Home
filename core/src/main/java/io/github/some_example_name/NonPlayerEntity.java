@@ -5,12 +5,36 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
+/**
+ * An entity class for Non-Player Entities. It inherits from entity.
+ * Contains two constructor for entities with and without animations
+ * @author Isaac, Lenny
+ */
 public abstract class NonPlayerEntity extends Entity {
 
-    public NonPlayerEntity(Sprite sprite, float size, int frame_width, int frame_height, int num_animations){
-        super(sprite, size);
+    /**
+     * A constructor for entities that have animations
+     * @param texture Texture: The texture of the entity
+     * @param size float: The size of the entity
+     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X, and 1 is Y.
+     * @param frame_width integer: The frame width of the animation
+     * @param frame_height integer: The frame height of the animation
+     * @param num_animations integer: The number of animations
+     */
+    public NonPlayerEntity(Texture texture, float size, float[] position, int frame_width, int frame_height, int num_animations){
+        super(texture, size, position);
 
         initialiseAnimations(frame_width, frame_height, num_animations);
+    }
+
+    /**
+     * A constructor for entities that don't have any animations
+     * @param texture Texture: The texture of the entity
+     * @param size float: The size of the entity
+     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X, and 1 is Y.
+     */
+    public NonPlayerEntity(Texture texture, float size, float[] position){
+        super(texture, size, position);
     }
 
     private void initialiseAnimations(int frame_width, int frame_height, int num_animations) {
