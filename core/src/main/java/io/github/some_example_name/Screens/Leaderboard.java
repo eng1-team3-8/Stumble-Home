@@ -2,14 +2,13 @@ package io.github.some_example_name.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -25,14 +24,21 @@ public class Leaderboard extends MenuScreen{
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
+        String boardData = readLeaderBoard();
+        String[] splitBoard = boardData.split("\n");
+
         Table leaderboard = new Table();
 
-        for (int i = 0; i < 100; i++) {
-            Label tempRow = new Label("leaderboard " + i, skin);
-            tempRow.setFontScale(3f);
-            leaderboard.add(tempRow).pad(10);
-            leaderboard.row();
+        for (String s : splitBoard){
+            String[] tempData = s.split(",");
+            if (tempData.length >= 2) {
+                System.out.println(tempData[1]);
+                Label tempRow = new Label(tempData[0] + ": " + tempData[1], skin);
+                tempRow.setFontScale(3f);
+                leaderboard.add(tempRow).pad(10);
+                leaderboard.row();
         }
+            }
 
         this.scrollPane = new ScrollPane(leaderboard, skin);
         scrollPane.setFillParent(true);
@@ -70,7 +76,7 @@ public class Leaderboard extends MenuScreen{
         stage.act(delta);
         stage.draw();
 
-        // Exit button click
+        // Escape button click
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
             this.dispose();
             game.setScreen(new MainMenuScreen(game));
@@ -96,6 +102,11 @@ public class Leaderboard extends MenuScreen{
         stage.dispose();
         skin.dispose();
         scrollPane.clear();
+    }
+
+    private String readLeaderBoard() {
+        FileHandle file = Gdx.files.local("leaderBoard.csv");
+        return file.readString();
     }
 
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.some_example_name.*;
 
 import java.io.Console;
+import java.util.logging.FileHandler;
 
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
@@ -311,7 +313,10 @@ public class GameScreen implements Screen {
         if (!reachedFinish && hasKeycard && reachedFinishZone()) {
             timeUp = true;
             paused = true;
+
             int score = (int) (remainingTime * 10) + (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
+            saveLeaderBoardScore(score, "P2");
+
             reachedFinish = true;
             game.setScreen(new WinScreen(game, remainingTime, score));
             dispose();
@@ -511,5 +516,10 @@ public class GameScreen implements Screen {
         keycard.getTexture().dispose();
         longBoi.getTexture().dispose();
     }
+
+    private void saveLeaderBoardScore(int score, String playerName){
+        FileHandle writeFile = Gdx.files.local("leaderBoard.csv");
+        writeFile.writeString(playerName + "," + Integer.toString(score) + "\n", true);
+    };
 }
 
