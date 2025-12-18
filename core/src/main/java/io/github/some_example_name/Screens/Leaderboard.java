@@ -1,12 +1,15 @@
 package io.github.some_example_name.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -66,6 +69,11 @@ public class Leaderboard extends MenuScreen{
         game.batch.end();
         stage.act(delta);
         stage.draw();
+
+        // Exit button click
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
+            game.setScreen(new MainMenuScreen(game));
+        }
     }
 
 
@@ -80,7 +88,7 @@ public class Leaderboard extends MenuScreen{
     @Override
     public void hide() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hide'");
+        // throw new UnsupportedOperationException("Unimplemented method 'hide'");
     }
 
     @Override public void dispose() { stage.dispose(); skin.dispose(); }
