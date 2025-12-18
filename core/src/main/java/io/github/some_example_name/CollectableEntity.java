@@ -19,6 +19,9 @@ public abstract class CollectableEntity extends NonPlayerEntity{
     // Boolean value to see if the entity has been collected
     boolean isCollected = false;
 
+    // Boolean value to see if the event caused by the collision has been triggered yet
+    boolean isTriggered = false;
+
     /**
      * A constructor for entities that have animations
      * @param texture Texture: The texture of the entity

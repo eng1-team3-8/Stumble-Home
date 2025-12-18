@@ -21,7 +21,7 @@ public class Player extends Sprite {
     // Spritesheet containing all player animation frames.
     public Texture characterSheet;
 
-    // Map of all animations with key of animation name 
+    // Map of all animations with key of animation name
     private Map<Animation_enum, Animation<TextureRegion>> animations;
 
 
@@ -39,7 +39,7 @@ public class Player extends Sprite {
 
     // The direction the player was last moving or facing.
     private Animation_enum lastDirection = Animation_enum.DOWN;
-    
+
     // Current x position of the player on the map.
     public float playerX;
 
@@ -106,7 +106,7 @@ public class Player extends Sprite {
 
         // 1 standing frame
         final int NUM_STAND_FRAMES = 1;
-        
+
         animations = new HashMap<Animation_enum, Animation<TextureRegion>>();
 
         characterSheet = this.getTexture();
@@ -315,6 +315,20 @@ public class Player extends Sprite {
         float aspectRatio = 49f / 25f;
         float drawHeight = playerSize * aspectRatio;
         batch.draw(frameToDraw, playerX, playerY, playerSize, drawHeight);
+    }
+
+    public void slowDownPlayer(float amount){
+        if (isDrunk) {
+            amount *= -1;
+        }
+        this.player_speed -= amount;
+    }
+
+    public void speedUpPlayer(float amount){
+        if (isDrunk) {
+            amount *= -1;
+        }
+        this.player_speed += amount;
     }
 
 }
