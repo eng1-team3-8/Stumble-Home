@@ -25,7 +25,9 @@ public class Leaderboard extends MenuScreen{
         Table leaderboard = new Table();
 
         for (int i = 0; i < 100; i++) {
-            leaderboard.add(new Label("leaderboard" + i, skin)).pad(10);
+            Label tempRow = new Label("leaderboard " + i, skin);
+            tempRow.setFontScale(3f);
+            leaderboard.add(tempRow).pad(10);
             leaderboard.row();
         }
 
@@ -40,7 +42,8 @@ public class Leaderboard extends MenuScreen{
 
     
     /**
-     * Called once per frame to render the menu screen.
+     * Called once per frame to render the menu screen
+     * Edited to capture input for scrollable table
      *
      * @param delta the time in seconds since the last render.
      */
