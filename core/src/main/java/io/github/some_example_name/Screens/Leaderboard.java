@@ -72,6 +72,7 @@ public class Leaderboard extends MenuScreen{
 
         // Exit button click
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
+            this.dispose();
             game.setScreen(new MainMenuScreen(game));
         }
     }
@@ -91,6 +92,10 @@ public class Leaderboard extends MenuScreen{
         // throw new UnsupportedOperationException("Unimplemented method 'hide'");
     }
 
-    @Override public void dispose() { stage.dispose(); skin.dispose(); }
+    @Override public void dispose() {
+        stage.dispose();
+        skin.dispose();
+        scrollPane.clear();
+    }
 
 }
