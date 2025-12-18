@@ -1,6 +1,7 @@
 package io.github.some_example_name.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -106,6 +107,8 @@ public class GameScreen implements Screen {
     private int helpfulEventCounter = 0;
     private int hinderingEventCounter = 0;
 
+    private float time;
+
     /**
      * Constructs the {@code GameScreen} and initializes the map, player, camera,
      * and in-game events.
@@ -187,6 +190,9 @@ public class GameScreen implements Screen {
      */
     @Override
     public void render(float delta) {
+        // Increments the cloack
+        this.time += Gdx.graphics.getDeltaTime();
+
         // Toggle pause when SPACE is pressed
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             paused = !paused; // flip pause state
@@ -252,8 +258,12 @@ public class GameScreen implements Screen {
 
         // Check collision with twig
         if (twig.checkColliding(playerCentreX, playerCentreY)) {
-            ;
+            hinderingEventCounter++;
+            player.slowDownPlayer(.5f);
         }
+
+
+        System.out.println(player.player_speed);
 
         // if long boi walk not completed, run logic
         if (!longBoi.doneWalk) {
