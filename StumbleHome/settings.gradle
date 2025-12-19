@@ -3,9 +3,9 @@ plugins {
   id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
 }
 
-// Minimal project: this root contains a single library module `:lib`.
+// Project contains library module with integrated tests
 rootProject.name = 'stumble-home'
 include 'lib'
 
-// Explicit project dir for the single library module
+// Explicit project directory for library module
 project(':lib').projectDir = file('lib')

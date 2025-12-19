@@ -12,6 +12,10 @@ StumbleHome/lib/build/libs/
 StumbleHome/build/reports/problems/
 StumbleHome/lib/build/**
 
+## Ignore test output directories
+**/lib/build/test-results/
+**/lib/build/reports/tests/
+
 # Editor/IDE
 .vscode/
 .idea/
@@ -39,4 +43,5 @@ hs_err_pid*
 # Graal native-image resource config (generated)
 **/resource-config.json
 
+# Local Leaderboard storage
 *.csv
