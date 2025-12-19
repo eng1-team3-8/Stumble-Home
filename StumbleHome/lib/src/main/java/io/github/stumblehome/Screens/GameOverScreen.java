@@ -1,7 +1,15 @@
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameOverScreen.java
 package io.github.stumblehome.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+========
+package io.github.stumblehome;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameOverScreen.java
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,6 +18,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameOverScreen.java
+========
+import com.badlogic.gdx.utils.ScreenUtils;
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameOverScreen.java
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.stumblehome.StumbleHome;
 
@@ -73,6 +85,24 @@ public class GameOverScreen extends MenuScreen {
         stage.addActor(table);
     }
 
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameOverScreen.java
+========
+        game.batch.setProjectionMatrix(
+                game.camera
+                        .projection
+                        .cpy()
+                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+
+        game.batch.begin();
+
+        if (background != null) {
+            game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
+        game.batch.end();
+        stage.act(delta);
+        stage.draw();
+    }
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameOverScreen.java
     /**
      * Called when the screen is resized.
      *
@@ -98,4 +128,13 @@ public class GameOverScreen extends MenuScreen {
 
     @Override
     public void hide() {}
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameOverScreen.java
+========
+
+    @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameOverScreen.java
 }

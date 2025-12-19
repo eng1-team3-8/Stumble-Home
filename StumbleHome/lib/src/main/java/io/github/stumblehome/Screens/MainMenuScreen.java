@@ -1,8 +1,16 @@
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/MainMenuScreen.java
 package io.github.stumblehome.Screens;
+========
+package io.github.stumblehome;
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/MainMenuScreen.java
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/MainMenuScreen.java
+========
+import com.badlogic.gdx.graphics.Color;
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/MainMenuScreen.java
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -10,6 +18,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/MainMenuScreen.java
+========
+import com.badlogic.gdx.utils.ScreenUtils;
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/MainMenuScreen.java
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.stumblehome.StumbleHome;
 
@@ -87,11 +99,15 @@ public class MainMenuScreen extends MenuScreen {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/MainMenuScreen.java
                         if (playerNameInput.getText().equals("")) {
                             // Display warning to enter username
                         } else {
                             game.setScreen(new GameScreen(game, playerNameInput.getText()));
                         }
+========
+                        game.setScreen(new GameScreen(game));
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/MainMenuScreen.java
                     }
                 });
 
@@ -103,6 +119,7 @@ public class MainMenuScreen extends MenuScreen {
                         showTutorial = true; // show popup when clicked
                     }
                 });
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/MainMenuScreen.java
 
         // Tutorial button click
         leaderBoardButton.addListener(
@@ -112,6 +129,8 @@ public class MainMenuScreen extends MenuScreen {
                         game.setScreen(new Leaderboard(game));
                     }
                 });
+========
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/MainMenuScreen.java
 
         // Exit button click
         exitButton.addListener(
@@ -132,7 +151,29 @@ public class MainMenuScreen extends MenuScreen {
      */
     @Override
     public void render(float delta) {
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/MainMenuScreen.java
         super.render(delta);
+========
+        ScreenUtils.clear(Color.BLACK);
+
+        game.batch.setProjectionMatrix(
+                game.camera
+                        .projection
+                        .cpy()
+                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+
+        game.batch.begin();
+        if (background != null) {
+            game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
+
+        game.batch.end();
+
+        if (stage != null) {
+            stage.act(delta);
+            stage.draw();
+        }
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/MainMenuScreen.java
 
         // draw tutorial popup if active
         render_tutorial();
@@ -149,9 +190,15 @@ public class MainMenuScreen extends MenuScreen {
             float imgWidth = tutorialImage.getWidth();
             float imgHeight = tutorialImage.getHeight();
 
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/MainMenuScreen.java
             float scale = Math.min(screenWidth / imgWidth, screenHeight / imgHeight) * 0.8f;
             // 80% of screen
 
+========
+            float scale =
+                    Math.min(screenWidth / imgWidth, screenHeight / imgHeight)
+                            * 0.8f; // 80% of screen
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/MainMenuScreen.java
             float drawWidth = imgWidth * scale;
             float drawHeight = imgHeight * scale;
 

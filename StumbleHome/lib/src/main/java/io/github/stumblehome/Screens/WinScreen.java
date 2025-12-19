@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/WinScreen.java
 package io.github.stumblehome.Screens;
+========
+package io.github.stumblehome;
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/WinScreen.java
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -72,6 +76,7 @@ public class WinScreen extends MenuScreen {
                         game.setScreen(new MainMenuScreen(game));
                     }
                 });
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/WinScreen.java
 
         // Create restart button
         TextButton leaderBoardButton = new TextButton("Leaderboard", skin);
@@ -82,6 +87,8 @@ public class WinScreen extends MenuScreen {
                         game.setScreen(new Leaderboard(game));
                     }
                 });
+========
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/WinScreen.java
 
         // Layout using a table
         Table table = new Table();
@@ -98,6 +105,35 @@ public class WinScreen extends MenuScreen {
     }
 
     /**
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/WinScreen.java
+========
+     * Called once per frame to render the win screen.
+     *
+     * @param delta the time in seconds since the last render.
+     */
+    @Override
+    public void render(float delta) {
+        ScreenUtils.clear(Color.BLACK);
+
+        game.batch.setProjectionMatrix(
+                game.camera
+                        .projection
+                        .cpy()
+                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+
+        game.batch.begin();
+
+        if (background != null) {
+            game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
+
+        game.batch.end();
+        stage.act(delta);
+        stage.draw();
+    }
+
+    /**
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/WinScreen.java
      * Called when the screen is resized.
      *
      * @param width  the new width of the screen in pixels.
@@ -123,4 +159,13 @@ public class WinScreen extends MenuScreen {
 
     @Override
     public void hide() {}
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/WinScreen.java
+========
+
+    @Override
+    public void pause() {}
+
+    @Override
+    public void resume() {}
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/WinScreen.java
 }

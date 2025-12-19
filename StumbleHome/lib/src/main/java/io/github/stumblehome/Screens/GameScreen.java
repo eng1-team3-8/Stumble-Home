@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
 package io.github.stumblehome.Screens;
+========
+package io.github.stumblehome;
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -13,27 +17,29 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
 import io.github.stumblehome.*;
 import io.github.stumblehome.Messages.MessageHandler;
 import io.github.stumblehome.Messages.Messages;
+========
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
 
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
- * <p>
- * It handles player movement, camera control, event interactions, time tracking,
- * and determines win or loss conditions.
- * </p>
  *
- * <p>The class uses LibGDX's {@link Screen} interface to define game lifecycle
- * behavior such as rendering, resizing, and disposal.</p>
+ * <p>It handles player movement, camera control, event interactions, time tracking, and determines
+ * win or loss conditions.
+ *
+ * <p>The class uses LibGDX's {@link Screen} interface to define game lifecycle behavior such as
+ * rendering, resizing, and disposal.
  *
  * <p>In this screen:
+ *
  * <ul>
- *   <li>The player navigates through a tiled map to reach the finish zone.</li>
- *   <li>Various events (e.g., bottle, keycard, Long Boi) influence the gameplay.</li>
- *   <li>A timer counts down, ending the game when it reaches zero.</li>
+ *   <li>The player navigates through a tiled map to reach the finish zone.
+ *   <li>Various events (e.g., bottle, keycard, Long Boi) influence the gameplay.
+ *   <li>A timer counts down, ending the game when it reaches zero.
  * </ul>
- * </p>
  */
 public class GameScreen implements Screen {
     // Reference to the main game instance.
@@ -51,6 +57,7 @@ public class GameScreen implements Screen {
     // Map boundaries
     // Width of the map in world units.
     private final float mapWidth;
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
     // Height of the map in world units.
     private final float mapHeight;
     // Minimum X coordinate for the camera position.
@@ -60,6 +67,22 @@ public class GameScreen implements Screen {
     // Minimum Y coordinate for the camera position.
     private final float minCameraY;
     // Maximum Y coordinate for the camera position.
+========
+
+    /** Height of the map in world units. */
+    private final float mapHeight;
+
+    /** Minimum X coordinate for the camera position. */
+    private final float minCameraX;
+
+    /** Maximum X coordinate for the camera position. */
+    private final float maxCameraX;
+
+    /** Minimum Y coordinate for the camera position. */
+    private final float minCameraY;
+
+    /** Maximum Y coordinate for the camera position. */
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
     private final float maxCameraY;
 
     // Indicates whether the game is currently paused.
@@ -77,12 +100,24 @@ public class GameScreen implements Screen {
     // Whether the player has collected the keycard.
     private boolean hasKeycard = false;
 
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
     // Message timers for temporary on-screen notifications.
     private MessageHandler msg;
+========
+    /** Message flags and timers for temporary on-screen notifications. */
+    private boolean showNoKeycardMessage = false;
+
+    private float noKeycardMessageTimer = 0f;
+    private boolean showBottleMessage = false;
+    private float bottleMessageTimer = 0f;
+    private boolean showLongBoiMessage = false;
+    private float longBoiMessageTimer = 0f;
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
 
     // The player character instance.
     private final Player player;
 
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
     // Interactive event: the water bottle (removes drunkenness).
     private final BottleEvent bottle;
 
@@ -90,6 +125,15 @@ public class GameScreen implements Screen {
     private final LongBoiEvent longBoi;
 
     // Interactive event: keycard (required to win).
+========
+    /** Interactive event: the water bottle (removes drunkenness). */
+    private final BottleEvent bottle;
+
+    /** Interactive event: Long Boi (a moving hazard). */
+    private final LongBoiEvent longBoi;
+
+    /** Interactive event: keycard (required to win). */
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
     private final KeycardEvent keycard;
 
     // Interactive event: Twig (slows down walking)
@@ -97,6 +141,7 @@ public class GameScreen implements Screen {
 
     // Counters for hidden, helpful, and hindering events.
     private int hiddenEventCounter = 0;
+
     private int helpfulEventCounter = 0;
     private int hinderingEventCounter = 0;
 
@@ -104,16 +149,23 @@ public class GameScreen implements Screen {
     private final String playerName;
 
     /**
-     * Constructs the {@code GameScreen} and initializes the map, player, camera,
-     * and in-game events.
+     * Constructs the {@code GameScreen} and initializes the map, player, camera, and in-game events.
      *
      * @param game the main {@link StumbleHome} game instance.
      */
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
     public GameScreen(final StumbleHome game, final String playerName) {
+========
+    public GameScreen(final StumbleHome game) {
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
         this.game = game;
         this.playerName = playerName;
 
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
         map = new TmxMapLoader().load("map2.tmx");
+========
+        map = new TmxMapLoader().load("map.tmx");
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
         renderer = new OrthogonalTiledMapRenderer(map, 1 / 16f);
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("hedge");
 
@@ -153,11 +205,15 @@ public class GameScreen implements Screen {
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
 
         // events
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
         // Bottle event (not reimplemented yet)
+========
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
         bottle = new BottleEvent(new Sprite(new Texture("waterBottle.png")));
         bottle.bottleX = mapWidth - 3 - bottle.bottleSize / 2;
         bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
 
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
         // LongBoi event
         longBoi = new LongBoiEvent(new Sprite(new Texture("longBoi.png")), collisionLayer);
         longBoi.longX = mapWidth - 23 - longBoi.longSize / 2;
@@ -189,15 +245,25 @@ public class GameScreen implements Screen {
         msg.addMessage(Messages.LONGBOIAPPEAR, "It's Long Boi! Avoid him!", Color.RED, 2f);
     }
 
+========
+        longBoi = new LongBoiEvent(new Sprite(new Texture("longBoi.png")));
+        longBoi.longX = mapWidth - 23 - longBoi.longSize / 2;
+        longBoi.longY = mapHeight - 38 - longBoi.longSize / 2;
+
+        keycard = new KeycardEvent(new Sprite(new Texture("keyCard.png")));
+        keycard.keycardX = mapWidth - 57 - keycard.keycardSize / 2;
+        keycard.keycardY = mapHeight - 5 - keycard.keycardSize / 2;
+    }
+
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
     @Override
     public void show() {}
 
     /**
      * Called once per frame to update and render the game state.
-     * <p>
-     * Handles player input, game logic, event interactions, and draws
-     * all entities and UI elements.
-     * </p>
+     *
+     * <p>Handles player input, game logic, event interactions, and draws all entities and UI
+     * elements.
      *
      * @param delta the time (in seconds) since the last render.
      */
@@ -228,8 +294,8 @@ public class GameScreen implements Screen {
     }
 
     /**
-     * Handles core game logic, including player movement, event interactions,
-     * collision detection, and time management.
+     * Handles core game logic, including player movement, event interactions, collision detection,
+     * and time management.
      */
     private void logic() {
         player.logic();
@@ -307,13 +373,19 @@ public class GameScreen implements Screen {
         if (!reachedFinish && hasKeycard && reachedFinishZone()) {
             timeUp = true;
             paused = true;
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
 
+========
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
             int score =
                     (int) (remainingTime * 10)
                             + (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter)
                                     * 50;
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
             saveLeaderBoardScore(score);
 
+========
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
             reachedFinish = true;
             game.setScreen(new WinScreen(game, remainingTime, score));
             dispose();
@@ -321,7 +393,33 @@ public class GameScreen implements Screen {
 
         // if at finish with no keycard, show no keycard message
         if (!hasKeycard && reachedFinishZone()) {
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
             msg.set_time(Messages.NOKEYCARD, 3f);
+========
+            showNoKeycardMessage = true;
+            noKeycardMessageTimer = 3f;
+        }
+
+        if (showNoKeycardMessage) {
+            noKeycardMessageTimer -= Gdx.graphics.getDeltaTime();
+            if (noKeycardMessageTimer <= 0) {
+                showNoKeycardMessage = false;
+            }
+        }
+
+        if (showBottleMessage) {
+            bottleMessageTimer -= Gdx.graphics.getDeltaTime();
+            if (bottleMessageTimer <= 0) {
+                showBottleMessage = false;
+            }
+        }
+
+        if (showLongBoiMessage) {
+            longBoiMessageTimer -= Gdx.graphics.getDeltaTime();
+            if (longBoiMessageTimer <= 0) {
+                showLongBoiMessage = false;
+            }
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
         }
 
         clampCamera();
@@ -406,13 +504,69 @@ public class GameScreen implements Screen {
         game.font.draw(game.batch, hinderingEventText, marginX, 60);
         game.font.draw(game.batch, hiddenEventText, marginX, 90);
 
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
+========
+        game.batch.end();
+    }
+
+    /** Draws a pause message overlay. */
+    private void drawPauseOverlay() {
+        drawCenteredText("PAUSED", Color.WHITE, 3f);
+    }
+
+    /** Displays a message indicating the player lacks the keycard. */
+    private void drawNoKeycardMessage() {
+        drawCenteredText("You need a KeyCard to enter the Door...", Color.RED, 3f);
+    }
+
+    /** Displays a message after picking up the water bottle. */
+    private void drawBottleMessage() {
+        drawCenteredText(
+                "You remembered that you don't have the keycard, find it!", Color.YELLOW, 2f);
+    }
+
+    /** Displays a message after collecting the keycard. */
+    private void drawKeycardMessage() {
+        drawCenteredText("You have the keyCard, you can go home now!", Color.YELLOW, 2f);
+    }
+
+    /** Displays a warning message when encountering Long Boi. */
+    private void drawLongBoiMessage() {
+        drawCenteredText("It's Long Boi! Avoid him!", Color.RED, 3f);
+    }
+
+    /**
+     * Draws text centered on the screen with a given color and scale.
+     *
+     * @param text the text to display.
+     * @param color the color of the text.
+     * @param scale the scaling factor of the font size.
+     */
+    private void drawCenteredText(String text, Color color, float scale) {
+        game.batch.setProjectionMatrix(
+                game.camera
+                        .projection
+                        .cpy()
+                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+
+        game.batch.begin();
+        game.font.getData().setScale(scale);
+        game.font.setColor(color);
+
+        GlyphLayout layout = new GlyphLayout(game.font, text);
+        float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
+        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
+        game.font.draw(game.batch, layout, x, y);
+
+        game.font.getData().setScale(1f);
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
         game.batch.end();
     }
 
     /**
      * Called when the screen size changes (e.g., window resize).
      *
-     * @param width  the new width in pixels.
+     * @param width the new width in pixels.
      * @param height the new height in pixels.
      */
     @Override
@@ -428,6 +582,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resume() {}
+
     /** Releases all resources used by this screen. */
     @Override
     public void dispose() {
@@ -436,10 +591,13 @@ public class GameScreen implements Screen {
         keycard.getTexture().dispose();
         longBoi.getTexture().dispose();
     }
+<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameScreen.java
 
     private void saveLeaderBoardScore(int score) {
         FileHandle writeFile = Gdx.files.local("leaderBoard.csv");
         writeFile.writeString(playerName + "," + Integer.toString(score) + "\n", true);
     }
     ;
+========
+>>>>>>>> main:StumbleHome/lib/src/main/java/io/github/stumblehome/GameScreen.java
 }
