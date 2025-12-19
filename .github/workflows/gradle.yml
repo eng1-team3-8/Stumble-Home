@@ -1,13 +1,13 @@
 # This workflow builds, tests, and reports code coverage for the Stumble-Home project
-# It runs on every push and pull request.
+# It runs on pushes and PRs to main and development branches.
 
 name: Build, Test & Coverage
 
 on:
   push:
-    branches: [ "main", "*" ]
+    branches: [ "main", "development" ]
   pull_request:
-    branches: [ "main", "*" ]
+    branches: [ "main", "development" ]
 
 jobs:
   build-and-test:
@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      checks: write         # Needed to create check runs for test results
       pull-requests: write  # Needed for test result comments
 
     steps:
@@ -78,4 +79,3 @@ jobs:
           name: test-reports
           path: StumbleHome/lib/build/reports/tests/test/
           retention-days: 30
-
