@@ -1,0 +1,91 @@
+plugins {
+  id 'java-library'
+  id 'idea'
+  id 'jacoco'
+  id 'com.diffplug.spotless' version '8.1.0'
+}
+
+project.group = 'io.github.stumblehome'
+project.version = project.findProperty('projectVersion') ?: '1.0.0'
+ext.appName = 'Maze-game'
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+  maven { url = uri('https://central.sonatype.com/repository/maven-snapshots/') }
+  maven { url = uri('https://jitpack.io') }
+}
+
+dependencies {
+  implementation "com.badlogicgames.gdx:gdx:${project.findProperty('gdxVersion') ?: '1.13.1'}"
+  // Add LWJGL3 backend so the jar can be runnable
+  implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:${project.findProperty('gdxVersion') ?: '1.13.1'}"
+  // Native runtime classifiers for desktop platforms
+  runtimeOnly "com.badlogicgames.gdx:gdx-platform:${project.findProperty('gdxVersion') ?: '1.13.1'}:natives-desktop"
+}
+
+spotless {
+  java {
+    target 'src/main/java/**/*.java', 'src/test/java/**/*.java'
+    leadingTabsToSpaces(2)
+    trimTrailingWhitespace()
+    endWithNewline()
+    googleJavaFormat('1.15.0').aosp().reflowLongStrings().formatJavadoc(false).reorderImports(false).groupArtifact('com.google.googlejavaformat:google-java-format')
+  }
+}
+
+// Ensure formatting is checked as part of the standard 'check' lifecycle
+check.dependsOn 'spotlessCheck'
+
+// Keep IDEA output settings similar to previous layout
+idea.module.outputDir = file('build/classes/java/main')
+idea.module.testOutputDir = file('build/classes/java/test')
+
+// Generate assets list into project root assets/assets.txt (keeps existing behavior)
+tasks.register('generateAssetList') {
+  // Use the standard resources directory so assets are included in the JAR
+  inputs.dir('src/main/resources')
+  def assetsFolder = file('src/main/resources')
+  def assetsFile = file('src/main/resources/assets.txt')
+  doLast {
+    if (assetsFile.exists()) assetsFile.delete()
+    fileTree(assetsFolder).files.collect { assetsFolder.toURI().relativize(it.toURI()).getPath() }.sort().each {
+      assetsFile.append(it + "\n")
+    }
+  }
+}
+
+processResources.dependsOn 'generateAssetList'
+
+// Produce a runnable fat JAR that bundles runtime dependencies and sets a Main-Class.
+jar {
+  archiveBaseName.set('StumbleHome')
+  archiveVersion.set(project.version.toString())
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  // Include runtime dependencies into the jar (fat/uber jar)
+  from {
+    configurations.runtimeClasspath.findAll { it.exists() }.collect { it.isDirectory() ? it : zipTree(it) }
+  } {
+    // exclude signature and manifest files from dependency jars so our manifest remains
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/MANIFEST.MF'
+  }
+
+  // Set the launcher Main-Class so `java -jar` works
+  manifest {
+    attributes(
+      'Main-Class': 'io.github.stumblehome.LauncherStub',
+      'Enable-Native-Access': 'ALL-UNNAMED'
+    )
+  }
+
+  doLast {
+    def jarFile = archiveFile.get().asFile
+    if (jarFile.exists()) jarFile.setExecutable(true, false)
+  }
+}
