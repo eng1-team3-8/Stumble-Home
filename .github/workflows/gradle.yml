@@ -53,7 +53,7 @@ jobs:
           files: |
             StumbleHome/lib/build/test-results/test/**/*.xml
           check_name: Test Results
-          comment_mode: off
+          comment_mode: changes
 
       # Upload build artifacts (JAR file)
       - name: Upload build artifacts
