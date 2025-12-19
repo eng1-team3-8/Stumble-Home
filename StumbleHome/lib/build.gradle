@@ -27,6 +27,13 @@ dependencies {
   implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:${project.findProperty('gdxVersion') ?: '1.13.1'}"
   // Native runtime classifiers for desktop platforms
   runtimeOnly "com.badlogicgames.gdx:gdx-platform:${project.findProperty('gdxVersion') ?: '1.13.1'}:natives-desktop"
+
+  // Testing dependencies
+  testImplementation "com.badlogicgames.gdx:gdx-backend-headless:${project.findProperty('gdxVersion') ?: '1.13.1'}"
+  testImplementation "com.badlogicgames.gdx:gdx-platform:${project.findProperty('gdxVersion') ?: '1.13.1'}:natives-desktop"
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+  testImplementation 'org.mockito:mockito-core:5.8.0'
 }
 
 spotless {
@@ -36,6 +43,45 @@ spotless {
     trimTrailingWhitespace()
     endWithNewline()
     googleJavaFormat('1.15.0').aosp().reflowLongStrings().formatJavadoc(false).reorderImports(false).groupArtifact('com.google.googlejavaformat:google-java-format')
+  }
+}
+
+// Configure test task to use JUnit Platform
+test {
+  useJUnitPlatform()
+  finalizedBy jacocoTestReport // Generate JaCoCo report after tests run
+}
+
+// Configure JaCoCo test report
+jacocoTestReport {
+  dependsOn test // Tests are required to run before generating the report
+
+  reports {
+    html.required = true // HTML report for human-readable output
+  }
+
+  // Only scan specific package for coverage
+  sourceDirectories.from = files('src/main/java/io/github/stumblehome')
+  classDirectories.from = files(sourceSets.main.output.classesDirs).asFileTree.matching {
+    include 'io/github/stumblehome/**'
+  }
+}
+
+// Configure JaCoCo test coverage verification
+jacocoTestCoverageVerification {
+  violationRules {
+    rule {
+      limit {
+        // Minimum coverage (0.0 = 0%, 1.0 = 100%)
+        // We could slowly increase this as we improve test coverage
+        minimum = 0.0
+      }
+    }
+  }
+
+  // Only verify coverage for specific package
+  classDirectories.from = files(sourceSets.main.output.classesDirs).asFileTree.matching {
+    include 'io/github/stumblehome/**'
   }
 }
 
@@ -89,3 +135,4 @@ jar {
     if (jarFile.exists()) jarFile.setExecutable(true, false)
   }
 }
+
