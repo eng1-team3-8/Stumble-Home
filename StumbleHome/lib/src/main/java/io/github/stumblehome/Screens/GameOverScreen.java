@@ -48,18 +48,18 @@ public class GameOverScreen extends MenuScreen {
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
         Label timeLabel =
-            new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
+                new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
         Label scoreLabel = new Label("Score: " + score, skin);
 
         // Create restart button
         TextButton restartButton = new TextButton("Restart", skin);
         restartButton.addListener(
-            new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    game.setScreen(new MainMenuScreen(game));
-                }
-            });
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        game.setScreen(new MainMenuScreen(game));
+                    }
+                });
 
         // Layout using a table
         Table table = new Table();

@@ -31,10 +31,10 @@ public abstract class MenuScreen implements Screen {
         ScreenUtils.clear(Color.BLACK);
 
         game.batch.setProjectionMatrix(
-            game.camera
-                .projection
-                .cpy()
-                .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+                game.camera
+                        .projection
+                        .cpy()
+                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         game.batch.begin();
 

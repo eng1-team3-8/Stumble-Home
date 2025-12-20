@@ -84,43 +84,43 @@ public class MainMenuScreen extends MenuScreen {
 
         //  Play button click
         playButton.addListener(
-            new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    if (playerNameInput.getText().equals("")) {
-                        // Display warning to enter username
-                    } else {
-                        game.setScreen(new GameScreen(game, playerNameInput.getText()));
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        if (playerNameInput.getText().equals("")) {
+                            // Display warning to enter username
+                        } else {
+                            game.setScreen(new GameScreen(game, playerNameInput.getText()));
+                        }
                     }
-                }
-            });
+                });
 
         // Tutorial button click
         tutorialButton.addListener(
-            new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    showTutorial = true; // show popup when clicked
-                }
-            });
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        showTutorial = true; // show popup when clicked
+                    }
+                });
 
         // Tutorial button click
         leaderBoardButton.addListener(
-            new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    game.setScreen(new Leaderboard(game));
-                }
-            });
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        game.setScreen(new Leaderboard(game));
+                    }
+                });
 
         // Exit button click
         exitButton.addListener(
-            new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    Gdx.app.exit();
-                }
-            });
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        Gdx.app.exit();
+                    }
+                });
 
         // set stage to receive input
         Gdx.input.setInputProcessor(stage);
