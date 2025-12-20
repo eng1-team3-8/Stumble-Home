@@ -11,7 +11,7 @@ public final class LauncherStub {
     public static void main(String[] args) {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setTitle("StumbleHome");
-        config.setWindowedMode(800, 600);
+        config.setWindowedMode(800, 500);
         // If StumbleHome class is in the library, instantiate and run
         new Lwjgl3Application(new StumbleHome(), config);
     }
