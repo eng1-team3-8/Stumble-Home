@@ -60,6 +60,18 @@ cd StumbleHome
 java -jar lib/build/libs/StumbleHome-1.0.0.jar
 ```
 
+### Running in IntelliJ
+- Run the gradle setup task when prompted
+- Then navigate to **Edit Configurations**:
+  - Set **cp** to **stumble-hom.lib.main**
+  - Click select main class:  
+    - Tick **Include non-project items**
+    - Search for **io.github.stumblehome.LauncherStub**
+    - Select and save settings
+
+    ![IntelliJ Setup Image 1](IntelliJ_Setup_1.png)
+    ![IntelliJ Setup Image 2](IntelliJ_Setup_2.png)
+
 ### Downloading latest source version
 
 A pre-built artifact for the latest commit may be available via the repository's GitHub Actions run artifacts.
