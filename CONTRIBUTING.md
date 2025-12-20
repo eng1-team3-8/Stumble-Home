@@ -64,8 +64,8 @@ Create and push a version tag to trigger an automated release (versioned JAR + m
 Only create releases for **significant** milestones (major features, stable versions), not every commit. Commits to `main`/`development` trigger CI/CD for testing but don't create releases.
 
 **Release types:**
-- **`main` branch tags**: Stable production releases (e.g., `StumbleHome-2.0.0.jar`)
-- **`development` branch tags**: Pre-releases with `-dev` suffix (e.g., `StumbleHome-2.0.0-dev.jar`)
+- **`main` branch tags**: Stable production releases (e.g., `v2.0.0` → `StumbleHome-2.0.0.jar`)
+- **`development` branch tags**: Include `-dev` suffix in the tag (e.g., `v2.0.0-dev` → `StumbleHome-2.0.0-dev.jar`)
 
 #### 4.1 Create and push a version tag
 
@@ -73,13 +73,15 @@ Version tags follow semantic versioning (v1.0.0, v2.0.0, v2.1.3): https://semver
 
 ```bash
 # Production release (from main branch)
-git tag -a v2.0.0 -m "Release version 2.0.0"
+git tag v2.0.0
 git push origin v2.0.0
+# Creates: StumbleHome-2.0.0.jar
 
 # Development pre-release (from development branch)
 git checkout development
-git tag v2.1.0
-git push origin v2.1.0  # Automatically becomes StumbleHome-2.1.0-dev.jar
+git tag v2.1.0-dev
+git push origin v2.1.0-dev
+# Creates: StumbleHome-2.1.0-dev.jar
 ```
 
 #### 4.2 What happens after pushing a tag
@@ -143,7 +145,7 @@ git push origin feature/new-feature   # No CI/CD triggered
 - Run `./gradlew spotlessCheck` before pushing.
 - Test your changes locally before creating a release tag.
 - Use semantic versioning for tags (MAJOR.MINOR.PATCH).
-- Create stable production release tags from the `main` branch.
-- Create development pre-release tags from the `development` branch.
+- Create stable production release tags from the `main` branch (e.g., `v2.0.0`).
+- Create development pre-release tags from the `development` branch with `-dev` suffix (e.g., `v2.0.0-dev`).
 - Batch commits together to reduce CI/CD runs.
 - Use feature branches for work-in-progress to avoid triggering unnecessary builds.

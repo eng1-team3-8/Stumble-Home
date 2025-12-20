@@ -34,14 +34,10 @@ jobs:
           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             VERSION=${GITHUB_REF#refs/tags/v}
 
-            # Check if tag was created from development branch
-            BRANCH=$(git branch -r --contains ${{ github.ref }} | grep -E 'origin/(development|dev)' || echo "")
-
-            if [[ -n "$BRANCH" ]]; then
-              # Append -dev suffix if from development branch
-              VERSION="${VERSION}-dev"
+            # Check if version already has -dev suffix
+            if [[ "$VERSION" == *-dev ]]; then
               IS_PRERELEASE="true"
-              echo "Development branch detected - marking as pre-release"
+              echo "Development tag detected (contains -dev suffix)"
             else
               IS_PRERELEASE="false"
             fi
@@ -156,6 +152,8 @@ jobs:
     name: Build macOS App Bundle
     needs: test
     runs-on: macos-latest
+    # Only build macOS app for releases (tags) to save resources on PR/push builds
+    if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: read
 
@@ -216,28 +214,47 @@ jobs:
           mv jar-build/StumbleHome-*.jar StumbleHome-${VERSION}.jar
           echo "Created StumbleHome-${VERSION}.jar"
 
-      # Download macOS app bundle
+      # Download macOS app bundle (if it was built)
       - name: Download macOS app bundle
         uses: actions/download-artifact@v4
+        continue-on-error: true
+        id: download-macos
         with:
           name: macos-app
           path: ./macos-app
 
       - name: Create macOS app zip with version
+        if: steps.download-macos.outcome == 'success'
         run: |
           VERSION="${{ needs.build.outputs.version }}"
           cd macos-app
-          zip -r ../StumbleHome-${VERSION}-macos-app.zip stumblehome.app
-          echo "Created StumbleHome-${VERSION}-macos-app.zip"
+          if [ -d "stumblehome.app" ]; then
+            zip -r ../StumbleHome-${VERSION}-macos-app.zip stumblehome.app
+            echo "Created StumbleHome-${VERSION}-macos-app.zip"
+          else
+            echo "stumblehome.app not found, skipping macOS app packaging"
+          fi
+
+      - name: Prepare release files list
+        id: release-files
+        run: |
+          FILES="StumbleHome-${{ needs.build.outputs.version }}.jar"
+          if [ -f "StumbleHome-${{ needs.build.outputs.version }}-macos-app.zip" ]; then
+            FILES="${FILES}\nStumbleHome-${{ needs.build.outputs.version }}-macos-app.zip"
+            echo "Including macOS app in release"
+          else
+            echo "macOS app not found, releasing JAR only"
+          fi
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           prerelease: ${{ needs.build.outputs.is_prerelease == 'true' }}
-          files: |
-            StumbleHome-${{ needs.build.outputs.version }}.jar
-            StumbleHome-${{ needs.build.outputs.version }}-macos-app.zip
+          files: ${{ steps.release-files.outputs.files }}
           body: |
             ${{ needs.build.outputs.is_prerelease == 'true' && '## ⚠️ Pre-release (Development Build)\n\nThis is a development pre-release and may be unstable. Use at your own risk.\n\n' || '' }}## Installation
             You can either run Stumble-Home through the JAR (requires Java >=17), or if applicable, use the native macOS app.
