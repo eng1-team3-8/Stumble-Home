@@ -45,3 +45,6 @@ hs_err_pid*
 
 # Local Leaderboard storage
 *.csv
+
+# Local Files Copied During Build Process
+**/lib/bin/main/
