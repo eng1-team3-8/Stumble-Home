@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/WinScreen.java
-package io.github.stumblehome;
-========
 package io.github.stumblehome.Screens;
->>>>>>>> refs/heads/main:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/WinScreen.java
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -64,31 +60,28 @@ public class WinScreen extends MenuScreen {
         winLabel.setAlignment(Align.center);
 
         Label timeLabel =
-                new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
+            new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
         Label scoreLabel = new Label("Score: " + score, skin);
 
         // Create restart button
         TextButton restartButton = new TextButton("Restart", skin);
         restartButton.addListener(
-                new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        game.setScreen(new MainMenuScreen(game));
-                    }
-                });
-<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/WinScreen.java
-========
+            new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    game.setScreen(new MainMenuScreen(game));
+                }
+            });
 
         // Create restart button
         TextButton leaderBoardButton = new TextButton("Leaderboard", skin);
         leaderBoardButton.addListener(
-                new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        game.setScreen(new Leaderboard(game));
-                    }
-                });
->>>>>>>> refs/heads/main:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/WinScreen.java
+            new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    game.setScreen(new Leaderboard(game));
+                }
+            });
 
         // Layout using a table
         Table table = new Table();
@@ -105,35 +98,6 @@ public class WinScreen extends MenuScreen {
     }
 
     /**
-<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/WinScreen.java
-     * Called once per frame to render the win screen.
-     *
-     * @param delta the time in seconds since the last render.
-     */
-    @Override
-    public void render(float delta) {
-        ScreenUtils.clear(Color.BLACK);
-
-        game.batch.setProjectionMatrix(
-                game.camera
-                        .projection
-                        .cpy()
-                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-
-        game.batch.begin();
-
-        if (background != null) {
-            game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        }
-
-        game.batch.end();
-        stage.act(delta);
-        stage.draw();
-    }
-
-    /**
-========
->>>>>>>> refs/heads/main:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/WinScreen.java
      * Called when the screen is resized.
      *
      * @param width  the new width of the screen in pixels.
@@ -159,13 +123,4 @@ public class WinScreen extends MenuScreen {
 
     @Override
     public void hide() {}
-<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/WinScreen.java
-
-    @Override
-    public void pause() {}
-
-    @Override
-    public void resume() {}
-========
->>>>>>>> refs/heads/main:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/WinScreen.java
 }

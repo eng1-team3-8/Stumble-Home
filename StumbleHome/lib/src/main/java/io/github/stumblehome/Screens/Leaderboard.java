@@ -2,131 +2,195 @@ package io.github.stumblehome.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.stumblehome.StumbleHome;
-import java.util.ArrayList;
-import java.util.List;
 
-public class Leaderboard extends MenuScreen {
-    private ScrollPane scrollPane;
+/**
+ * The {@code MainMenuScreen} class is the main menu screen for the StumbleHome game.
+ * <p>
+ * It displays three interactive buttons: <b>Play</b>, <b>Tutorial</b>, and <b>Exit</b>.
+ * The screen also supports showing a tutorial image overlay that can be closed by pressing
+ * the ESC key or clicking the on screen.
+ * </p>
+ *
+ * <p>This class implements LibGDX {@link Screen} interface, which shows
+ * methods for managing a screen in a game.</p>
+ *
+ *
+ */
+public class MainMenuScreen extends MenuScreen {
+    // Image displayed when the tutorial is shown.
+    private Texture tutorialImage;
 
-    public Leaderboard(StumbleHome game) {
+    // Flag that determines whether the tutorial image is currently displayed.
+    private boolean showTutorial = false;
+
+    TextField playerNameInput;
+
+    public MainMenuScreen(final StumbleHome game) {
         this.game = game;
-        // Draws leaderboard screen
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-
-        String boardData = readLeaderBoard();
-        String[] splitBoard = boardData.split("\n");
-        List<String[]> ordered = new ArrayList<>();
-
-        Table leaderboard = new Table();
-        Label tempRow = new Label("Leaderboard:", skin);
-        tempRow.setFontScale(5f);
-        leaderboard.add(tempRow).pad(15);
-        leaderboard.row();
-
-        for (String s : splitBoard) {
-            String[] tempData = s.split(",");
-
-            if (tempData.length >= 2) {
-                if (ordered.size() > 0) {
-                    int pos = 0;
-                    while (Integer.valueOf(ordered.get(pos)[1]) > Integer.valueOf(tempData[1])) {
-                        pos += 1;
-                    }
-                    ordered.add(pos, tempData);
-                } else {
-                    ordered.add(tempData);
-                }
-            }
-        }
-
-        for (String[] s : ordered) {
-            tempRow = new Label(s[0] + ": " + s[1], skin);
-            tempRow.setFontScale(3f);
-            leaderboard.add(tempRow).pad(10);
-            leaderboard.row();
-        }
-
-        this.scrollPane = new ScrollPane(leaderboard, skin);
-        scrollPane.setFillParent(true);
-        stage.addActor(scrollPane);
     }
 
-    @Override
-    public void show() {}
-
     /**
-     * Called once per frame to render the menu screen
-     * Edited to capture input for scrollable table
+     * Called when this screen becomes the current screen for the game.
+     * <p>
+     * Initializes the background, tutorial image, buttons, and input processing.
+     * </p>
+     */
+    @Override
+    public void show() {
+        // Textures for the main menu and the tutorial
+        background = new Texture("MainMenu.png");
+        tutorialImage = new Texture("tutorial.png");
+
+        // Sets up the UI
+        stage = new Stage(new ScreenViewport());
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+
+        // create buttons
+        TextButton playButton = new TextButton("Play", skin);
+        TextButton tutorialButton = new TextButton("Tutorial", skin);
+        TextButton leaderBoardButton = new TextButton("Leaderboard", skin);
+        TextButton exitButton = new TextButton("Exit", skin);
+
+        // set button positions
+        float centerX = Gdx.graphics.getWidth() / 2f - 100;
+        float startY = Gdx.graphics.getHeight() / 2f + 50;
+
+        playerNameInput = new TextField("", skin);
+        playerNameInput.setBounds(centerX, startY + 60, 200, 50);
+        playerNameInput.setAlignment(1);
+        playerNameInput.setMessageText("Enter Player Name");
+        stage.addActor(playerNameInput);
+
+        playButton.setBounds(centerX, startY, 200, 50);
+        tutorialButton.setBounds(centerX, startY - 60, 200, 50);
+        leaderBoardButton.setBounds(centerX, startY - 120, 200, 50);
+        exitButton.setBounds(centerX, startY - 180, 200, 50);
+
+        // adds buttons to stage
+        stage.addActor(playButton);
+        stage.addActor(tutorialButton);
+        stage.addActor(leaderBoardButton);
+        stage.addActor(exitButton);
+
+        //  Play button click
+        playButton.addListener(
+            new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (playerNameInput.getText().equals("")) {
+                        // Display warning to enter username
+                    } else {
+                        game.setScreen(new GameScreen(game, playerNameInput.getText()));
+                    }
+                }
+            });
+
+        // Tutorial button click
+        tutorialButton.addListener(
+            new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    showTutorial = true; // show popup when clicked
+                }
+            });
+
+        // Tutorial button click
+        leaderBoardButton.addListener(
+            new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    game.setScreen(new Leaderboard(game));
+                }
+            });
+
+        // Exit button click
+        exitButton.addListener(
+            new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.exit();
+                }
+            });
+
+        // set stage to receive input
+        Gdx.input.setInputProcessor(stage);
+    }
+    /**
+     * Called every frame to render the screen.
      *
      * @param delta the time in seconds since the last render.
      */
     @Override
     public void render(float delta) {
-        Gdx.input.setInputProcessor(stage);
-        scrollPane.setScrollbarsVisible(true);
-        ScreenUtils.clear(Color.BLACK);
+        super.render(delta);
 
-        game.batch.setProjectionMatrix(
-                game.camera
-                        .projection
-                        .cpy()
-                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+        // draw tutorial popup if active
+        render_tutorial();
+    }
 
-        game.batch.begin();
+    /**
+     * renders the tutorial page if it is not active, removes it if esc is pressed
+     */
+    private void render_tutorial() {
+        if (showTutorial && tutorialImage != null) {
+            game.batch.begin();
+            float screenWidth = Gdx.graphics.getWidth();
+            float screenHeight = Gdx.graphics.getHeight();
+            float imgWidth = tutorialImage.getWidth();
+            float imgHeight = tutorialImage.getHeight();
 
-        if (background != null) {
-            game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            float scale = Math.min(screenWidth / imgWidth, screenHeight / imgHeight) * 0.8f;
+            // 80% of screen
+
+            float drawWidth = imgWidth * scale;
+            float drawHeight = imgHeight * scale;
+
+            // Center on screen
+            float x = (screenWidth - drawWidth) / 2f;
+            float y = (screenHeight - drawHeight) / 2f;
+
+            game.batch.draw(tutorialImage, x, y, drawWidth, drawHeight);
+            game.batch.end();
         }
-
-        game.batch.end();
-        stage.act(delta);
-        stage.draw();
-
-        // Escape button click
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
-            this.dispose();
-            game.setScreen(new MainMenuScreen(game));
+        if (showTutorial) {
+            // Close tutorial on ESC or click
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || Gdx.input.justTouched()) {
+                showTutorial = false; // close tutorial when pressing ESC or clicking
+            }
         }
     }
 
     /**
-     * Called when the screen is resized.
-     *
-     * @param width  the new width of the screen in pixels.
-     * @param height the new height of the screen in pixels.
+     * Called when this screen is no longer the current screen for the game.
+     * <p>Removes the input processor to prevent input handling when inactive.</p>
      */
     @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
-    public void hide() {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'hide'");
+    public void resize(int width, int height) {
+        game.viewport.update(width, height);
+        // Resizes button hit zones (and more)
+        this.show();
     }
 
     @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
-        scrollPane.clear();
-    }
-
-    private String readLeaderBoard() {
-        FileHandle file = Gdx.files.local("leaderBoard.csv");
-        return file.readString();
+        if (background != null) background.dispose();
+        if (tutorialImage != null) tutorialImage.dispose();
+        if (stage != null) stage.dispose();
+        if (skin != null) skin.dispose();
     }
 }

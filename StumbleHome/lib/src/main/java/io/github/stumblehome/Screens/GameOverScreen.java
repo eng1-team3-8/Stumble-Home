@@ -1,15 +1,7 @@
-<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/GameOverScreen.java
-package io.github.stumblehome;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-========
 package io.github.stumblehome.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
->>>>>>>> refs/heads/main:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameOverScreen.java
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,10 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/GameOverScreen.java
-import com.badlogic.gdx.utils.ScreenUtils;
-========
->>>>>>>> refs/heads/main:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameOverScreen.java
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.stumblehome.StumbleHome;
 
@@ -60,18 +48,18 @@ public class GameOverScreen extends MenuScreen {
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
         Label timeLabel =
-                new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
+            new Label(String.format("Time Remaining: %.1f seconds", remainingTime), skin);
         Label scoreLabel = new Label("Score: " + score, skin);
 
         // Create restart button
         TextButton restartButton = new TextButton("Restart", skin);
         restartButton.addListener(
-                new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        game.setScreen(new MainMenuScreen(game));
-                    }
-                });
+            new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    game.setScreen(new MainMenuScreen(game));
+                }
+            });
 
         // Layout using a table
         Table table = new Table();
@@ -85,24 +73,6 @@ public class GameOverScreen extends MenuScreen {
         stage.addActor(table);
     }
 
-<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/GameOverScreen.java
-        game.batch.setProjectionMatrix(
-                game.camera
-                        .projection
-                        .cpy()
-                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
-
-        game.batch.begin();
-
-        if (background != null) {
-            game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        }
-        game.batch.end();
-        stage.act(delta);
-        stage.draw();
-    }
-========
->>>>>>>> refs/heads/main:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameOverScreen.java
     /**
      * Called when the screen is resized.
      *
@@ -128,13 +98,4 @@ public class GameOverScreen extends MenuScreen {
 
     @Override
     public void hide() {}
-<<<<<<<< HEAD:StumbleHome/lib/src/main/java/io/github/stumblehome/GameOverScreen.java
-
-    @Override
-    public void pause() {}
-
-    @Override
-    public void resume() {}
-========
->>>>>>>> refs/heads/main:StumbleHome/lib/src/main/java/io/github/stumblehome/Screens/GameOverScreen.java
 }
