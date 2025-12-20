@@ -42,16 +42,35 @@ Names:
 
 ## Build & Run
 
-This repository provides a minimal runnable distribution: the `lib` module is built into a single runnable jar that includes the LWJGL3 backend and native desktop libraries.
+This repository provides a minimal runnable distribution: the `lib` module is built into a single runnable jar that
+includes the LWJGL3 backend and native desktop libraries.
+
+For full build, formatting, and contribution instructions see `CONTRIBUTING.md`.
+
+### Running from source
+
+Build the project (runs checks and tests):
 
 ```bash
 # from repository root
 cd StumbleHome
-./gradlew clean :lib:jar
+./gradlew build
 
-# then run the produced jar
+# then run the produced jar (artifact under lib/build/libs/)
 java -jar lib/build/libs/StumbleHome-1.0.0.jar
 ```
 
+### Downloading latest source version
+
+A pre-built artifact for the latest commit may be available via the repository's GitHub Actions run artifacts.
+To download the latest successful build artifact:
+
+1. Open the repository on GitHub.
+2. Click the "Actions" tab.
+3. Select the most recent successful workflow run.
+4. In that run's summary, open the "Artifacts" section and download the `StumbleHome` artifact.
+
 Notes:
-- The produced JAR is at `StumbleHome/lib/build/libs/StumbleHome-<version>.jar` where `<version>` is set in `StumbleHome/gradle.properties` (`projectVersion`).
+
+- The produced JAR is at `StumbleHome/lib/build/libs/StumbleHome-<version>.jar` where `<version>` is set in
+  `StumbleHome/gradle.properties` (`projectVersion`).

@@ -1,5 +1,8 @@
 Blank.png
 MainMenu.png
+Sprites/Smirnoff.png
+Sprites/Stick.png
+Sprites/Tsingtao.png
 character.png
 default.fnt
 default.png
@@ -8,6 +11,7 @@ gameOver.png
 keyCard.png
 longBoi.png
 map.tmx
+map2.tmx
 tileset.png
 tutorial.png
 ui/font-list.fnt

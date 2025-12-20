@@ -9,84 +9,67 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.MathUtils;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Handles the player character's movement, animations, and interactions with the game world.
  * Supports both normal and reversed controls depending on the player's state.
  */
 public class Player extends Sprite {
-    /** Spritesheet containing all player animation frames. */
+    // Spritesheet containing all player animation frames.
     public Texture characterSheet;
 
-    /** Walking animation when moving downward. */
-    private Animation<TextureRegion> walkDown;
+    // Map of all animations with key of animation name
+    private Map<Animation_enum, Animation<TextureRegion>> animations;
 
-    /** Walking animation when moving left. */
-    private Animation<TextureRegion> walkLeft;
-
-    /** Walking animation when moving right. */
-    private Animation<TextureRegion> walkRight;
-
-    /** Walking animation when moving upward. */
-    private Animation<TextureRegion> walkUp;
-
-    /** Static frame displayed when standing still facing down. */
-    private TextureRegion standDown;
-
-    /** Static frame displayed when standing still facing left. */
-    private TextureRegion standLeft;
-
-    /** Static frame displayed when standing still facing right. */
-    private TextureRegion standRight;
-
-    /** Static frame displayed when standing still facing up. */
-    private TextureRegion standUp;
-
-    /** Currently active animation being played. */
+    // Currently active animation being played.
     private Animation<TextureRegion> currentAnimation;
 
-    /** Previous animation, used to reset timing when animation changes. */
+    // Previous animation, used to reset timing when animation changes.
     private Animation<TextureRegion> previousAnimation;
 
-    /** The static pose to show when player isn't moving. */
-    private TextureRegion currentStandingPose;
-
-    /** Time elapsed in the current animation. */
+    // Time elapsed in the current animation.
     private float stateTime;
 
-    /** Possible directions the player can face. */
-    private enum Direction {
+    private enum Animation_enum {
         DOWN,
         LEFT,
         RIGHT,
-        UP
+        UP,
+        WALK_DOWN,
+        WALK_LEFT,
+        WALK_RIGHT,
+        WALK_UP
     }
 
-    /** The direction the player was last moving or facing. */
-    private Direction lastDirection = Direction.DOWN;
+    // The direction the player was last moving or facing.
+    private Animation_enum lastDirection = Animation_enum.DOWN;
 
-    /** Current x position of the player on the map. */
+    // Current x position of the player on the map.
     public float playerX;
 
-    /** Current y position of the player on the map. */
+    // Current y position of the player on the map.
     public float playerY;
 
-    /** Size of the player's collision box and sprite. */
+    // Size of the player's collision box and sprite.
     public final float playerSize = 0.8f;
 
-    /** Delta time value for consistent movement speed. */
+    // Delta time value for consistent movement speed.
     private final float delta = Gdx.graphics.getDeltaTime();
 
-    /** Controls whether the player has reversed controls (1 = drunk, 0 = sober). */
-    public int isDrunk = 1;
+    // Controls whether the player has reversed controls (1 = drunk, 0 = sober).
+    public boolean isDrunk = true;
 
-    /** Width of the game map in tiles. */
+    // Width of the game map in tiles.
     private final float mapWidth;
 
-    /** Height of the game map in tiles. */
+    // Height of the game map in tiles.
     private final float mapHeight;
 
-    /** Layer containing collision information from the tiled map. */
+    public float player_speed;
+
+    // Layer containing collision information from the tiled map.
     TiledMapTileLayer collisionLayer;
 
     /**
@@ -107,6 +90,11 @@ public class Player extends Sprite {
 
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
+        this.player_speed = 5f;
+        this.isDrunk = false;
+
+        // Intialises as normal for understandability and then gets player drunk
+        SwapControls();
 
         this.collisionLayer = collisionLayer;
     }
@@ -117,52 +105,91 @@ public class Player extends Sprite {
      */
     private void initializeAnimations() {
         // Frame size: 25x49 pixels
-        int frameWidth = 25;
-        int frameHeight = 49;
+        final int FRAME_WIDTH = 25;
+        final int FRAME_HEIGHT = 49;
+
+        // 4 walking frames
+        final int NUM_WALK_FRAMES = 4;
+
+        // 1 standing frame
+        final int NUM_STAND_FRAMES = 1;
+
+        animations = new HashMap<Animation_enum, Animation<TextureRegion>>();
 
         characterSheet = this.getTexture();
+        TextureRegion[] walk_frames = new TextureRegion[NUM_WALK_FRAMES];
+        TextureRegion[] stand_frames = new TextureRegion[NUM_STAND_FRAMES];
 
         // Standing poses (static, not animated)
-        standLeft = new TextureRegion(characterSheet, 4, 10, frameWidth, frameHeight);
-        standRight = new TextureRegion(characterSheet, 198, 9, frameWidth, frameHeight);
-        standDown = new TextureRegion(characterSheet, 3, 65, frameWidth, frameHeight);
-        standUp = new TextureRegion(characterSheet, 3, 120, frameWidth, frameHeight);
+        stand_frames[0] = new TextureRegion(characterSheet, 4, 10, FRAME_WIDTH, FRAME_HEIGHT);
+        animations.put(
+                Animation_enum.RIGHT, new Animation<TextureRegion>(0.1f, stand_frames.clone()));
+
+        stand_frames[0] = new TextureRegion(characterSheet, 198, 9, FRAME_WIDTH, FRAME_HEIGHT);
+        animations.put(
+                Animation_enum.LEFT, new Animation<TextureRegion>(0.1f, stand_frames.clone()));
+
+        stand_frames[0] = new TextureRegion(characterSheet, 3, 65, FRAME_WIDTH, FRAME_HEIGHT);
+        animations.put(Animation_enum.UP, new Animation<TextureRegion>(0.1f, stand_frames.clone()));
+
+        stand_frames[0] = new TextureRegion(characterSheet, 3, 120, FRAME_WIDTH, FRAME_HEIGHT);
+        animations.put(
+                Animation_enum.DOWN, new Animation<TextureRegion>(0.1f, stand_frames.clone()));
 
         // Walking LEFT (4 frames)
-        TextureRegion[] walkLeftFrames = new TextureRegion[4];
-        walkLeftFrames[0] = new TextureRegion(characterSheet, 44, 9, frameWidth, frameHeight);
-        walkLeftFrames[1] = new TextureRegion(characterSheet, 78, 10, frameWidth, frameHeight);
-        walkLeftFrames[2] = new TextureRegion(characterSheet, 117, 9, frameWidth, frameHeight);
-        walkLeftFrames[3] = new TextureRegion(characterSheet, 151, 10, frameWidth, frameHeight);
-        walkLeft = new Animation<>(0.1f, walkLeftFrames);
+        walk_frames[0] = new TextureRegion(characterSheet, 44, 9, FRAME_WIDTH, FRAME_HEIGHT);
+        walk_frames[1] = new TextureRegion(characterSheet, 78, 10, FRAME_WIDTH, FRAME_HEIGHT);
+        walk_frames[2] = new TextureRegion(characterSheet, 117, 9, FRAME_WIDTH, FRAME_HEIGHT);
+        walk_frames[3] = new TextureRegion(characterSheet, 151, 10, FRAME_WIDTH, FRAME_HEIGHT);
+        animations.put(Animation_enum.WALK_LEFT, new Animation<>(0.1f, walk_frames.clone()));
 
         // Walking RIGHT (4 frames)
-        TextureRegion[] walkRightFrames = new TextureRegion[4];
-        walkRightFrames[0] = new TextureRegion(characterSheet, 198, 64, frameWidth, frameHeight);
-        walkRightFrames[1] = new TextureRegion(characterSheet, 230, 65, frameWidth, frameHeight);
-        walkRightFrames[2] = new TextureRegion(characterSheet, 262, 65, frameWidth, frameHeight);
-        walkRightFrames[3] = new TextureRegion(characterSheet, 292, 65, frameWidth, frameHeight);
-        walkRight = new Animation<>(0.1f, walkRightFrames);
+        walk_frames[0] = new TextureRegion(characterSheet, 198, 64, FRAME_WIDTH, FRAME_HEIGHT);
+        walk_frames[1] = new TextureRegion(characterSheet, 230, 65, FRAME_WIDTH, FRAME_HEIGHT);
+        walk_frames[2] = new TextureRegion(characterSheet, 262, 65, FRAME_WIDTH, FRAME_HEIGHT);
+        walk_frames[3] = new TextureRegion(characterSheet, 292, 65, FRAME_WIDTH, FRAME_HEIGHT);
+        animations.put(Animation_enum.WALK_RIGHT, new Animation<>(0.1f, walk_frames.clone()));
 
         // Walking FORWARD/DOWN (4 frames)
-        TextureRegion[] walkDownFrames = new TextureRegion[4];
-        walkDownFrames[0] = new TextureRegion(characterSheet, 43, 64, frameWidth, frameHeight);
-        walkDownFrames[1] = new TextureRegion(characterSheet, 79, 66, frameWidth, frameHeight);
-        walkDownFrames[2] = new TextureRegion(characterSheet, 115, 65, frameWidth, frameHeight);
-        walkDownFrames[3] = new TextureRegion(characterSheet, 151, 66, frameWidth, frameHeight);
-        walkDown = new Animation<>(0.1f, walkDownFrames);
+        walk_frames[0] = new TextureRegion(characterSheet, 43, 64, FRAME_WIDTH, FRAME_HEIGHT);
+        walk_frames[1] = new TextureRegion(characterSheet, 79, 66, FRAME_WIDTH, FRAME_HEIGHT);
+        walk_frames[2] = new TextureRegion(characterSheet, 115, 65, FRAME_WIDTH, FRAME_HEIGHT);
+        walk_frames[3] = new TextureRegion(characterSheet, 151, 66, FRAME_WIDTH, FRAME_HEIGHT);
+        animations.put(Animation_enum.WALK_DOWN, new Animation<>(0.1f, walk_frames.clone()));
 
         // Walking BACKWARDS/UP (4 frames)
-        TextureRegion[] walkUpFrames = new TextureRegion[4];
-        walkUpFrames[0] = new TextureRegion(characterSheet, 43, 121, frameWidth, frameHeight);
-        walkUpFrames[1] = new TextureRegion(characterSheet, 78, 122, frameWidth, frameHeight);
-        walkUpFrames[2] = new TextureRegion(characterSheet, 115, 121, frameWidth, frameHeight);
-        walkUpFrames[3] = new TextureRegion(characterSheet, 152, 122, frameWidth, frameHeight);
-        walkUp = new Animation<>(0.1f, walkUpFrames);
+        walk_frames[0] = new TextureRegion(characterSheet, 43, 121, FRAME_WIDTH, FRAME_HEIGHT);
+        walk_frames[1] = new TextureRegion(characterSheet, 78, 122, FRAME_WIDTH, FRAME_HEIGHT);
+        walk_frames[2] = new TextureRegion(characterSheet, 115, 121, FRAME_WIDTH, FRAME_HEIGHT);
+        walk_frames[3] = new TextureRegion(characterSheet, 152, 122, FRAME_WIDTH, FRAME_HEIGHT);
+        animations.put(Animation_enum.WALK_UP, new Animation<>(0.1f, walk_frames));
 
-        // Set initial standing pose (facing down)
-        currentStandingPose = standDown;
         stateTime = 0f;
+    }
+
+    /**
+     * swaps the controls, intended for when player becomes drunk/sober
+     */
+    public void SwapControls() {
+        Animation<TextureRegion> swap_placeholder = animations.get(Animation_enum.WALK_UP);
+        animations.put(Animation_enum.WALK_UP, animations.get(Animation_enum.WALK_DOWN));
+        animations.put(Animation_enum.WALK_DOWN, swap_placeholder);
+        swap_placeholder = animations.get(Animation_enum.WALK_LEFT);
+        animations.put(Animation_enum.WALK_LEFT, animations.get(Animation_enum.WALK_RIGHT));
+        animations.put(Animation_enum.WALK_RIGHT, swap_placeholder);
+        swap_placeholder = animations.get(Animation_enum.UP);
+        animations.put(Animation_enum.UP, animations.get(Animation_enum.DOWN));
+        animations.put(Animation_enum.DOWN, swap_placeholder);
+        swap_placeholder = animations.get(Animation_enum.LEFT);
+        animations.put(Animation_enum.LEFT, animations.get(Animation_enum.RIGHT));
+        animations.put(Animation_enum.RIGHT, swap_placeholder);
+
+        player_speed = -player_speed;
+        if (isDrunk) {
+            isDrunk = false;
+        } else {
+            isDrunk = true;
+        }
     }
 
     /**
@@ -174,65 +201,34 @@ public class Player extends Sprite {
         float moveX = 0;
         float moveY = 0;
         boolean moving = false;
-        float speed = 5f;
 
-        // If isDrunk == 1, controls are reversed
-        if (isDrunk == 1) {
-            // REVERSED CONTROLS
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-                // RIGHT key -> move LEFT
-                moveX = -speed * delta;
-                currentAnimation = walkLeft;
-                lastDirection = Direction.LEFT;
-                moving = true;
-            } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
-                    || Gdx.input.isKeyPressed(Input.Keys.A)) {
-                // LEFT key -> move RIGHT
-                moveX = speed * delta;
-                currentAnimation = walkRight;
-                lastDirection = Direction.RIGHT;
-                moving = true;
-            } else if (Gdx.input.isKeyPressed(Input.Keys.UP)
-                    || Gdx.input.isKeyPressed(Input.Keys.W)) {
-                // UP key -> move DOWN
-                moveY = -speed * delta;
-                currentAnimation = walkDown;
-                lastDirection = Direction.DOWN;
-                moving = true;
-            } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)
-                    || Gdx.input.isKeyPressed(Input.Keys.S)) {
-                // DOWN key -> move UP
-                moveY = speed * delta;
-                currentAnimation = walkUp;
-                lastDirection = Direction.UP;
-                moving = true;
-            }
-        } else {
-            // NORMAL CONTROLS
-            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
-                moveX = speed * delta;
-                currentAnimation = walkRight;
-                lastDirection = Direction.RIGHT;
-                moving = true;
-            } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
-                    || Gdx.input.isKeyPressed(Input.Keys.A)) {
-                moveX = -speed * delta;
-                currentAnimation = walkLeft;
-                lastDirection = Direction.LEFT;
-                moving = true;
-            } else if (Gdx.input.isKeyPressed(Input.Keys.UP)
-                    || Gdx.input.isKeyPressed(Input.Keys.W)) {
-                moveY = speed * delta;
-                currentAnimation = walkUp;
-                lastDirection = Direction.UP;
-                moving = true;
-            } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)
-                    || Gdx.input.isKeyPressed(Input.Keys.S)) {
-                moveY = -speed * delta;
-                currentAnimation = walkDown;
-                lastDirection = Direction.DOWN;
-                moving = true;
-            }
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
+            // RIGHT key -> move LEFT
+            moveX = player_speed * delta;
+            currentAnimation = animations.get(Animation_enum.WALK_RIGHT);
+            lastDirection = Animation_enum.LEFT;
+            moving = true;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
+                || Gdx.input.isKeyPressed(Input.Keys.A)) {
+            // LEFT key -> move RIGHT
+            moveX = -player_speed * delta;
+            currentAnimation = animations.get(Animation_enum.WALK_LEFT);
+            lastDirection = Animation_enum.RIGHT;
+            moving = true;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
+            // UP key -> move DOWN
+            moveY = player_speed * delta;
+            currentAnimation = animations.get(Animation_enum.WALK_UP);
+            lastDirection = Animation_enum.DOWN;
+            moving = true;
+        } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)
+                || Gdx.input.isKeyPressed(Input.Keys.S)) {
+            // DOWN key -> move UP
+            moveY = -player_speed * delta;
+            currentAnimation = animations.get(Animation_enum.WALK_DOWN);
+            lastDirection = Animation_enum.UP;
+            moving = true;
         }
 
         if (moveX != 0 && canMoveTo(playerX + moveX, playerY)) {
@@ -243,22 +239,7 @@ public class Player extends Sprite {
         }
 
         if (!moving) {
-            currentAnimation = null;
-            switch (lastDirection) {
-                case LEFT:
-                    currentStandingPose = standLeft;
-                    break;
-                case RIGHT:
-                    currentStandingPose = standRight;
-                    break;
-                case UP:
-                    currentStandingPose = standUp;
-                    break;
-                case DOWN:
-                default:
-                    currentStandingPose = standDown;
-                    break;
-            }
+            currentAnimation = animations.get(lastDirection);
         }
         clampPlayerPosition();
     }
@@ -279,7 +260,7 @@ public class Player extends Sprite {
      * @param y the target y position
      * @return true if the move is valid, false if blocked
      */
-    private boolean canMoveTo(float x, float y) {
+    public boolean canMoveTo(float x, float y) {
         return isTileBlocked(x, y)
                 && isTileBlocked(x + playerSize, y)
                 && isTileBlocked(x, y + playerSize)
@@ -342,18 +323,26 @@ public class Player extends Sprite {
     public void draw(SpriteBatch batch) {
         // Determine which frame to draw
         TextureRegion frameToDraw;
-        if (currentAnimation != null) {
-            // Walking - use animated frame
-            frameToDraw = currentAnimation.getKeyFrame(stateTime, true);
-        } else {
-            // Standing - use static pose
-            frameToDraw = currentStandingPose;
-        }
+        frameToDraw = currentAnimation.getKeyFrame(stateTime, true);
 
         // Draw the character with proper aspect ratio
         // Frames are 25x49 pixels (width x height), aspect ratio = 49/25 = 1.96
         float aspectRatio = 49f / 25f;
         float drawHeight = playerSize * aspectRatio;
         batch.draw(frameToDraw, playerX, playerY, playerSize, drawHeight);
+    }
+
+    public void slowDownPlayer(float amount) {
+        if (isDrunk) {
+            amount *= -1;
+        }
+        this.player_speed -= amount;
+    }
+
+    public void speedUpPlayer(float amount) {
+        if (isDrunk) {
+            amount *= -1;
+        }
+        this.player_speed += amount;
     }
 }
