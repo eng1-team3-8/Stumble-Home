@@ -62,7 +62,16 @@ java -jar lib/build/libs/StumbleHome-1.0.0.jar
 
 ### Running in IntelliJ
 - Run the gradle setup task when prompted
-- Then navigate to **Edit Configurations**:
+- Navigate to **StumbleHome/lib/src/main/java/io/github/stumblehome/StumbleHome.java**  
+  - With the file open (any java file in here will do):
+    - Select **Setup SDK** at the top of the file (in the **Project JDK is not defined** bar)
+    - Select **temurin-17 Eclipse Temirin 17.0.16**
+    (or equivalent)
+
+    ![Configure SDK](configure_SDK.png)
+
+- Then navigate to **Edit Configurations**  
+Found under the drop down box **Current File** (next to the **run** button):
   - Set **cp** to **stumble-hom.lib.main**
   - Click select main class:  
     - Tick **Include non-project items**
