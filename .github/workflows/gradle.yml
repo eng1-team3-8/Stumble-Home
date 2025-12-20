@@ -6,21 +6,18 @@ name: Build, Test & Coverage
 on:
   push:
     branches: [ "main", "development" ]
-    tags: ["v*"] # triggers release job
+    tags:
+      - 'v*.*.*'  # triggers release job for semantic versions (v1.0.0, v2.0.0, v2.1.3)
   pull_request:
     branches: [ "main", "development" ]
 
 jobs:
-  build-and-test:
-    name: Build, Test & Coverage Report
-    strategy:
-      matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-    runs-on: ${{ matrix.os }}
+  # Build universal JAR once (platform-independent)
+  build:
+    name: Build Universal JAR
+    runs-on: ubuntu-latest
     permissions:
       contents: read
-      checks: write         # Needed to create check runs for test results
-      pull-requests: write  # Needed for test result comments
 
     steps:
       - name: Checkout code
@@ -32,136 +29,190 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
-      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
-          cache-read-only: false  # Allow cache writes from all branches
+          cache-read-only: false
 
       - name: Run Spotless format check
         run: |
           cd StumbleHome
           ./gradlew --no-daemon --stacktrace spotlessCheck
 
-      - name: Build with Gradle Wrapper (Unix)
-        if: runner.os != 'Windows'
+      - name: Build JAR
         run: |
           cd StumbleHome
-          ./gradlew --no-daemon --stacktrace build jacocoTestReport
+          ./gradlew --no-daemon --stacktrace build -x test
 
-      - name: Build with Gradle Wrapper (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          cd StumbleHome
-          ./gradlew.bat --no-daemon --stacktrace build jacocoTestReport
-
-      - name: Build macOS app bundle
-        if: runner.os == 'macOS'
-        run: |
-          cd StumbleHome
-          ./gradlew --no-daemon --stacktrace packageMacM1
-
-      - name: Extract macOS app and remove zip
-        if: runner.os == 'macOS'
-        run: |
-          cd StumbleHome/build/construo
-          unzip -o stumblehome-macM1.zip -d .
-          rm stumblehome-macM1.zip
-
-      - name: Upload macOS bundle
-        if: runner.os == 'macOS'
+      # Upload universal JAR (works on all platforms)
+      - name: Upload universal JAR
         uses: actions/upload-artifact@v4
         with:
-          name: macos-app
-          path: StumbleHome/build/construo
-
-      # Upload build artifacts (JAR file)
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        if: success()
-        with:
-          name: StumbleHome-${{ matrix.os }}-jar
+          name: universal-jar
           path: StumbleHome/lib/build/libs/*.jar
           retention-days: 30
 
-      # Upload test results for visibility even if tests fail
+  # Test on all platforms to catch platform-specific issues
+  test:
+    name: Test on ${{ matrix.os }}
+    needs: build
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+        with:
+          cache-read-only: false
+
+      - name: Run tests with coverage (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          cd StumbleHome
+          ./gradlew --no-daemon --stacktrace test jacocoTestReport
+
+      - name: Run tests with coverage (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          cd StumbleHome
+          ./gradlew.bat --no-daemon --stacktrace test jacocoTestReport
+
+      # Publish test results (only from Ubuntu to avoid duplicates)
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
+        if: always() && matrix.os == 'ubuntu-latest'
         with:
           files: |
             StumbleHome/lib/build/test-results/test/**/*.xml
           check_name: Test Results
           comment_mode: changes
 
-      # Upload HTML coverage report for manual review
+      # Upload coverage report (only from Ubuntu)
       - name: Upload JaCoCo HTML report
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && matrix.os == 'ubuntu-latest'
         with:
-          name: jacoco-html-report-${{ matrix.os }}
+          name: jacoco-html-report
           path: StumbleHome/lib/build/reports/jacoco/test/html/
           retention-days: 30
 
-      # Upload test reports
+      # Upload test reports (only from Ubuntu)
       - name: Upload test reports
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && matrix.os == 'ubuntu-latest'
         with:
           name: test-reports
           path: StumbleHome/lib/build/reports/tests/test/
           retention-days: 30
 
+  # Build macOS native app bundle
+  build-macos-app:
+    name: Build macOS App Bundle
+    needs: test
+    runs-on: macos-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+        with:
+          cache-read-only: false
+
+      - name: Build macOS app bundle
+        run: |
+          cd StumbleHome
+          ./gradlew --no-daemon --stacktrace packageMacM1
+
+      - name: Extract macOS app and remove zip
+        run: |
+          cd StumbleHome/build/construo
+          unzip -o stumblehome-macM1.zip -d .
+          rm stumblehome-macM1.zip
+
+      - name: Upload macOS app bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-app
+          path: StumbleHome/build/construo
+          retention-days: 30
+
   release:
-    needs: build
+    needs: [build, test, build-macos-app]
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    # only run on tags
-    if: startsWith(github.ref, 'ref/tags/')
+    # Only run on semantic version tags (e.g., v1.0.0, v2.0.0, v3.5.2, etc.)
+    if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
       - uses: actions/checkout@v4
 
-      # download JAR artifact for each OS created by matrix
-      # Ubuntu
-      - name: Download Ubuntu Build
+      # Download universal JAR (works on all platforms)
+      - name: Download universal JAR
         uses: actions/download-artifact@v4
         with:
-          name: lib-ubuntu-latest.jar
-          path: .
+          name: universal-jar
+          path: ./jar-build
 
-      - name: Rename Ubuntu Build
-        run: mv StumbleHome-1.0.0.jar lib-ubuntu.jar
+      - name: Rename universal JAR
+        run: mv jar-build/StumbleHome-*.jar StumbleHome.jar
 
-      # Windows
-      - name: Download Windows Build
+      # Download macOS app bundle
+      - name: Download macOS app bundle
         uses: actions/download-artifact@v4
         with:
-          name: lib-windows-latest.jar
-          path: .
+          name: macos-app
+          path: ./macos-app
 
-      - name: Rename Windows Build
-        run: mv StumbleHome-1.0.0.jar lib-windows.jar
+      - name: Create macOS app zip
+        run: |
+          cd macos-app
+          zip -r ../stumblehome-macos-app.zip stumblehome.app
 
-      # MacOS
-      - name: Download MacOS Build
-        uses: actions/download-artifact@v4
-        with:
-          name: lib-macos-latest.jar
-          path: .
-
-      - name: Rename MacOS Build
-        run: mv StumbleHome-1.0.0.jar lib-macos.jar
-
-      - name: Release
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name  }} #e.g. v1.0.0
+          tag_name: ${{ github.ref_name }}
           files: |
-            lib-ubuntu.jar
-            lib-windows.jar
-            lib-macos.jar
+            StumbleHome.jar
+            stumblehome-macos-app.zip
+          body: |
+            ## Installation
+            You can either run Stumble-Home as a JAR (requires Java >=17), or if applicable, use the native macOS app.
+
+            **For all platforms (Windows, macOS, Linux):**
+            - Download `StumbleHome.jar`
+            - Run: `java -jar StumbleHome.jar`
+            - macOS users: Add `-XstartOnFirstThread` flag: `java -XstartOnFirstThread -jar StumbleHome.jar`
+
+            **For macOS (native app):**
+            - Download `stumblehome-macos-app.zip`
+            - Extract and run `stumblehome.app`
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
