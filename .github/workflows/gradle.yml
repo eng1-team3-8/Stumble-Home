@@ -166,8 +166,8 @@ jobs:
     name: Build macOS App Bundle
     needs: build
     runs-on: macos-latest
-    # Only build macOS app for releases (tags) to save resources on PR/push builds
-    if: startsWith(github.ref, 'refs/tags/v')
+    # Only build macOS app for production releases (exclude -dev tags)
+    if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, '-dev')
     permissions:
       contents: read
 
@@ -208,10 +208,15 @@ jobs:
   release:
     needs: [build, test, build-macos-app]
     runs-on: ubuntu-latest
+    # Run if build and test succeed, even if build-macos-app was skipped
+    if: |
+      always() &&
+      needs.build.result == 'success' &&
+      needs.test.result == 'success' &&
+      (needs.build-macos-app.result == 'success' || needs.build-macos-app.result == 'skipped') &&
+      startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: write
-    # Only run on semantic version tags (e.g., v1.0.0, v2.0.0, v3.5.2, etc.)
-    if: startsWith(github.ref, 'refs/tags/v')
 
     steps:
       - uses: actions/checkout@v4
@@ -249,20 +254,6 @@ jobs:
           else
             echo "stumblehome.app not found, skipping macOS app packaging"
           fi
-
-      - name: Prepare release files list
-        id: release-files
-        run: |
-          FILES="StumbleHome-${{ needs.build.outputs.version }}.jar"
-          if [ -f "StumbleHome-${{ needs.build.outputs.version }}-macos-app.zip" ]; then
-            FILES="${FILES}\nStumbleHome-${{ needs.build.outputs.version }}-macos-app.zip"
-            echo "Including macOS app in release"
-          else
-            echo "macOS app not found, releasing JAR only"
-          fi
-          echo "files<<EOF" >> $GITHUB_OUTPUT
-          echo -e "$FILES" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Generate release body
         id: release-body
@@ -312,7 +303,9 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           prerelease: ${{ needs.build.outputs.is_prerelease == 'true' }}
-          files: ${{ steps.release-files.outputs.files }}
+          files: |
+            StumbleHome-${{ needs.build.outputs.version }}.jar
+            StumbleHome-${{ needs.build.outputs.version }}-macos-app.zip
           body: ${{ steps.release-body.outputs.body }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
