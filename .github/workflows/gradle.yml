@@ -95,30 +95,19 @@ jobs:
 
     steps:
       # Skip Windows/macOS on regular pushes (still run on PRs and tags)
-      - name: Check if should run
-        id: should-run
-        run: |
-          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]] || [[ "${{ github.event_name }}" == "pull_request" ]] || [[ "${{ github.ref }}" == refs/tags/v* ]]; then
-            echo "should_run=true" >> $GITHUB_OUTPUT
-            echo "Running tests on ${{ matrix.os }}"
-          else
-            echo "should_run=false" >> $GITHUB_OUTPUT
-            echo "Skipping tests on ${{ matrix.os }} for regular push"
-          fi
-
       - name: Checkout code
-        if: steps.should-run.outputs.should_run == 'true'
+        if: matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        if: steps.should-run.outputs.should_run == 'true'
+        if: matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Gradle
-        if: steps.should-run.outputs.should_run == 'true'
+        if: matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
           cache-read-only: false
@@ -126,20 +115,20 @@ jobs:
 
       # Ubuntu: Run full tests with coverage
       - name: Run tests with coverage (Ubuntu)
-        if: steps.should-run.outputs.should_run == 'true' && matrix.run-coverage
+        if: (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && matrix.run-coverage
         run: |
           cd StumbleHome
           ./gradlew --stacktrace test jacocoTestReport
 
       # Windows/macOS: Run tests only (no coverage to save time)
       - name: Run tests only (Windows)
-        if: steps.should-run.outputs.should_run == 'true' && runner.os == 'Windows' && !matrix.run-coverage
+        if: (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && runner.os == 'Windows' && !matrix.run-coverage
         run: |
           cd StumbleHome
           ./gradlew.bat --stacktrace test
 
       - name: Run tests only (macOS)
-        if: steps.should-run.outputs.should_run == 'true' && runner.os == 'macOS' && !matrix.run-coverage
+        if: (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && runner.os == 'macOS' && !matrix.run-coverage
         run: |
           cd StumbleHome
           ./gradlew --stacktrace test
@@ -147,7 +136,7 @@ jobs:
       # Publish test results (only from Ubuntu to avoid duplicates)
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always() && steps.should-run.outputs.should_run == 'true' && matrix.os == 'ubuntu-latest'
+        if: always() && (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && matrix.os == 'ubuntu-latest'
         with:
           files: |
             StumbleHome/lib/build/test-results/test/**/*.xml
@@ -157,7 +146,7 @@ jobs:
       # Upload coverage report (only from Ubuntu)
       - name: Upload JaCoCo HTML report
         uses: actions/upload-artifact@v4
-        if: always() && steps.should-run.outputs.should_run == 'true' && matrix.os == 'ubuntu-latest'
+        if: always() && (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && matrix.os == 'ubuntu-latest'
         with:
           name: jacoco-html-report
           path: StumbleHome/lib/build/reports/jacoco/test/html/
@@ -166,7 +155,7 @@ jobs:
       # Upload test reports (only from Ubuntu)
       - name: Upload test reports
         uses: actions/upload-artifact@v4
-        if: always() && steps.should-run.outputs.should_run == 'true' && matrix.os == 'ubuntu-latest'
+        if: always() && (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && matrix.os == 'ubuntu-latest'
         with:
           name: test-reports
           path: StumbleHome/lib/build/reports/tests/test/
