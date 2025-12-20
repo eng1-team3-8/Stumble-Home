@@ -281,7 +281,17 @@ jobs:
 
           BODY+="## Installation
 
-          You can either run Stumble-Home through the JAR (requires Java >=17), or if applicable, use the native macOS app.
+          "
+
+          if [ "$IS_PRERELEASE" = "true" ]; then
+            BODY+="Run Stumble-Home through the JAR (requires Java >=17).
+
+          **For all platforms (Windows, macOS, Linux):**
+          - Download \`StumbleHome-${VERSION}.jar\`
+          - Run: \`java -jar StumbleHome-${VERSION}.jar\`
+          - macOS users: Add \`-XstartOnFirstThread\` flag: \`java -XstartOnFirstThread -jar StumbleHome-${VERSION}.jar\`"
+          else
+            BODY+="You can either run Stumble-Home through the JAR (requires Java >=17), or if applicable, use the native macOS app.
 
           **For all platforms (Windows, macOS, Linux):**
           - Download \`StumbleHome-${VERSION}.jar\`
@@ -291,6 +301,7 @@ jobs:
           **For macOS (native app):**
           - Download \`StumbleHome-${VERSION}-macos-app.zip\`
           - Extract and run \`stumblehome.app\`"
+          fi
 
           echo "body<<EOF" >> $GITHUB_OUTPUT
           echo "$BODY" >> $GITHUB_OUTPUT
