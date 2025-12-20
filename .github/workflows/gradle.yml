@@ -18,10 +18,41 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+      is_prerelease: ${{ steps.get_version.outputs.is_prerelease }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for tags
+
+      - name: Get version from tag or default
+        id: get_version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+
+            # Check if tag was created from development branch
+            BRANCH=$(git branch -r --contains ${{ github.ref }} | grep -E 'origin/(development|dev)' || echo "")
+
+            if [[ -n "$BRANCH" ]]; then
+              # Append -dev suffix if from development branch
+              VERSION="${VERSION}-dev"
+              IS_PRERELEASE="true"
+              echo "Development branch detected - marking as pre-release"
+            else
+              IS_PRERELEASE="false"
+            fi
+          else
+            VERSION="1.0.0-dev"
+            IS_PRERELEASE="true"
+          fi
+
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "is_prerelease=${IS_PRERELEASE}" >> $GITHUB_OUTPUT
+          echo "Building version: ${VERSION} (prerelease: ${IS_PRERELEASE})"
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -39,10 +70,10 @@ jobs:
           cd StumbleHome
           ./gradlew --no-daemon --stacktrace spotlessCheck
 
-      - name: Build JAR
+      - name: Build JAR with version
         run: |
           cd StumbleHome
-          ./gradlew --no-daemon --stacktrace build -x test
+          ./gradlew --no-daemon --stacktrace build -x test -PprojectVersion=${{ steps.get_version.outputs.version }}
 
       # Upload universal JAR (works on all platforms)
       - name: Upload universal JAR
@@ -179,8 +210,11 @@ jobs:
           name: universal-jar
           path: ./jar-build
 
-      - name: Rename universal JAR
-        run: mv jar-build/StumbleHome-*.jar StumbleHome.jar
+      - name: Rename universal JAR with version
+        run: |
+          VERSION="${{ needs.build.outputs.version }}"
+          mv jar-build/StumbleHome-*.jar StumbleHome-${VERSION}.jar
+          echo "Created StumbleHome-${VERSION}.jar"
 
       # Download macOS app bundle
       - name: Download macOS app bundle
@@ -189,29 +223,32 @@ jobs:
           name: macos-app
           path: ./macos-app
 
-      - name: Create macOS app zip
+      - name: Create macOS app zip with version
         run: |
+          VERSION="${{ needs.build.outputs.version }}"
           cd macos-app
-          zip -r ../stumblehome-macos-app.zip stumblehome.app
+          zip -r ../StumbleHome-${VERSION}-macos-app.zip stumblehome.app
+          echo "Created StumbleHome-${VERSION}-macos-app.zip"
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
+          prerelease: ${{ needs.build.outputs.is_prerelease == 'true' }}
           files: |
-            StumbleHome.jar
-            stumblehome-macos-app.zip
+            StumbleHome-${{ needs.build.outputs.version }}.jar
+            StumbleHome-${{ needs.build.outputs.version }}-macos-app.zip
           body: |
-            ## Installation
-            You can either run Stumble-Home as a JAR (requires Java >=17), or if applicable, use the native macOS app.
+            ${{ needs.build.outputs.is_prerelease == 'true' && '## ⚠️ Pre-release (Development Build)\n\nThis is a development pre-release and may be unstable. Use at your own risk.\n\n' || '' }}## Installation
+            You can either run Stumble-Home through the JAR (requires Java >=17), or if applicable, use the native macOS app.
 
             **For all platforms (Windows, macOS, Linux):**
-            - Download `StumbleHome.jar`
-            - Run: `java -jar StumbleHome.jar`
-            - macOS users: Add `-XstartOnFirstThread` flag: `java -XstartOnFirstThread -jar StumbleHome.jar`
+            - Download `StumbleHome-${{ needs.build.outputs.version }}.jar`
+            - Run: `java -jar StumbleHome-${{ needs.build.outputs.version }}.jar`
+            - macOS users: Add `-XstartOnFirstThread` flag: `java -XstartOnFirstThread -jar StumbleHome-${{ needs.build.outputs.version }}.jar`
 
             **For macOS (native app):**
-            - Download `stumblehome-macos-app.zip`
+            - Download `StumbleHome-${{ needs.build.outputs.version }}-macos-app.zip`
             - Extract and run `stumblehome.app`
 
         env:
