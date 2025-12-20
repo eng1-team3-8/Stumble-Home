@@ -1,8 +1,11 @@
+import io.github.fourlastor.construo.Target
+
 plugins {
   id 'java-library'
   id 'idea'
   id 'jacoco'
   id 'com.diffplug.spotless' version '8.1.0'
+  id "io.github.fourlastor.construo" version "2.1.0"
 }
 
 project.group = 'io.github.stumblehome'
@@ -136,3 +139,28 @@ jar {
   }
 }
 
+// configures construo plugin to produce macOS .app version of game
+construo {
+  // executable/bundle names
+  name.set("stumblehome")
+  humanName.set("Stumble Home")
+
+  // main class (can be omitted if inferred from jar manifest)
+  mainClass.set("io.github.stumblehome.LauncherStub")
+  outputDir.set(rootProject.layout.buildDirectory.dir("construo"))
+
+  targets.configure {
+    create("macM1", Target.MacOs) {
+      architecture.set(Target.Architecture.AARCH64)
+      jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.11%2B9/OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.11_9.tar.gz")
+      identifier.set("io.github.stumblehome.StumbleHome")
+      macIcon.set(project.file("src/main/resources/MainMenu.png"))
+    }
+  }
+
+  roast {
+    // macOS: run JVM on first thread (needed for LWJGL), this defaults to true but you can be explicit
+    runOnFirstThread.set(true)
+    // optional: vmArgs.addAll("-Xmx1G")
+  }
+}
