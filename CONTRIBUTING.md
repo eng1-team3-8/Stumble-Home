@@ -20,7 +20,7 @@ This runs the normal Gradle lifecycle: compilation, tests, checks and packaging.
 
 #### 1.1 Running without tests
 
-If you want a fresh packaged JAR without running tests or checks, use the clean+jar flow. This rebuilds artifacts from
+If you want a fresh packaged JAR without running tests or checks, use the clean+jar flow. This rebuilds artefacts from
 scratch and produces the runnable JAR under `lib/build/libs/`.
 
 ```bash
