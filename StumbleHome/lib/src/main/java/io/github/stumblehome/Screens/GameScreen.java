@@ -139,11 +139,11 @@ public class GameScreen implements Screen {
 
         // Initialize player
         player =
-            new Player(
-                new Sprite(new Texture("character.png")),
-                mapWidth,
-                mapHeight,
-                collisionLayer);
+                new Player(
+                        new Sprite(new Texture("character.png")),
+                        mapWidth,
+                        mapHeight,
+                        collisionLayer);
 
         // Position player at start point of map
         player.playerX = mapWidth - 12 - player.playerSize / 2;
@@ -175,17 +175,17 @@ public class GameScreen implements Screen {
         msg = new MessageHandler(game);
         msg.addMessage(Messages.PAUSED, "PAUSED", Color.WHITE, 2f);
         msg.addMessage(
-            Messages.NOKEYCARD, "You need a KeyCard to enter the Door...", Color.RED, 2f);
+                Messages.NOKEYCARD, "You need a KeyCard to enter the Door...", Color.RED, 2f);
         msg.addMessage(
-            Messages.PICKUPKEYCARD,
-            "You have the keyCard, you can go home now!",
-            Color.YELLOW,
-            2f);
+                Messages.PICKUPKEYCARD,
+                "You have the keyCard, you can go home now!",
+                Color.YELLOW,
+                2f);
         msg.addMessage(
-            Messages.REMEMBERKEYCARD,
-            "You remembered that you don't have the keycard, find it!",
-            Color.RED,
-            2f);
+                Messages.REMEMBERKEYCARD,
+                "You remembered that you don't have the keycard, find it!",
+                Color.RED,
+                2f);
         msg.addMessage(Messages.LONGBOIAPPEAR, "It's Long Boi! Avoid him!", Color.RED, 2f);
     }
 
@@ -309,9 +309,9 @@ public class GameScreen implements Screen {
             paused = true;
 
             int score =
-                (int) (remainingTime * 10)
-                    + (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter)
-                    * 50;
+                    (int) (remainingTime * 10)
+                            + (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter)
+                                    * 50;
             saveLeaderBoardScore(score);
 
             reachedFinish = true;
@@ -333,20 +333,20 @@ public class GameScreen implements Screen {
         float finishZoneWidth = 5f;
         float finishZoneHeight = 3f;
         return player.playerX < finishZoneX + finishZoneWidth
-            && player.playerX + player.playerSize > finishZoneX
-            && player.playerY < finishZoneY + finishZoneHeight
-            && player.playerY + player.playerSize > finishZoneY;
+                && player.playerX + player.playerSize > finishZoneX
+                && player.playerY < finishZoneY + finishZoneHeight
+                && player.playerY + player.playerSize > finishZoneY;
     }
 
     private void clampCamera() {
         // Only clamp if map is larger than viewport in each dimension
         if (mapWidth >= game.viewport.getWorldWidth()) {
             game.camera.position.x =
-                MathUtils.clamp(game.camera.position.x, minCameraX, maxCameraX);
+                    MathUtils.clamp(game.camera.position.x, minCameraX, maxCameraX);
         }
         if (mapHeight >= game.viewport.getWorldHeight()) {
             game.camera.position.y =
-                MathUtils.clamp(game.camera.position.y, minCameraY, maxCameraY);
+                    MathUtils.clamp(game.camera.position.y, minCameraY, maxCameraY);
         }
     }
 
@@ -377,10 +377,10 @@ public class GameScreen implements Screen {
 
         // UI overlay (timer and event counters)
         game.batch.setProjectionMatrix(
-            game.camera
-                .projection
-                .cpy()
-                .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
+                game.camera
+                        .projection
+                        .cpy()
+                        .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         int minutes = (int) (remainingTime / 60);
         int seconds = (int) (remainingTime % 60);
@@ -389,7 +389,7 @@ public class GameScreen implements Screen {
         int totalEvents = 5;
         String helpfulEventText = "Helpful events: " + helpfulEventCounter + "/" + totalEvents;
         String hinderingEventText =
-            "Hindering events: " + hinderingEventCounter + "/" + totalEvents;
+                "Hindering events: " + hinderingEventCounter + "/" + totalEvents;
         String hiddenEventText = "Hidden events: " + hiddenEventCounter + "/" + totalEvents;
 
         game.batch.begin();
