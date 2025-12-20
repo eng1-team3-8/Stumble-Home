@@ -98,7 +98,7 @@ cd StumbleHome
 
 After running `spotlessApply`, re-run the build command.
 
-### 3 Best practices:
+### 4 Best practices:
 
 - Always use the Gradle wrapper (`./gradlew`).
 - Run `./gradlew spotlessCheck` before pushing.

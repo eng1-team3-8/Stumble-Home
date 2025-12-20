@@ -1,27 +1,27 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+# This workflow builds, tests, and reports code coverage for the Stumble-Home project
+# It runs on pushes and PRs to main and development branches.
 
-name: Java CI with Gradle
+name: Build, Test & Coverage
 
 on:
   push:
-    branches: [ "main", "*" ]
+    branches: [ "main", "development" ]
   pull_request:
-    branches: [ "main", "*" ]
+    branches: [ "main", "development" ]
 
 jobs:
-  build:
-
+  build-and-test:
+    name: Build, Test & Coverage Report
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      checks: write         # Needed to create check runs for test results
+      pull-requests: write  # Needed for test result comments
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -32,25 +32,52 @@ jobs:
       # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+        with:
+          cache-read-only: false  # Allow cache writes from all branches
 
-      - name: Run Spotless check
+      - name: Run Spotless format check
         run: |
           cd StumbleHome
           ./gradlew --no-daemon --stacktrace spotlessCheck
 
-      - name: Build with Gradle Wrapper
+      - name: Build and run tests with coverage
         run: |
           cd StumbleHome
           ./gradlew --no-daemon --stacktrace build jacocoTestReport
 
+      # Upload test results for visibility even if tests fail
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            StumbleHome/lib/build/test-results/test/**/*.xml
+          check_name: Test Results
+          comment_mode: changes
+
+      # Upload build artifacts (JAR file)
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
+        if: success()
         with:
-          name: StumbleHome
-          path: StumbleHome/lib/build/libs
+          name: StumbleHome-jar
+          path: StumbleHome/lib/build/libs/*.jar
+          retention-days: 30
 
-      - name: Upload JaCoCo report
+      # Upload HTML coverage report for manual review
+      - name: Upload JaCoCo HTML report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: jacoco-report
-          path: StumbleHome/lib/build/reports/jacoco/test/html
+          name: jacoco-html-report
+          path: StumbleHome/lib/build/reports/jacoco/test/html/
+          retention-days: 30
+
+      # Upload test reports
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports
+          path: StumbleHome/lib/build/reports/tests/test/
+          retention-days: 30
