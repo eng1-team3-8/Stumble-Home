@@ -60,7 +60,7 @@ jobs:
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
           cache-read-only: false
-          gradle-home-cache-cleanup: true
+          cache-cleanup: always
           add-job-summary: on-failure
 
       - name: Build JAR with version (includes Spotless check)
@@ -111,7 +111,7 @@ jobs:
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
           cache-read-only: false
-          gradle-home-cache-cleanup: true
+          cache-cleanup: always
 
       # Ubuntu: Run full tests with coverage
       - name: Run tests with coverage (Ubuntu)
@@ -185,7 +185,7 @@ jobs:
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
           cache-read-only: false
-          gradle-home-cache-cleanup: true
+          cache-cleanup: always
 
       - name: Build macOS app bundle
         run: |
