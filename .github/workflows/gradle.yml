@@ -60,16 +60,13 @@ jobs:
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
           cache-read-only: false
+          gradle-home-cache-cleanup: true
+          add-job-summary: on-failure
 
-      - name: Run Spotless format check
+      - name: Build JAR with version (includes Spotless check)
         run: |
           cd StumbleHome
-          ./gradlew --no-daemon --stacktrace spotlessCheck
-
-      - name: Build JAR with version
-        run: |
-          cd StumbleHome
-          ./gradlew --no-daemon --stacktrace build -x test -PprojectVersion=${{ steps.get_version.outputs.version }}
+          ./gradlew --stacktrace spotlessCheck build -x test -PprojectVersion=${{ steps.get_version.outputs.version }}
 
       # Upload universal JAR (works on all platforms)
       - name: Upload universal JAR
@@ -83,9 +80,15 @@ jobs:
   test:
     name: Test on ${{ matrix.os }}
     needs: build
+    # Skip Windows/macOS on regular pushes (still run on PRs and tags)
+    if: matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')
     strategy:
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
+        include:
+          - os: ubuntu-latest
+            run-coverage: true
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
@@ -106,18 +109,27 @@ jobs:
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
           cache-read-only: false
+          gradle-home-cache-cleanup: true
 
-      - name: Run tests with coverage (Unix)
-        if: runner.os != 'Windows'
+      # Ubuntu: Run full tests with coverage
+      - name: Run tests with coverage (Ubuntu)
+        if: matrix.run-coverage
         run: |
           cd StumbleHome
-          ./gradlew --no-daemon --stacktrace test jacocoTestReport
+          ./gradlew --stacktrace test jacocoTestReport
 
-      - name: Run tests with coverage (Windows)
-        if: runner.os == 'Windows'
+      # Windows/macOS: Run tests only (no coverage to save time)
+      - name: Run tests only (Windows)
+        if: runner.os == 'Windows' && !matrix.run-coverage
         run: |
           cd StumbleHome
-          ./gradlew.bat --no-daemon --stacktrace test jacocoTestReport
+          ./gradlew.bat --stacktrace test
+
+      - name: Run tests only (macOS)
+        if: runner.os == 'macOS' && !matrix.run-coverage
+        run: |
+          cd StumbleHome
+          ./gradlew --stacktrace test
 
       # Publish test results (only from Ubuntu to avoid duplicates)
       - name: Publish test results
@@ -150,7 +162,7 @@ jobs:
   # Build macOS native app bundle
   build-macos-app:
     name: Build macOS App Bundle
-    needs: test
+    needs: build
     runs-on: macos-latest
     # Only build macOS app for releases (tags) to save resources on PR/push builds
     if: startsWith(github.ref, 'refs/tags/v')
@@ -171,11 +183,12 @@ jobs:
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
           cache-read-only: false
+          gradle-home-cache-cleanup: true
 
       - name: Build macOS app bundle
         run: |
           cd StumbleHome
-          ./gradlew --no-daemon --stacktrace packageMacM1
+          ./gradlew --stacktrace packageMacM1
 
       - name: Extract macOS app and remove zip
         run: |
