@@ -34,14 +34,10 @@ jobs:
           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
             VERSION=${GITHUB_REF#refs/tags/v}
 
-            # Check if tag was created from development branch
-            BRANCH=$(git branch -r --contains ${{ github.ref }} | grep -E 'origin/(development|dev)' || echo "")
-
-            if [[ -n "$BRANCH" ]]; then
-              # Append -dev suffix if from development branch
-              VERSION="${VERSION}-dev"
+            # Check if version already has -dev suffix
+            if [[ "$VERSION" == *-dev ]]; then
               IS_PRERELEASE="true"
-              echo "Development branch detected - marking as pre-release"
+              echo "Development tag detected (contains -dev suffix)"
             else
               IS_PRERELEASE="false"
             fi
@@ -64,16 +60,13 @@ jobs:
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
           cache-read-only: false
+          cache-cleanup: always
+          add-job-summary: on-failure
 
-      - name: Run Spotless format check
+      - name: Build JAR with version (includes Spotless check)
         run: |
           cd StumbleHome
-          ./gradlew --no-daemon --stacktrace spotlessCheck
-
-      - name: Build JAR with version
-        run: |
-          cd StumbleHome
-          ./gradlew --no-daemon --stacktrace build -x test -PprojectVersion=${{ steps.get_version.outputs.version }}
+          ./gradlew --stacktrace spotlessCheck build -x test -PprojectVersion=${{ steps.get_version.outputs.version }}
 
       # Upload universal JAR (works on all platforms)
       - name: Upload universal JAR
@@ -88,8 +81,12 @@ jobs:
     name: Test on ${{ matrix.os }}
     needs: build
     strategy:
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
+        include:
+          - os: ubuntu-latest
+            run-coverage: true
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
@@ -97,36 +94,49 @@ jobs:
       pull-requests: write
 
     steps:
+      # Skip Windows/macOS on regular pushes (still run on PRs and tags)
       - name: Checkout code
+        if: matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
+        if: matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
       - name: Setup Gradle
+        if: matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
           cache-read-only: false
+          cache-cleanup: always
 
-      - name: Run tests with coverage (Unix)
-        if: runner.os != 'Windows'
+      # Ubuntu: Run full tests with coverage
+      - name: Run tests with coverage (Ubuntu)
+        if: (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && matrix.run-coverage
         run: |
           cd StumbleHome
-          ./gradlew --no-daemon --stacktrace test jacocoTestReport
+          ./gradlew --stacktrace test jacocoTestReport
 
-      - name: Run tests with coverage (Windows)
-        if: runner.os == 'Windows'
+      # Windows/macOS: Run tests only (no coverage to save time)
+      - name: Run tests only (Windows)
+        if: (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && runner.os == 'Windows' && !matrix.run-coverage
         run: |
           cd StumbleHome
-          ./gradlew.bat --no-daemon --stacktrace test jacocoTestReport
+          ./gradlew.bat --stacktrace test
+
+      - name: Run tests only (macOS)
+        if: (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && runner.os == 'macOS' && !matrix.run-coverage
+        run: |
+          cd StumbleHome
+          ./gradlew --stacktrace test
 
       # Publish test results (only from Ubuntu to avoid duplicates)
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always() && matrix.os == 'ubuntu-latest'
+        if: always() && (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && matrix.os == 'ubuntu-latest'
         with:
           files: |
             StumbleHome/lib/build/test-results/test/**/*.xml
@@ -136,7 +146,7 @@ jobs:
       # Upload coverage report (only from Ubuntu)
       - name: Upload JaCoCo HTML report
         uses: actions/upload-artifact@v4
-        if: always() && matrix.os == 'ubuntu-latest'
+        if: always() && (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && matrix.os == 'ubuntu-latest'
         with:
           name: jacoco-html-report
           path: StumbleHome/lib/build/reports/jacoco/test/html/
@@ -145,7 +155,7 @@ jobs:
       # Upload test reports (only from Ubuntu)
       - name: Upload test reports
         uses: actions/upload-artifact@v4
-        if: always() && matrix.os == 'ubuntu-latest'
+        if: always() && (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && matrix.os == 'ubuntu-latest'
         with:
           name: test-reports
           path: StumbleHome/lib/build/reports/tests/test/
@@ -154,8 +164,10 @@ jobs:
   # Build macOS native app bundle
   build-macos-app:
     name: Build macOS App Bundle
-    needs: test
+    needs: build
     runs-on: macos-latest
+    # Only build macOS app for releases (tags) to save resources on PR/push builds
+    if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: read
 
@@ -173,11 +185,12 @@ jobs:
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
           cache-read-only: false
+          cache-cleanup: always
 
       - name: Build macOS app bundle
         run: |
           cd StumbleHome
-          ./gradlew --no-daemon --stacktrace packageMacM1
+          ./gradlew --stacktrace packageMacM1
 
       - name: Extract macOS app and remove zip
         run: |
@@ -216,40 +229,90 @@ jobs:
           mv jar-build/StumbleHome-*.jar StumbleHome-${VERSION}.jar
           echo "Created StumbleHome-${VERSION}.jar"
 
-      # Download macOS app bundle
+      # Download macOS app bundle (if it was built)
       - name: Download macOS app bundle
         uses: actions/download-artifact@v4
+        continue-on-error: true
+        id: download-macos
         with:
           name: macos-app
           path: ./macos-app
 
       - name: Create macOS app zip with version
+        if: steps.download-macos.outcome == 'success'
         run: |
           VERSION="${{ needs.build.outputs.version }}"
           cd macos-app
-          zip -r ../StumbleHome-${VERSION}-macos-app.zip stumblehome.app
-          echo "Created StumbleHome-${VERSION}-macos-app.zip"
+          if [ -d "stumblehome.app" ]; then
+            zip -r ../StumbleHome-${VERSION}-macos-app.zip stumblehome.app
+            echo "Created StumbleHome-${VERSION}-macos-app.zip"
+          else
+            echo "stumblehome.app not found, skipping macOS app packaging"
+          fi
+
+      - name: Prepare release files list
+        id: release-files
+        run: |
+          FILES="StumbleHome-${{ needs.build.outputs.version }}.jar"
+          if [ -f "StumbleHome-${{ needs.build.outputs.version }}-macos-app.zip" ]; then
+            FILES="${FILES}\nStumbleHome-${{ needs.build.outputs.version }}-macos-app.zip"
+            echo "Including macOS app in release"
+          else
+            echo "macOS app not found, releasing JAR only"
+          fi
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Generate release body
+        id: release-body
+        run: |
+          VERSION="${{ needs.build.outputs.version }}"
+          IS_PRERELEASE="${{ needs.build.outputs.is_prerelease }}"
+
+          BODY=""
+          if [ "$IS_PRERELEASE" = "true" ]; then
+            BODY="## ⚠️ Pre-release (Development Build)
+
+          This is a development pre-release and may be unstable. Use at your own risk.
+
+          "
+          fi
+
+          BODY+="## Installation
+
+          "
+
+          if [ "$IS_PRERELEASE" = "true" ]; then
+            BODY+="Run Stumble-Home through the JAR (requires Java >=17).
+
+          **For all platforms (Windows, macOS, Linux):**
+          - Download \`StumbleHome-${VERSION}.jar\`
+          - Run: \`java -jar StumbleHome-${VERSION}.jar\`
+          - macOS users: Add \`-XstartOnFirstThread\` flag: \`java -XstartOnFirstThread -jar StumbleHome-${VERSION}.jar\`"
+          else
+            BODY+="You can either run Stumble-Home through the JAR (requires Java >=17), or if applicable, use the native macOS app.
+
+          **For all platforms (Windows, macOS, Linux):**
+          - Download \`StumbleHome-${VERSION}.jar\`
+          - Run: \`java -jar StumbleHome-${VERSION}.jar\`
+          - macOS users: Add \`-XstartOnFirstThread\` flag: \`java -XstartOnFirstThread -jar StumbleHome-${VERSION}.jar\`
+
+          **For macOS (native app):**
+          - Download \`StumbleHome-${VERSION}-macos-app.zip\`
+          - Extract and run \`stumblehome.app\`"
+          fi
+
+          echo "body<<EOF" >> $GITHUB_OUTPUT
+          echo "$BODY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           prerelease: ${{ needs.build.outputs.is_prerelease == 'true' }}
-          files: |
-            StumbleHome-${{ needs.build.outputs.version }}.jar
-            StumbleHome-${{ needs.build.outputs.version }}-macos-app.zip
-          body: |
-            ${{ needs.build.outputs.is_prerelease == 'true' && '## ⚠️ Pre-release (Development Build)\n\nThis is a development pre-release and may be unstable. Use at your own risk.\n\n' || '' }}## Installation
-            You can either run Stumble-Home through the JAR (requires Java >=17), or if applicable, use the native macOS app.
-
-            **For all platforms (Windows, macOS, Linux):**
-            - Download `StumbleHome-${{ needs.build.outputs.version }}.jar`
-            - Run: `java -jar StumbleHome-${{ needs.build.outputs.version }}.jar`
-            - macOS users: Add `-XstartOnFirstThread` flag: `java -XstartOnFirstThread -jar StumbleHome-${{ needs.build.outputs.version }}.jar`
-
-            **For macOS (native app):**
-            - Download `StumbleHome-${{ needs.build.outputs.version }}-macos-app.zip`
-            - Extract and run `stumblehome.app`
-
+          files: ${{ steps.release-files.outputs.files }}
+          body: ${{ steps.release-body.outputs.body }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
