@@ -13,11 +13,10 @@ public class Alcohol extends CollectableEntity {
         super(texture, size, position);
     }
 
-    public void makeDrunk(Player player){
+    public void makeDrunk(Player player) {
         player.isDrunk = true;
-        if (!player.canGetDrunk){
-        player.SwapControls();
+        if (!player.canGetDrunk) {
+            player.SwapControls();
         }
     }
-
 }
