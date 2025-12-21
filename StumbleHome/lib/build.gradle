@@ -1,0 +1,166 @@
+import io.github.fourlastor.construo.Target
+
+plugins {
+  id 'java-library'
+  id 'idea'
+  id 'jacoco'
+  id 'com.diffplug.spotless' version '8.1.0'
+  id "io.github.fourlastor.construo" version "2.1.0"
+}
+
+project.group = 'io.github.stumblehome'
+project.version = project.findProperty('projectVersion') ?: '1.0.0'
+ext.appName = 'Maze-game'
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+repositories {
+  mavenCentral()
+  mavenLocal()
+  maven { url = uri('https://central.sonatype.com/repository/maven-snapshots/') }
+  maven { url = uri('https://jitpack.io') }
+}
+
+dependencies {
+  implementation "com.badlogicgames.gdx:gdx:${project.findProperty('gdxVersion') ?: '1.13.1'}"
+  // Add LWJGL3 backend so the jar can be runnable
+  implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:${project.findProperty('gdxVersion') ?: '1.13.1'}"
+  // Native runtime classifiers for desktop platforms
+  runtimeOnly "com.badlogicgames.gdx:gdx-platform:${project.findProperty('gdxVersion') ?: '1.13.1'}:natives-desktop"
+
+  // Testing dependencies
+  testImplementation "com.badlogicgames.gdx:gdx-backend-headless:${project.findProperty('gdxVersion') ?: '1.13.1'}"
+  testImplementation "com.badlogicgames.gdx:gdx-platform:${project.findProperty('gdxVersion') ?: '1.13.1'}:natives-desktop"
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+  testImplementation 'org.mockito:mockito-core:5.8.0'
+}
+
+spotless {
+  java {
+    target 'src/main/java/**/*.java', 'src/test/java/**/*.java'
+    leadingTabsToSpaces(2)
+    trimTrailingWhitespace()
+    endWithNewline()
+    googleJavaFormat('1.15.0').aosp().reflowLongStrings().formatJavadoc(false).reorderImports(false).groupArtifact('com.google.googlejavaformat:google-java-format')
+  }
+}
+
+// Configure test task to use JUnit Platform
+test {
+  useJUnitPlatform()
+  finalizedBy jacocoTestReport // Generate JaCoCo report after tests run
+}
+
+// Configure JaCoCo test report
+jacocoTestReport {
+  dependsOn test // Tests are required to run before generating the report
+
+  reports {
+    html.required = true // HTML report for human-readable output
+  }
+
+  // Only scan specific package for coverage
+  sourceDirectories.from = files('src/main/java/io/github/stumblehome')
+  classDirectories.from = files(sourceSets.main.output.classesDirs).asFileTree.matching {
+    include 'io/github/stumblehome/**'
+  }
+}
+
+// Configure JaCoCo test coverage verification
+jacocoTestCoverageVerification {
+  violationRules {
+    rule {
+      limit {
+        // Minimum coverage (0.0 = 0%, 1.0 = 100%)
+        // We could slowly increase this as we improve test coverage
+        minimum = 0.0
+      }
+    }
+  }
+
+  // Only verify coverage for specific package
+  classDirectories.from = files(sourceSets.main.output.classesDirs).asFileTree.matching {
+    include 'io/github/stumblehome/**'
+  }
+}
+
+// Ensure formatting is checked as part of the standard 'check' lifecycle
+check.dependsOn 'spotlessCheck'
+
+// Keep IDEA output settings similar to previous layout
+idea.module.outputDir = file('build/classes/java/main')
+idea.module.testOutputDir = file('build/classes/java/test')
+
+// Generate assets list into project root assets/assets.txt (keeps existing behavior)
+tasks.register('generateAssetList') {
+  // Use the standard resources directory so assets are included in the JAR
+  inputs.dir('src/main/resources')
+  def assetsFolder = file('src/main/resources')
+  def assetsFile = file('src/main/resources/assets.txt')
+  doLast {
+    if (assetsFile.exists()) assetsFile.delete()
+    fileTree(assetsFolder).files.collect { assetsFolder.toURI().relativize(it.toURI()).getPath() }.sort().each {
+      assetsFile.append(it + "\n")
+    }
+  }
+}
+
+processResources.dependsOn 'generateAssetList'
+
+// Produce a runnable fat JAR that bundles runtime dependencies and sets a Main-Class.
+jar {
+  archiveBaseName.set('StumbleHome')
+  archiveVersion.set(project.version.toString())
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+  // Include runtime dependencies into the jar (fat/uber jar)
+  from {
+    configurations.runtimeClasspath.findAll { it.exists() }.collect { it.isDirectory() ? it : zipTree(it) }
+  } {
+    // exclude signature and manifest files from dependency jars so our manifest remains
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/MANIFEST.MF'
+  }
+
+  // Set the launcher Main-Class so `java -jar` works
+  manifest {
+    attributes(
+      'Main-Class': 'io.github.stumblehome.LauncherStub',
+      'Enable-Native-Access': 'ALL-UNNAMED'
+    )
+  }
+
+  doLast {
+    def jarFile = archiveFile.get().asFile
+    if (jarFile.exists()) jarFile.setExecutable(true, false)
+  }
+}
+
+// configures construo plugin to produce macOS .app version of game
+construo {
+  // executable/bundle names
+  name.set("stumblehome")
+  humanName.set("Stumble Home")
+
+  // main class (can be omitted if inferred from jar manifest)
+  mainClass.set("io.github.stumblehome.LauncherStub")
+  outputDir.set(rootProject.layout.buildDirectory.dir("construo"))
+
+  targets.configure {
+    create("macM1", Target.MacOs) {
+      architecture.set(Target.Architecture.AARCH64)
+      jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.11%2B9/OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.11_9.tar.gz")
+      identifier.set("io.github.stumblehome.StumbleHome")
+      macIcon.set(project.file("src/main/resources/MainMenu.png"))
+    }
+  }
+
+  roast {
+    // macOS: run JVM on first thread (needed for LWJGL), this defaults to true but you can be explicit
+    runOnFirstThread.set(true)
+    // optional: vmArgs.addAll("-Xmx1G")
+  }
+}

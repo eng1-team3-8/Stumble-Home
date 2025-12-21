@@ -1,16 +1,10 @@
 # Stumble-Home
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
-
-This project was generated with a template including simple application launchers and an empty `ApplicationListener` implementation.
-
 Repository for developing video game. Cohort 3, Team 8.
 
 -----------------------------------------------------------------------
 Note you must use **Adoptium's Temurin® Java 17**:
 
-- This is the version the modules technical requirements state we must use, check **JAVASETUP.md** for setup
-  instructions
 - To test you are using the right version, run the file: **CheckJDKVersion.java**
     - Expect results like this:
         - Java Version: 17.0.16
@@ -46,31 +40,58 @@ Names:
 
 -----------------------------------------------------------------------
 
+## Build & Run
 
-## Platforms
+This repository provides a minimal runnable distribution: the `lib` module is built into a single runnable jar that
+includes the LWJGL3 backend and native desktop libraries.
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+For full build, formatting, and contribution instructions see `CONTRIBUTING.md`.
 
-## Gradle
+### Running from source
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+Build the project (runs checks and tests):
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+```bash
+# from repository root
+cd StumbleHome
+./gradlew build
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+# then run the produced jar (artifact under lib/build/libs/)
+java -jar lib/build/libs/StumbleHome-1.0.0.jar
+```
+
+### Running in IntelliJ
+- Run the gradle setup task when prompted
+- Navigate to **StumbleHome/lib/src/main/java/io/github/stumblehome/StumbleHome.java**  
+  - With the file open (any java file in here will do):
+    - Select **Setup SDK** at the top of the file (in the **Project JDK is not defined** bar)
+    - Select **temurin-17 Eclipse Temirin 17.0.16**
+    (or equivalent)
+
+    ![Configure SDK](configure_SDK.png)
+
+- Then navigate to **Edit Configurations**  
+Found under the drop down box **Current File** (next to the **run** button):
+  - Set **cp** to **stumble-hom.lib.main**
+  - Click select main class:  
+    - Tick **Include non-project items**
+    - Search for **io.github.stumblehome.LauncherStub**
+    - Select and save settings
+
+    ![IntelliJ Setup Image 1](IntelliJ_Setup_1.png)
+    ![IntelliJ Setup Image 2](IntelliJ_Setup_2.png)
+
+### Downloading latest source version
+
+A pre-built artifact for the latest commit may be available via the repository's GitHub Actions run artifacts.
+To download the latest successful build artifact:
+
+1. Open the repository on GitHub.
+2. Click the "Actions" tab.
+3. Select the most recent successful workflow run.
+4. In that run's summary, open the "Artifacts" section and download the `StumbleHome` artifact.
+
+Notes:
+
+- The produced JAR is at `StumbleHome/lib/build/libs/StumbleHome-<version>.jar` where `<version>` is set in
+  `StumbleHome/gradle.properties` (`projectVersion`).

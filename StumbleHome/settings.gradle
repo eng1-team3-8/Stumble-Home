@@ -1,0 +1,11 @@
+plugins {
+  // Applies the foojay-resolver plugin to allow automatic download of JDKs.
+  id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
+}
+
+// Project contains library module with integrated tests
+rootProject.name = 'stumble-home'
+include 'lib'
+
+// Explicit project directory for library module
+project(':lib').projectDir = file('lib')
