@@ -2,6 +2,11 @@ package io.github.stumblehome;
 
 import com.badlogic.gdx.graphics.Texture;
 
+/**
+ * Class for alcoholic drinks.
+ * Inherits from collectable entity
+ * @author Lenny
+ */
 public class Alcohol extends CollectableEntity {
     /**
      * A constructor for entities that don't have any animations
