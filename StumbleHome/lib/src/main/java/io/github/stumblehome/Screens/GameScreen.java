@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.stumblehome.*;
 import io.github.stumblehome.Messages.MessageHandler;
 import io.github.stumblehome.Messages.Messages;
-import java.lang.System;
 
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
