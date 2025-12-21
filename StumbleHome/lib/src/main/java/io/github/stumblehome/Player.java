@@ -67,7 +67,11 @@ public class Player extends Sprite {
     // Height of the game map in tiles.
     private final float mapHeight;
 
+    // Speed of the player
     public float player_speed;
+
+    // Boolean to see if the player can get drunk (default true, only false after a meal)
+    public boolean canGetDrunk = true;
 
     // Layer containing collision information from the tiled map.
     TiledMapTileLayer collisionLayer;
