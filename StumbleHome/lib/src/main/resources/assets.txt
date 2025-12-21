@@ -1,5 +1,6 @@
 Blank.png
 MainMenu.png
+Sprites/Chicken.png
 Sprites/Smirnoff.png
 Sprites/Stick.png
 Sprites/Tsingtao.png
