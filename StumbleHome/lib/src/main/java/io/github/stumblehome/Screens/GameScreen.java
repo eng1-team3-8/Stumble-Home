@@ -104,6 +104,10 @@ public class GameScreen implements Screen {
     // Chicken for the positive event
     private final Food chicken;
 
+    // Adding the Yorks and the Lancs roses
+    private final Rose York;
+    private final Rose Lancaster;
+
     // Counters for hidden, helpful, and hindering events.
     private int hiddenEventCounter = 0;
     private int helpfulEventCounter = 0;
@@ -180,14 +184,16 @@ public class GameScreen implements Screen {
         // Twig event
         twig = new Twig(new Texture("Sprites/Stick.png"), 1f, new float[] {51f, 19f});
 
-        // Beer bottle
+        // Alcohol bottles
         beer = new Alcohol(new Texture("Sprites/Tsingtao.png"), 1f, new float[] {62f, 5f});
-
-        // Vodka bottle
         vodka = new Alcohol(new Texture("Sprites/Smirnoff.png"), 1f, new float[] {35f, 2f});
 
         // Chicken
         chicken = new Food(new Texture("Sprites/Chicken.png"), 1f, new float[] {54f, 42f});
+
+        // The roses
+        York = new Rose(new Texture("Sprites/YorkRose.png"), 1f, new float[] {2f, 25f});
+        Lancaster = new Rose(new Texture("Sprites/LancasterRose.png"), 1f, new float[] {5f, 25f});
 
         // message handler
         msg = new MessageHandler(game);
@@ -205,6 +211,17 @@ public class GameScreen implements Screen {
                 Color.RED,
                 2f);
         msg.addMessage(Messages.LONGBOIAPPEAR, "It's Long Boi! Avoid him!", Color.RED, 2f);
+        msg.addMessage(
+                Messages.YORKSQUISHED,
+                "Blud does NOT like York, I bet YOU killed Longboi!",
+                Color.RED,
+                2f);
+        msg.addMessage(
+                Messages.LANCASTERSQUISHED,
+                "Good job, doing God's work here. Goodbye Lancashire!",
+                Color.RED,
+                2f);
+        msg.addMessage(Messages.BOTHSQUISHED, "I see, you just harbour chaos", Color.BLACK, 2f);
     }
 
     @Override
@@ -243,6 +260,8 @@ public class GameScreen implements Screen {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
             game.setScreen(new GameOverScreen(game, remainingTime, score));
         }
+
+        System.out.println(player.playerX + " , " + player.playerY);
     }
 
     /**
@@ -303,6 +322,29 @@ public class GameScreen implements Screen {
                 msg.set_time(Messages.REMEMBERKEYCARD, 3f);
             }
             chicken.eatFood(player);
+        }
+
+        // Check if the Yorks rose has been stepped on
+        if (York.checkColliding(playerCentreX, playerCentreY)) {
+            hiddenEventCounter++;
+            msg.set_time(Messages.YORKSQUISHED, 3f);
+            York.isSquished = true;
+        }
+
+        // Check if the Lancaster rose has been stepped on
+        if (Lancaster.checkColliding(playerCentreX, playerCentreY)) {
+            hiddenEventCounter++;
+            msg.set_time(Messages.LANCASTERSQUISHED, 3f);
+            Lancaster.isSquished = true;
+        }
+
+        // CHeck if both roses have been squished.
+        // If true send a message and then immediately set squished to false, to prevent it
+        // repeating
+        if (York.isSquished && Lancaster.isSquished) {
+            msg.set_time(Messages.BOTHSQUISHED, 3f);
+            York.isSquished = false;
+            Lancaster.isSquished = false;
         }
 
         // if long boi walk not completed, run logic
@@ -417,6 +459,8 @@ public class GameScreen implements Screen {
         beer.drawEntity(game.batch);
         vodka.drawEntity(game.batch);
         chicken.drawEntity(game.batch);
+        York.drawEntity(game.batch);
+        Lancaster.drawEntity(game.batch);
 
         game.batch.end();
 
@@ -480,6 +524,12 @@ public class GameScreen implements Screen {
         bottle.getTexture().dispose();
         keycard.getTexture().dispose();
         longBoi.getTexture().dispose();
+        twig.dispose();
+        beer.dispose();
+        vodka.dispose();
+        chicken.dispose();
+        York.dispose();
+        Lancaster.dispose();
     }
 
     private void saveLeaderBoardScore(int score) {
