@@ -55,4 +55,11 @@ public abstract class Entity extends Sprite {
      * Resets the timer when switching between different animations.
      */
     public abstract void logic();
+
+    /**
+     * A dispose function, to clean up the code, when entities are destroyed
+     */
+    public void dispose() {
+        this.getTexture().dispose();
+    }
 }
