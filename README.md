@@ -5,7 +5,7 @@ Repository for developing video game. Cohort 3, Team 8.
 -----------------------------------------------------------------------
 Note you must use **Adoptium's Temurin® Java 17**:
 
-- To test you are using the right version, run the file: **CheckJDKVersion.java**
+- To test you are using the right version, run the file [Check_Java_Version.java](./src/CheckJDKVersion.java)
     - Expect results like this:
         - Java Version: 17.0.16
         - Java Vendor: Eclipse Adoptium
@@ -68,7 +68,7 @@ java -jar lib/build/libs/StumbleHome-1.0.0.jar
     - Select **temurin-17 Eclipse Temirin 17.0.16**
     (or equivalent)
 
-    ![Configure SDK](configure_SDK.png)
+    ![Configure SDK](./src/assets/configure_SDK.png)
 
 - Then navigate to **Edit Configurations**  
 Found under the drop down box **Current File** (next to the **run** button):
@@ -78,8 +78,8 @@ Found under the drop down box **Current File** (next to the **run** button):
     - Search for **io.github.stumblehome.LauncherStub**
     - Select and save settings
 
-    ![IntelliJ Setup Image 1](IntelliJ_Setup_1.png)
-    ![IntelliJ Setup Image 2](IntelliJ_Setup_2.png)
+    ![IntelliJ Setup Image 1](./src/assets/IntelliJ_Setup_1.png)
+    ![IntelliJ Setup Image 2](./src/assets/IntelliJ_Setup_2.png)
 
 ### Downloading latest source version
 
