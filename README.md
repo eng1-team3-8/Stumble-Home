@@ -81,17 +81,20 @@ Found under the drop down box **Current File** (next to the **run** button):
     ![IntelliJ Setup Image 1](./src/assets/IntelliJ_Setup_1.png)
     ![IntelliJ Setup Image 2](./src/assets/IntelliJ_Setup_2.png)
 
+
+### Downloading latest release version
+
+Pre-built artefacts for released versions are available via the repository's [GitHub Releases](https://github.com/eng1-team3-8/Stumble-Home/releases) page.
+
+Stable versions are released as jar executables compatible on Windows, MacOS, and Linux. Accompanying application bundles are also available for MacOS.
+
+Unstable versions are marked as pre-release, and tagged as version X.X.X-dev . Only JARs are available for development builds.
+
+Visit the releases page for installation and usage instructions.
+
 ### Downloading latest source version
 
-A pre-built artifact for the latest commit may be available via the repository's GitHub Actions run artifacts.
-To download the latest successful build artifact:
+Pre-built artefacts for the latest commit may be available via the repository's [GitHub Actions](https://github.com/eng1-team3-8/Stumble-Home/actions) run artefacts.
 
-1. Open the repository on GitHub.
-2. Click the "Actions" tab.
-3. Select the most recent successful workflow run.
-4. In that run's summary, open the "Artifacts" section and download the `StumbleHome` artifact.
-
-Notes:
-
-- The produced JAR is at `StumbleHome/lib/build/libs/StumbleHome-<version>.jar` where `<version>` is set in
-  `StumbleHome/gradle.properties` (`projectVersion`).
+1. Select the most recent successful workflow run.
+2. In that run's summary, open the "Artifacts" section and download the `universal-jar` artefact.
