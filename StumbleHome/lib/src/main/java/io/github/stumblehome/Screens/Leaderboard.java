@@ -67,8 +67,7 @@ public class Leaderboard extends MenuScreen {
     public void show() {}
 
     /**
-     * Called once per frame to render the menu screen
-     * Edited to capture input for scrollable table
+     * Called once per frame to render the menu screen Edited to capture input for scrollable table
      *
      * @param delta the time in seconds since the last render.
      */
@@ -104,7 +103,7 @@ public class Leaderboard extends MenuScreen {
     /**
      * Called when the screen is resized.
      *
-     * @param width  the new width of the screen in pixels.
+     * @param width the new width of the screen in pixels.
      * @param height the new height of the screen in pixels.
      */
     @Override

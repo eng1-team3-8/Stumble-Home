@@ -47,9 +47,7 @@ public abstract class MenuScreen implements Screen {
         stage.draw();
     }
 
-    /**
-     * A menu screen should not by default need to change functionality when paused
-     */
+    /** A menu screen should not by default need to change functionality when paused */
     @Override
     public void pause() {}
 

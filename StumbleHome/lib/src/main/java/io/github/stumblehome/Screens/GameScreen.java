@@ -19,35 +19,24 @@ import io.github.stumblehome.Messages.Messages;
 
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
- * <p>
- * It handles player movement, camera control, event interactions, time tracking,
- * and determines win or loss conditions.
- * </p>
  *
- * <p>The class uses LibGDX's {@link Screen} interface to define game lifecycle
- * behavior such as rendering, resizing, and disposal.</p>
+ * <p>It handles player movement, camera control, event interactions, time tracking, and determines
+ * win or loss conditions.
+ *
+ * <p>The class uses LibGDX's {@link Screen} interface to define game lifecycle behavior such as
+ * rendering, resizing, and disposal.
  *
  * <p>In this screen:
+ *
  * <ul>
- *   <li>The player navigates through a tiled map to reach the finish zone.</li>
- *   <li>Various events (e.g., bottle, keycard, Long Boi) influence the gameplay.</li>
- *   <li>A timer counts down, ending the game when it reaches zero.</li>
+ *   <li>The player navigates through a tiled map to reach the finish zone.
+ *   <li>Various events (e.g., bottle, keycard, Long Boi) influence the gameplay.
+ *   <li>A timer counts down, ending the game when it reaches zero.
  * </ul>
- * </p>
  */
 public class GameScreen implements Screen {
     // Reference to the main game instance.
     final StumbleHome game;
-
-    // The current map being rendered.
-    TiledMap map;
-
-    // Renders the tiled map using an orthogonal projection.
-    OrthogonalTiledMapRenderer renderer;
-
-    // Collision layer representing obstacles (e.g., hedges).
-    TiledMapTileLayer collisionLayer;
-
     // Map boundaries
     // Width of the map in world units.
     private final float mapWidth;
@@ -61,64 +50,52 @@ public class GameScreen implements Screen {
     private final float minCameraY;
     // Maximum Y coordinate for the camera position.
     private final float maxCameraY;
-
-    // Indicates whether the game is currently paused.
-    private boolean paused = false;
-
-    // Remaining time for the player to complete the game (in seconds).
-    private float remainingTime = 300f;
-
-    // Whether the countdown timer has reached zero.
-    private boolean timeUp = false;
-
-    // Whether the player has reached the finish zone.
-    private boolean reachedFinish = false;
-
-    // Whether the player has collected the keycard.
-    private boolean hasKeycard = false;
-
-    // Message timers for temporary on-screen notifications.
-    private MessageHandler msg;
-
     // The player character instance.
     private final Player player;
-
     // Interactive event: the water bottle (removes drunkenness).
     private final BottleEvent bottle;
-
     // Interactive event: Long Boi (a moving hazard).
     private final LongBoiEvent longBoi;
-
     // Interactive event: keycard (required to win).
     private final KeycardEvent keycard;
-
     // Interactive event: Twig (slows down walking)
     private final Twig twig;
-
     // Beer for the negative event
     private final Alcohol beer;
-
     // Vodka for the negative event
     private final Alcohol vodka;
-
     // Chicken for the positive event
     private final Food chicken;
-
     // Adding the Yorks and the Lancs roses
     private final Rose York;
     private final Rose Lancaster;
-
+    private final String playerName;
+    // The current map being rendered.
+    TiledMap map;
+    // Renders the tiled map using an orthogonal projection.
+    OrthogonalTiledMapRenderer renderer;
+    // Collision layer representing obstacles (e.g., hedges).
+    TiledMapTileLayer collisionLayer;
+    // Indicates whether the game is currently paused.
+    private boolean paused = false;
+    // Remaining time for the player to complete the game (in seconds).
+    private float remainingTime = 300f;
+    // Whether the countdown timer has reached zero.
+    private boolean timeUp = false;
+    // Whether the player has reached the finish zone.
+    private boolean reachedFinish = false;
+    // Whether the player has collected the keycard.
+    private boolean hasKeycard = false;
+    // Message timers for temporary on-screen notifications.
+    private MessageHandler msg;
     // Counters for hidden, helpful, and hindering events.
     private int hiddenEventCounter = 0;
     private int helpfulEventCounter = 0;
     private int hinderingEventCounter = 0;
-
     private float time;
-    private final String playerName;
 
     /**
-     * Constructs the {@code GameScreen} and initializes the map, player, camera,
-     * and in-game events.
+     * Constructs the {@code GameScreen} and initializes the map, player, camera, and in-game events.
      *
      * @param game the main {@link StumbleHome} game instance.
      */
@@ -229,10 +206,9 @@ public class GameScreen implements Screen {
 
     /**
      * Called once per frame to update and render the game state.
-     * <p>
-     * Handles player input, game logic, event interactions, and draws
-     * all entities and UI elements.
-     * </p>
+     *
+     * <p>Handles player input, game logic, event interactions, and draws all entities and UI
+     * elements.
      *
      * @param delta the time (in seconds) since the last render.
      */
@@ -263,8 +239,8 @@ public class GameScreen implements Screen {
     }
 
     /**
-     * Handles core game logic, including player movement, event interactions,
-     * collision detection, and time management.
+     * Handles core game logic, including player movement, event interactions, collision detection,
+     * and time management.
      */
     private void logic() {
         player.logic();
@@ -499,7 +475,7 @@ public class GameScreen implements Screen {
     /**
      * Called when the screen size changes (e.g., window resize).
      *
-     * @param width  the new width in pixels.
+     * @param width the new width in pixels.
      * @param height the new height in pixels.
      */
     @Override
@@ -515,6 +491,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resume() {}
+
     /** Releases all resources used by this screen. */
     @Override
     public void dispose() {

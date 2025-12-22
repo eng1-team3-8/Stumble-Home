@@ -17,64 +17,38 @@ import java.util.Map;
  * Supports both normal and reversed controls depending on the player's state.
  */
 public class Player extends Sprite {
-    // Spritesheet containing all player animation frames.
-    public Texture characterSheet;
-
-    // Map of all animations with key of animation name
-    private Map<Animation_enum, Animation<TextureRegion>> animations;
-
-    // Currently active animation being played.
-    private Animation<TextureRegion> currentAnimation;
-
-    // Previous animation, used to reset timing when animation changes.
-    private Animation<TextureRegion> previousAnimation;
-
-    // Time elapsed in the current animation.
-    private float stateTime;
-
-    private enum Animation_enum {
-        DOWN,
-        LEFT,
-        RIGHT,
-        UP,
-        WALK_DOWN,
-        WALK_LEFT,
-        WALK_RIGHT,
-        WALK_UP
-    }
-
-    // The direction the player was last moving or facing.
-    private Animation_enum lastDirection = Animation_enum.DOWN;
-
-    // Current x position of the player on the map.
-    public float playerX;
-
-    // Current y position of the player on the map.
-    public float playerY;
-
     // Size of the player's collision box and sprite.
     public final float playerSize = 0.8f;
-
     // Delta time value for consistent movement speed.
     private final float delta = Gdx.graphics.getDeltaTime();
-
-    // Controls whether the player has reversed controls (1 = drunk, 0 = sober).
-    public boolean isDrunk = true;
-
     // Width of the game map in tiles.
     private final float mapWidth;
-
     // Height of the game map in tiles.
     private final float mapHeight;
-
+    // Spritesheet containing all player animation frames.
+    public Texture characterSheet;
+    // Current x position of the player on the map.
+    public float playerX;
+    // Current y position of the player on the map.
+    public float playerY;
+    // Controls whether the player has reversed controls (1 = drunk, 0 = sober).
+    public boolean isDrunk = true;
     // Speed of the player
     public float player_speed;
-
     // Boolean to see if the player can get drunk (default true, only false after a meal)
     public boolean canGetDrunk = true;
-
     // Layer containing collision information from the tiled map.
     TiledMapTileLayer collisionLayer;
+    // Map of all animations with key of animation name
+    private Map<Animation_enum, Animation<TextureRegion>> animations;
+    // Currently active animation being played.
+    private Animation<TextureRegion> currentAnimation;
+    // Previous animation, used to reset timing when animation changes.
+    private Animation<TextureRegion> previousAnimation;
+    // Time elapsed in the current animation.
+    private float stateTime;
+    // The direction the player was last moving or facing.
+    private Animation_enum lastDirection = Animation_enum.DOWN;
 
     /**
      * Constructs a new player with the given sprite, map boundaries and layer which contains
@@ -348,5 +322,16 @@ public class Player extends Sprite {
             amount *= -1;
         }
         this.player_speed += amount;
+    }
+
+    private enum Animation_enum {
+        DOWN,
+        LEFT,
+        RIGHT,
+        UP,
+        WALK_DOWN,
+        WALK_LEFT,
+        WALK_RIGHT,
+        WALK_UP
     }
 }

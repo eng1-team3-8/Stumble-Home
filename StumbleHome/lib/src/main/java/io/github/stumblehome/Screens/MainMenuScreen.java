@@ -15,25 +15,20 @@ import io.github.stumblehome.StumbleHome;
 
 /**
  * The {@code MainMenuScreen} class is the main menu screen for the StumbleHome game.
- * <p>
- * It displays three interactive buttons: <b>Play</b>, <b>Tutorial</b>, and <b>Exit</b>.
- * The screen also supports showing a tutorial image overlay that can be closed by pressing
- * the ESC key or clicking the on screen.
- * </p>
  *
- * <p>This class implements LibGDX {@link Screen} interface, which shows
- * methods for managing a screen in a game.</p>
+ * <p>It displays three interactive buttons: <b>Play</b>, <b>Tutorial</b>, and <b>Exit</b>. The
+ * screen also supports showing a tutorial image overlay that can be closed by pressing the ESC key
+ * or clicking the on screen.
  *
- *
+ * <p>This class implements LibGDX {@link Screen} interface, which shows methods for managing a
+ * screen in a game.
  */
 public class MainMenuScreen extends MenuScreen {
+    TextField playerNameInput;
     // Image displayed when the tutorial is shown.
     private Texture tutorialImage;
-
     // Flag that determines whether the tutorial image is currently displayed.
     private boolean showTutorial = false;
-
-    TextField playerNameInput;
 
     public MainMenuScreen(final StumbleHome game) {
         this.game = game;
@@ -41,9 +36,8 @@ public class MainMenuScreen extends MenuScreen {
 
     /**
      * Called when this screen becomes the current screen for the game.
-     * <p>
-     * Initializes the background, tutorial image, buttons, and input processing.
-     * </p>
+     *
+     * <p>Initializes the background, tutorial image, buttons, and input processing.
      */
     @Override
     public void show() {
@@ -125,6 +119,7 @@ public class MainMenuScreen extends MenuScreen {
         // set stage to receive input
         Gdx.input.setInputProcessor(stage);
     }
+
     /**
      * Called every frame to render the screen.
      *
@@ -138,9 +133,7 @@ public class MainMenuScreen extends MenuScreen {
         render_tutorial();
     }
 
-    /**
-     * renders the tutorial page if it is not active, removes it if esc is pressed
-     */
+    /** renders the tutorial page if it is not active, removes it if esc is pressed */
     private void render_tutorial() {
         if (showTutorial && tutorialImage != null) {
             game.batch.begin();
@@ -172,7 +165,8 @@ public class MainMenuScreen extends MenuScreen {
 
     /**
      * Called when this screen is no longer the current screen for the game.
-     * <p>Removes the input processor to prevent input handling when inactive.</p>
+     *
+     * <p>Removes the input processor to prevent input handling when inactive.
      */
     @Override
     public void hide() {

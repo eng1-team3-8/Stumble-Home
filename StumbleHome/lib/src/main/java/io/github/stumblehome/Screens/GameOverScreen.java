@@ -16,14 +16,12 @@ import io.github.stumblehome.StumbleHome;
 /**
  * The {@code GameOverScreen} class represents the screen displayed when the player does not
  * complete the game and returns home.
- * <p>
- * It shows a message, the player's remaining time, and score.
- * It also includes a "Restart" button that takes the player back to the main menu.
- * </p>
  *
- * <p>This class implements LibGDX {@link Screen} interface, shows
- * methods for managing a screen in a game.</p>
+ * <p>It shows a message, the player's remaining time, and score. It also includes a "Restart"
+ * button that takes the player back to the main menu.
  *
+ * <p>This class implements LibGDX {@link Screen} interface, shows methods for managing a screen in
+ * a game.
  */
 public class GameOverScreen extends MenuScreen {
     final float remainingTime;
@@ -76,16 +74,18 @@ public class GameOverScreen extends MenuScreen {
     /**
      * Called when the screen is resized.
      *
-     * @param width  the new width of the screen in pixels.
+     * @param width the new width of the screen in pixels.
      * @param height the new height of the screen in pixels.
      */
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
     }
+
     /**
      * Disposes of the screen and frees associated resources.
-     * <p>Called when the screen is no longer needed.</p>
+     *
+     * <p>Called when the screen is no longer needed.
      */
     @Override
     public void dispose() {

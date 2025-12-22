@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
  * This is a class that creates entities that can be collected
+ *
  * @author Lenny, Isaac
  */
 public abstract class CollectableEntity extends NonPlayerEntity {
@@ -23,9 +24,11 @@ public abstract class CollectableEntity extends NonPlayerEntity {
 
     /**
      * A constructor for entities that have animations
+     *
      * @param texture Texture: The texture of the entity
      * @param size float: The size of the entity
-     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X, and 1 is Y.
+     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X,
+     *     and 1 is Y.
      * @param frame_width integer: The frame width of the animation
      * @param frame_height integer: The frame height of the animation
      * @param num_animations integer: The number of animations
@@ -42,18 +45,20 @@ public abstract class CollectableEntity extends NonPlayerEntity {
 
     /**
      * A constructor for entities that don't have any animations
+     *
      * @param texture Texture: The texture of the entity
      * @param size float: The size of the entity
-     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X, and 1 is Y.
+     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X,
+     *     and 1 is Y.
      */
     public CollectableEntity(Texture texture, float size, float[] position) {
         super(texture, size, position);
     }
 
     /**
-     * This method checks if the player is within a certain distance of the centre of the entity.
-     * If so, it updates the isColliding parameter.
-     * It works by using pythagoras' theorem to calculate the straight line distance between the player and the entity
+     * This method checks if the player is within a certain distance of the centre of the entity. If
+     * so, it updates the isColliding parameter. It works by using pythagoras' theorem to calculate
+     * the straight line distance between the player and the entity
      *
      * @param playerX float: the x coordinate of the player
      * @param playerY float: the y coordinate of the player
@@ -80,6 +85,7 @@ public abstract class CollectableEntity extends NonPlayerEntity {
 
     /**
      * Draws the entity, if it hasn't been collected yet
+     *
      * @param batch SpriteBatch: The spritebatch that will be drawn on
      */
     public void drawEntity(SpriteBatch batch) {

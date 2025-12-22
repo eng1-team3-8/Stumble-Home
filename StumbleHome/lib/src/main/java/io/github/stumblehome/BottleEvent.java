@@ -16,27 +16,20 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class BottleEvent extends Sprite {
 
-    // Spritesheet texture containing all animation frames for the bottle.
-    public Texture bottleSheet;
-
-    // The animation sequence currently being displayed.
-    private Animation<TextureRegion> currentAnimation;
-
-    // Previously displayed animation, used to detect when animation changes.
-    private Animation<TextureRegion> previousAnimation;
-
-    // Tracks how long the current animation has been playing.
-    private float stateTime;
-
-    // X-coordinate of the bottle's position on the map.
-    public float bottleX;
-
-    // Y-coordinate of the bottle's position on the map.
-    public float bottleY;
-
     // Size of the bottle sprite when rendered.
     public final float bottleSize = 1.5f;
-
+    // Spritesheet texture containing all animation frames for the bottle.
+    public Texture bottleSheet;
+    // X-coordinate of the bottle's position on the map.
+    public float bottleX;
+    // Y-coordinate of the bottle's position on the map.
+    public float bottleY;
+    // The animation sequence currently being displayed.
+    private Animation<TextureRegion> currentAnimation;
+    // Previously displayed animation, used to detect when animation changes.
+    private Animation<TextureRegion> previousAnimation;
+    // Tracks how long the current animation has been playing.
+    private float stateTime;
     // Whether the bottle has been picked up by the player.
     private boolean collected = false;
 

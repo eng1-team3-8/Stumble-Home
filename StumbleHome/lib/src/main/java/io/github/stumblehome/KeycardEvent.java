@@ -16,27 +16,20 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class KeycardEvent extends Sprite {
 
-    // Spritesheet texture containing keycard animation frames.
-    public Texture keycardSheet;
-
-    // Current animation being displayed.
-    private Animation<TextureRegion> currentAnimation;
-
-    // Previously displayed animation, used to detect animation changes.
-    private Animation<TextureRegion> previousAnimation;
-
-    // Elapsed time for the current animation.
-    private float stateTime;
-
-    // X-coordinate of the keycard on the map.
-    public float keycardX;
-
-    // Y-coordinate of the keycard on the map.
-    public float keycardY;
-
     // Size of the keycard sprite when rendered.
     public final float keycardSize = 1.0f;
-
+    // Spritesheet texture containing keycard animation frames.
+    public Texture keycardSheet;
+    // X-coordinate of the keycard on the map.
+    public float keycardX;
+    // Y-coordinate of the keycard on the map.
+    public float keycardY;
+    // Current animation being displayed.
+    private Animation<TextureRegion> currentAnimation;
+    // Previously displayed animation, used to detect animation changes.
+    private Animation<TextureRegion> previousAnimation;
+    // Elapsed time for the current animation.
+    private float stateTime;
     // Whether the player has picked up the keycard.
     private boolean collected = false;
 
