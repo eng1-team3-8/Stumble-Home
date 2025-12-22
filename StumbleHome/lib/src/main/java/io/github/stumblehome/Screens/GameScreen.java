@@ -243,8 +243,6 @@ public class GameScreen implements Screen {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
             game.setScreen(new GameOverScreen(game, remainingTime, score));
         }
-
-        System.out.println(player.canGetDrunk);
     }
 
     /**
