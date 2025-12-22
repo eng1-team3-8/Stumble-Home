@@ -95,6 +95,15 @@ public class GameScreen implements Screen {
     // Interactive event: Twig (slows down walking)
     private final Twig twig;
 
+    // Beer for the negative event
+    private final Alcohol beer;
+
+    // Vodka for the negative event
+    private final Alcohol vodka;
+
+    // Chicken for the positive event
+    private final Food chicken;
+
     // Counters for hidden, helpful, and hindering events.
     private int hiddenEventCounter = 0;
     private int helpfulEventCounter = 0;
@@ -169,7 +178,16 @@ public class GameScreen implements Screen {
         keycard.keycardY = mapHeight - 5 - keycard.keycardSize / 2;
 
         // Twig event
-        twig = new Twig(new Texture("Sprites/Stick.png"), 1f, new float[] {63f, 47f});
+        twig = new Twig(new Texture("Sprites/Stick.png"), 1f, new float[] {51f, 19f});
+
+        // Beer bottle
+        beer = new Alcohol(new Texture("Sprites/Tsingtao.png"), 1f, new float[] {62f, 5f});
+
+        // Vodka bottle
+        vodka = new Alcohol(new Texture("Sprites/Smirnoff.png"), 1f, new float[] {35f, 2f});
+
+        // Chicken
+        chicken = new Food(new Texture("Sprites/Chicken.png"), 1f, new float[] {54f, 42f});
 
         // message handler
         msg = new MessageHandler(game);
@@ -225,6 +243,8 @@ public class GameScreen implements Screen {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
             game.setScreen(new GameOverScreen(game, remainingTime, score));
         }
+
+        System.out.println(player.canGetDrunk);
     }
 
     /**
@@ -245,9 +265,12 @@ public class GameScreen implements Screen {
         // Check collision between player and water bottle
         if (bottle.checkCollision(playerCentreX, playerCentreY)) {
             // Player collected the water bottle - becomes sober
-            player.SwapControls();
+            if (player.isDrunk) {
+                player.SwapControls();
+                msg.set_time(Messages.REMEMBERKEYCARD, 3f);
+            }
+            player.isDrunk = false;
             helpfulEventCounter++;
-            msg.set_time(Messages.REMEMBERKEYCARD, 3f);
         }
 
         // check collision with keycard
@@ -261,6 +284,27 @@ public class GameScreen implements Screen {
         if (twig.checkColliding(playerCentreX, playerCentreY)) {
             hinderingEventCounter++;
             player.slowDownPlayer(.5f);
+        }
+
+        // Check if collision with beer
+        if (beer.checkColliding(playerCentreX, playerCentreY)) {
+            hinderingEventCounter++;
+            beer.makeDrunk(player);
+        }
+
+        // Check if collision with vodka
+        if (vodka.checkColliding(playerCentreX, playerCentreY)) {
+            hinderingEventCounter++;
+            vodka.makeDrunk(player);
+        }
+
+        // Check if collision with chicken
+        if (chicken.checkColliding(playerCentreX, playerCentreY)) {
+            helpfulEventCounter++;
+            if (player.isDrunk) {
+                msg.set_time(Messages.REMEMBERKEYCARD, 3f);
+            }
+            chicken.eatFood(player);
         }
 
         // if long boi walk not completed, run logic
@@ -372,6 +416,9 @@ public class GameScreen implements Screen {
         longBoi.draw(game.batch);
         keycard.draw(game.batch);
         twig.drawEntity(game.batch);
+        beer.drawEntity(game.batch);
+        vodka.drawEntity(game.batch);
+        chicken.drawEntity(game.batch);
 
         game.batch.end();
 
