@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import io.github.stumblehome.StumbleHome;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 /**
  * A handler class for the messages that the game will show, one should be initialised per game
@@ -15,6 +17,7 @@ import java.util.Map;
 public class MessageHandler {
     private StumbleHome game;
     private Map<Messages, MessageID> messages;
+    private Queue<Messages> shown_queue;
 
     /**
      * instantiates a message handler for a game
@@ -27,6 +30,7 @@ public class MessageHandler {
         for (Messages mssg : Messages.values()) {
             messages.put(mssg, null);
         }
+        shown_queue = new LinkedList<Messages>();
     }
 
     /**
@@ -53,10 +57,15 @@ public class MessageHandler {
      * delta
      */
     public void updateMessages() {
-        for (Messages msg : Messages.values()) {
-            if (!(messages.get(msg).time_left <= 0)) {
-                drawCenteredText(messages.get(msg));
-                shift_time(msg, -Gdx.graphics.getDeltaTime());
+        int counter = 0;
+        for (Messages msg : shown_queue) {
+            counter++;
+            shift_time(msg, -Gdx.graphics.getDeltaTime());
+            if (messages.get(msg).time_left == 0) {
+                shown_queue.remove(msg);
+            }
+            else {
+                drawCenteredText(messages.get(msg), counter);
             }
         }
     }
@@ -70,7 +79,7 @@ public class MessageHandler {
      */
     public void updateMessage(boolean show_msg, Messages message) {
         if (show_msg) {
-            drawCenteredText(messages.get(message));
+            drawCenteredText(messages.get(message), shown_queue.size() + 1);
         }
     }
 
@@ -81,7 +90,14 @@ public class MessageHandler {
      * @param new_time the new time that the message will be shown for, overrides previous time
      */
     public void set_time(Messages msg, float new_time) {
+        if (new_time < 0) {
+            new_time = 0;
+        }        
+        if (new_time > 0 && messages.get(msg).time_left == 0) {
+            shown_queue.add(msg);
+        }
         messages.get(msg).time_left = new_time;
+
     }
 
     /**
@@ -92,15 +108,17 @@ public class MessageHandler {
      *     the old time + the time_difference
      */
     public void shift_time(Messages msg, float time_difference) {
-        messages.get(msg).time_left += time_difference;
+        set_time(msg, messages.get(msg).time_left + time_difference);
     }
 
     /**
      * Draws text centered on the screen with a given color and scale.
      *
      * @param mssg_id the key of the message being drawn
+     * @param message_priority the priority of the message, 
+     *  dictates how far down on the screen the message is drawn
      */
-    private void drawCenteredText(MessageID mssg_id) {
+    private void drawCenteredText(MessageID mssg_id, int message_priority) {
         game.batch.setProjectionMatrix(
                 game.camera
                         .projection
@@ -113,7 +131,7 @@ public class MessageHandler {
 
         GlyphLayout layout = new GlyphLayout(game.font, mssg_id.message);
         float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
-        float y = (Gdx.graphics.getHeight() + layout.height) / 2f;
+        float y = (Gdx.graphics.getHeight() - layout.height * message_priority); 
         game.font.draw(game.batch, layout, x, y);
 
         game.font.getData().setScale(1f);
