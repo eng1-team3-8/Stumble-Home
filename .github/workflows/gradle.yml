@@ -26,7 +26,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history for tags
+          # Only fetch all tags when we're on a tag push, otherwise shallow clone
+          fetch-depth: ${{ startsWith(github.ref, 'refs/tags/v') && 0 || 1 }}
 
       - name: Get version from tag or default
         id: get_version
@@ -66,7 +67,7 @@ jobs:
       - name: Build JAR with version (includes Spotless check)
         run: |
           cd StumbleHome
-          ./gradlew --stacktrace spotlessCheck build -x test -PprojectVersion=${{ steps.get_version.outputs.version }}
+          ./gradlew --stacktrace --no-daemon spotlessCheck build -x test -PprojectVersion=${{ steps.get_version.outputs.version }}
 
       # Upload universal JAR (works on all platforms)
       - name: Upload universal JAR
@@ -74,7 +75,7 @@ jobs:
         with:
           name: universal-jar
           path: StumbleHome/lib/build/libs/*.jar
-          retention-days: 7
+          retention-days: 3
 
   # Test on all platforms to catch platform-specific issues
   test:
@@ -98,6 +99,8 @@ jobs:
       - name: Checkout code
         if: matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1  # Shallow clone - tests don't need git history
 
       - name: Set up JDK 17
         if: matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')
@@ -110,7 +113,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
-          cache-read-only: false
+          cache-read-only: true  # Use read-only cache since build job already populated it
           cache-cleanup: always
 
       # Ubuntu: Run full tests with coverage
@@ -118,20 +121,20 @@ jobs:
         if: (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && matrix.run-coverage
         run: |
           cd StumbleHome
-          ./gradlew --stacktrace test jacocoTestReport
+          ./gradlew --stacktrace --no-daemon test jacocoTestReport
 
       # Windows/macOS: Run tests only (no coverage to save time)
       - name: Run tests only (Windows)
         if: (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && runner.os == 'Windows' && !matrix.run-coverage
         run: |
           cd StumbleHome
-          ./gradlew.bat --stacktrace test
+          ./gradlew.bat --stacktrace --no-daemon test
 
       - name: Run tests only (macOS)
         if: (matrix.os == 'ubuntu-latest' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')) && runner.os == 'macOS' && !matrix.run-coverage
         run: |
           cd StumbleHome
-          ./gradlew --stacktrace test
+          ./gradlew --stacktrace --no-daemon test
 
       # Publish test results (only from Ubuntu to avoid duplicates)
       - name: Publish test results
@@ -150,7 +153,7 @@ jobs:
         with:
           name: jacoco-html-report
           path: StumbleHome/lib/build/reports/jacoco/test/html/
-          retention-days: 7
+          retention-days: 3
 
       # Upload test reports (only from Ubuntu)
       - name: Upload test reports
@@ -159,7 +162,7 @@ jobs:
         with:
           name: test-reports
           path: StumbleHome/lib/build/reports/tests/test/
-          retention-days: 7
+          retention-days: 3  # Reduced from 7 to save storage
 
   # Build macOS native app bundle
   build-macos-app:
@@ -174,6 +177,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1  # Shallow clone - build doesn't need git history
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -184,13 +189,13 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
         with:
-          cache-read-only: false
+          cache-read-only: true  # Use read-only cache since build job already populated it
           cache-cleanup: always
 
       - name: Build macOS app bundle
         run: |
           cd StumbleHome
-          ./gradlew --stacktrace packageMacM1
+          ./gradlew --stacktrace --no-daemon packageMacM1
 
       - name: Extract macOS app and remove zip
         run: |
@@ -219,7 +224,10 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1  # Shallow clone - release only needs current commit
 
       # Download universal JAR (works on all platforms)
       - name: Download universal JAR
