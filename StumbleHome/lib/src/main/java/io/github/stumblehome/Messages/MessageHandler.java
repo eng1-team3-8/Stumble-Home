@@ -63,8 +63,7 @@ public class MessageHandler {
             shift_time(msg, -Gdx.graphics.getDeltaTime());
             if (messages.get(msg).time_left == 0) {
                 shown_queue.remove(msg);
-            }
-            else {
+            } else {
                 drawCenteredText(messages.get(msg), counter);
             }
         }
@@ -92,12 +91,11 @@ public class MessageHandler {
     public void set_time(Messages msg, float new_time) {
         if (new_time < 0) {
             new_time = 0;
-        }        
+        }
         if (new_time > 0 && messages.get(msg).time_left == 0) {
             shown_queue.add(msg);
         }
         messages.get(msg).time_left = new_time;
-
     }
 
     /**
@@ -115,7 +113,7 @@ public class MessageHandler {
      * Draws text centered on the screen with a given color and scale.
      *
      * @param mssg_id the key of the message being drawn
-     * @param message_priority the priority of the message, 
+     * @param message_priority the priority of the message,
      *  dictates how far down on the screen the message is drawn
      */
     private void drawCenteredText(MessageID mssg_id, int message_priority) {
@@ -131,7 +129,7 @@ public class MessageHandler {
 
         GlyphLayout layout = new GlyphLayout(game.font, mssg_id.message);
         float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
-        float y = (Gdx.graphics.getHeight() - layout.height * message_priority); 
+        float y = (Gdx.graphics.getHeight() - layout.height * message_priority);
         game.font.draw(game.batch, layout, x, y);
 
         game.font.getData().setScale(1f);
