@@ -1,7 +1,7 @@
-# This workflow builds, tests, and reports code coverage for the Stumble-Home project
+# This workflow builds, tests, reports code coverage, and releases builds.
 # It runs on pushes and PRs to main and development branches.
 
-name: Build, Test & Coverage
+name: Build, Test & Coverage, Release
 
 on:
   push:
