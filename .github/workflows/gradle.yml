@@ -74,7 +74,7 @@ jobs:
         with:
           name: universal-jar
           path: StumbleHome/lib/build/libs/*.jar
-          retention-days: 30
+          retention-days: 7
 
   # Test on all platforms to catch platform-specific issues
   test:
@@ -150,7 +150,7 @@ jobs:
         with:
           name: jacoco-html-report
           path: StumbleHome/lib/build/reports/jacoco/test/html/
-          retention-days: 30
+          retention-days: 7
 
       # Upload test reports (only from Ubuntu)
       - name: Upload test reports
@@ -159,7 +159,7 @@ jobs:
         with:
           name: test-reports
           path: StumbleHome/lib/build/reports/tests/test/
-          retention-days: 30
+          retention-days: 7
 
   # Build macOS native app bundle
   build-macos-app:
@@ -203,10 +203,10 @@ jobs:
         with:
           name: macos-app
           path: StumbleHome/build/construo
-          retention-days: 30
+          retention-days: 7
 
   release:
-    needs: [build, test, build-macos-app]
+    needs: [ build, test, build-macos-app ]
     runs-on: ubuntu-latest
     # Run if build and test succeed, even if build-macos-app was skipped
     if: |
