@@ -218,7 +218,8 @@ public class GameScreen implements Screen {
         this.time += Gdx.graphics.getDeltaTime();
 
         // Toggle pause when SPACE is pressed
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
+                || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             paused = !paused; // flip pause state
         }
 
