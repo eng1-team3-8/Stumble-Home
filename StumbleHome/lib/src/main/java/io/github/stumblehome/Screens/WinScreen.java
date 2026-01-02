@@ -3,11 +3,9 @@ package io.github.stumblehome.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -25,13 +23,7 @@ import io.github.stumblehome.StumbleHome;
  * <p>This class implements LibGDX {@link Screen} interface, shows methods for managing a screen in
  * a game.
  */
-public class WinScreen extends MenuScreen {
-
-    // The remaining time (in seconds) when the player won the game.
-    final float remainingTime;
-
-    // The player's final score.
-    final int score;
+public class WinScreen extends GameFinishScreen {
 
     /**
      * Constructs a new {@code WinScreen} instance.
@@ -41,16 +33,24 @@ public class WinScreen extends MenuScreen {
      * @param score the player's final score.
      */
     public WinScreen(StumbleHome game, float remainingTime, int score) {
-        this.game = game;
-        this.remainingTime = remainingTime;
-        this.score = score;
+        super(game, remainingTime, score, "MainMenu.png");
+    }
 
+    /**
+     * Disposes of the screen and frees associated resources.
+     *
+     * <p>Called when the screen is no longer needed.
+     */
+    @Override
+    public void dispose() {
+        stage.dispose();
+        skin.dispose();
+    }
+
+    @Override
+    public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-
-        background = new Texture("MainMenu.png");
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-
         // Create labels
         Label winLabel = new Label("You returned home!", skin);
         winLabel.setColor(Color.GREEN);
@@ -94,31 +94,6 @@ public class WinScreen extends MenuScreen {
 
         stage.addActor(table);
     }
-
-    /**
-     * Called when the screen is resized.
-     *
-     * @param width the new width of the screen in pixels.
-     * @param height the new height of the screen in pixels.
-     */
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
-
-    /**
-     * Disposes of the screen and frees associated resources.
-     *
-     * <p>Called when the screen is no longer needed.
-     */
-    @Override
-    public void dispose() {
-        stage.dispose();
-        skin.dispose();
-    }
-
-    @Override
-    public void show() {}
 
     @Override
     public void hide() {}

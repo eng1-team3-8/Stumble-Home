@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -19,12 +18,15 @@ public class Leaderboard extends MenuScreen {
     private ScrollPane scrollPane;
 
     public Leaderboard(StumbleHome game) {
-        this.game = game;
-        // Draws leaderboard screen
+        super(game);
+    }
+
+    @Override
+    public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
+        // Draws leaderboard screen
         String boardData = readLeaderBoard();
         String[] splitBoard = boardData.split("\n");
         List<String[]> ordered = new ArrayList<>();
@@ -63,9 +65,6 @@ public class Leaderboard extends MenuScreen {
         stage.addActor(scrollPane);
     }
 
-    @Override
-    public void show() {}
-
     /**
      * Called once per frame to render the menu screen Edited to capture input for scrollable table
      *
@@ -98,17 +97,6 @@ public class Leaderboard extends MenuScreen {
             this.dispose();
             game.setScreen(new MainMenuScreen(game));
         }
-    }
-
-    /**
-     * Called when the screen is resized.
-     *
-     * @param width the new width of the screen in pixels.
-     * @param height the new height of the screen in pixels.
-     */
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
     }
 
     @Override

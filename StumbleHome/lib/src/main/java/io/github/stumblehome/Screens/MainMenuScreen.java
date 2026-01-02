@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -31,7 +30,9 @@ public class MainMenuScreen extends MenuScreen {
     private boolean showTutorial = false;
 
     public MainMenuScreen(final StumbleHome game) {
-        this.game = game;
+        super(game, "MainMenu.png");
+        // Textures for the main menu and the tutorial
+        tutorialImage = new Texture("tutorial.png");
     }
 
     /**
@@ -41,13 +42,7 @@ public class MainMenuScreen extends MenuScreen {
      */
     @Override
     public void show() {
-        // Textures for the main menu and the tutorial
-        background = new Texture("MainMenu.png");
-        tutorialImage = new Texture("tutorial.png");
-
-        // Sets up the UI
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
         // create buttons
         TextButton playButton = new TextButton("Play", skin);
@@ -115,8 +110,6 @@ public class MainMenuScreen extends MenuScreen {
                         Gdx.app.exit();
                     }
                 });
-
-        // set stage to receive input
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -171,13 +164,6 @@ public class MainMenuScreen extends MenuScreen {
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        game.viewport.update(width, height);
-        // Resizes button hit zones (and more)
-        this.show();
     }
 
     @Override
