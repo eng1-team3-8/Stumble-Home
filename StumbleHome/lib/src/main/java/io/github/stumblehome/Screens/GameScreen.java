@@ -69,6 +69,8 @@ public class GameScreen implements Screen {
     // Adding the Yorks and the Lancs roses
     private final Rose York;
     private final Rose Lancaster;
+    //Bob
+    private final Bob bob;
     private final String playerName;
     // The current map being rendered.
     TiledMap map;
@@ -171,6 +173,9 @@ public class GameScreen implements Screen {
         // The roses
         York = new Rose(new Texture("Sprites/YorkRose.png"), 1f, new float[] {2f, 25f});
         Lancaster = new Rose(new Texture("Sprites/LancasterRose.png"), 1f, new float[] {5f, 25f});
+
+        // Bob
+        bob = new Bob(new Texture("Sprites/B-bThing.png"), 1f, new float[] {56f, 42f});
 
         // message handler
         msg = new MessageHandler(game);
@@ -322,6 +327,12 @@ public class GameScreen implements Screen {
             Lancaster.isSquished = false;
         }
 
+        // Check if Bob has been squished
+      if (bob.checkColliding(playerCentreX, playerCentreY)) {
+        hiddenEventCounter++;
+        game.setScreen(new BossScreen(game, this.playerName));
+      }
+
         // if long boi walk not completed, run logic
         if (!longBoi.doneWalk) {
             // check if player near longBoi
@@ -436,6 +447,7 @@ public class GameScreen implements Screen {
         chicken.drawEntity(game.batch);
         York.drawEntity(game.batch);
         Lancaster.drawEntity(game.batch);
+        bob.drawEntity(game.batch);
 
         game.batch.end();
 
