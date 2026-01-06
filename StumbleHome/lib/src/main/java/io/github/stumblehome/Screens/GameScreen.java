@@ -17,6 +17,7 @@ import io.github.stumblehome.*;
 import io.github.stumblehome.Entities.Alcohol;
 import io.github.stumblehome.Entities.Bob;
 import io.github.stumblehome.Entities.BottleEvent;
+import io.github.stumblehome.Entities.Chainsaw;
 import io.github.stumblehome.Entities.Food;
 import io.github.stumblehome.Entities.KeycardEvent;
 import io.github.stumblehome.Entities.LongBoiEvent;
@@ -78,6 +79,8 @@ public class GameScreen implements Screen {
     // Adding the Yorks and the Lancs roses
     private final Rose York;
     private final Rose Lancaster;
+    // Chainsaw for the positive event
+    private final Chainsaw chainsaw;
     // Bob
     private final Bob bob;
     private final String playerName;
@@ -182,6 +185,9 @@ public class GameScreen implements Screen {
         // The roses
         York = new Rose(new Texture("Sprites/YorkRose.png"), 1f, new float[] {2f, 25f});
         Lancaster = new Rose(new Texture("Sprites/LancasterRose.png"), 1f, new float[] {5f, 25f});
+
+        // Chainsaw
+        chainsaw = new Chainsaw(new Texture("Sprites/Chainsaw.png"), 1f, new float[] {56f, 50f});
 
         // Bob
         bob = new Bob(new Texture("Sprites/B-bThing.png"), 1f, new float[] {56f, 41f});

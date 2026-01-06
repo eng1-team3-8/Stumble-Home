@@ -1,12 +1,9 @@
 package io.github.stumblehome.Entities;
 
-import static java.lang.Math.toIntExact;
-
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
-public class Chainsaw extends CollectableEntity{
+public class Chainsaw extends CollectableEntity {
 
     private boolean chainsaw_used;
     /**
@@ -24,27 +21,27 @@ public class Chainsaw extends CollectableEntity{
         EntityDirection direction = player.getDirection();
         float[] target_cells = {0, 0};
         switch (direction) {
-        case UP:
-            target_cells[0] = x_pos;
-            target_cells[1] = y_pos + 1;
-            break;
-        case DOWN:
-            target_cells[0] = x_pos;
-            target_cells[1] = y_pos - 1;
-            break;
-        case RIGHT:
-            target_cells[0] = x_pos + 1;
-            target_cells[1] = y_pos;
-            break;
-        case LEFT:
-            target_cells[0] = x_pos - 1;
-            target_cells[1] = y_pos;
-            break;        
+            case UP:
+                target_cells[0] = x_pos;
+                target_cells[1] = y_pos + 1;
+                break;
+            case DOWN:
+                target_cells[0] = x_pos;
+                target_cells[1] = y_pos - 1;
+                break;
+            case RIGHT:
+                target_cells[0] = x_pos + 1;
+                target_cells[1] = y_pos;
+                break;
+            case LEFT:
+                target_cells[0] = x_pos - 1;
+                target_cells[1] = y_pos;
+                break;
         }
-        if (removable_walls.getCell((int) target_cells[0],(int) target_cells[1]) == null) {
+        if (removable_walls.getCell((int) target_cells[0], (int) target_cells[1]) == null) {
             return false;
         }
-        removable_walls.setCell((int) target_cells[0],(int) target_cells[1], null);
+        removable_walls.setCell((int) target_cells[0], (int) target_cells[1], null);
         return true;
     }
 }
