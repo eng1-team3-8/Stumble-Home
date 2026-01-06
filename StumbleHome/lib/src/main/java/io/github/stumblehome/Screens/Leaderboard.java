@@ -128,8 +128,9 @@ public class Leaderboard extends MenuScreen {
                 if (ordered.size() > 0) {
                     int pos = 0;
 
-                    while (pos != ordered.size() && Integer.valueOf(ordered.get(pos)[1])
-                            > Integer.valueOf(tempData[1])) {
+                    while (pos != ordered.size()
+                            && Integer.valueOf(ordered.get(pos)[1])
+                                    > Integer.valueOf(tempData[1])) {
                         pos += 1;
                     }
                     ordered.add(pos, tempData);
