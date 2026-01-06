@@ -291,7 +291,7 @@ public class GameScreen implements Screen {
         }
 
         // Sets achievement box to bottom right
-        achievementBox.setPosition(Gdx.graphics.getWidth(), 0);
+        achievementBox.setPosition((Gdx.graphics.getWidth() / 2), 0);
         // Pads text to avoid truncation
         achievementBox.getContentTable().padLeft(4f);
         achievementBox.getContentTable().padRight(4f);
@@ -613,6 +613,9 @@ public class GameScreen implements Screen {
         chicken.dispose();
         York.dispose();
         Lancaster.dispose();
+        stage.dispose();
+        achievementBox.getContentTable().clearChildren();
+        achievementBox.remove();
     }
 
     private void saveLeaderBoardScore(int score) {
@@ -624,7 +627,5 @@ public class GameScreen implements Screen {
         eventTriggered = true;
         achievementBox.getContentTable().clearChildren();
         achievementBox.text(text);
-        achievementBox.pack();
     }
-    ;
 }
