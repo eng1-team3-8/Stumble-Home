@@ -340,7 +340,9 @@ public class GameScreen implements Screen {
 
         if (chainsaw.checkColliding(playerCentreX, playerCentreY)) {
             helpfulEventCounter++;
-            msg.set_time(Messages.CHAINSAWPICKEDUP, 3f);
+            // trigger message
+
+            setAchievementText("Here's Johnny!");
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             // player attempts to use chainsaw
