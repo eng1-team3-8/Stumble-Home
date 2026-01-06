@@ -1,13 +1,14 @@
-package io.github.stumblehome;
+package io.github.stumblehome.Entities;
 
 import com.badlogic.gdx.graphics.Texture;
 
 /**
- * Class for alcoholic drinks. Inherits from collectable entity
+ * Class for food objects Inherits from collectableEntity.
  *
  * @author Lenny
  */
-public class Alcohol extends CollectableEntity {
+public class Food extends CollectableEntity {
+
     /**
      * A constructor for entities that don't have any animations
      *
@@ -16,14 +17,15 @@ public class Alcohol extends CollectableEntity {
      * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X,
      *     and 1 is Y.
      */
-    public Alcohol(Texture texture, float size, float[] position) {
+    public Food(Texture texture, float size, float[] position) {
         super(texture, size, position);
     }
 
-    public void makeDrunk(Player player) {
-        player.isDrunk = true;
-        if (!player.canGetDrunk) {
+    public void eatFood(Player player) {
+        player.canGetDrunk = false;
+        if (player.isDrunk) {
             player.SwapControls();
         }
+        player.isDrunk = false;
     }
 }

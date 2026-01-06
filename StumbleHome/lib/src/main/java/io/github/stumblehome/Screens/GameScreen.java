@@ -14,6 +14,15 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.stumblehome.*;
+import io.github.stumblehome.Entities.Alcohol;
+import io.github.stumblehome.Entities.Bob;
+import io.github.stumblehome.Entities.BottleEvent;
+import io.github.stumblehome.Entities.Food;
+import io.github.stumblehome.Entities.KeycardEvent;
+import io.github.stumblehome.Entities.LongBoiEvent;
+import io.github.stumblehome.Entities.Player;
+import io.github.stumblehome.Entities.Rose;
+import io.github.stumblehome.Entities.Twig;
 import io.github.stumblehome.Messages.MessageHandler;
 import io.github.stumblehome.Messages.Messages;
 

@@ -6,8 +6,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import io.github.stumblehome.BossFightEntity;
+
 import io.github.stumblehome.StumbleHome;
+import io.github.stumblehome.Entities.BossFightEntity;
 
 public class BossScreen implements Screen {
 

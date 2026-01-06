@@ -1,4 +1,4 @@
-package io.github.stumblehome;
+package io.github.stumblehome.Entities;
 
 import com.badlogic.gdx.graphics.Texture;
 
