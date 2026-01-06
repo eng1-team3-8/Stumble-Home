@@ -324,6 +324,22 @@ public class Player extends Sprite {
         this.player_speed += amount;
     }
 
+    public EntityDirection getDirection() {
+        if (lastDirection == Animation_enum.DOWN || lastDirection == Animation_enum.WALK_DOWN) {
+            return EntityDirection.DOWN;
+        }
+        if (lastDirection == Animation_enum.UP || lastDirection == Animation_enum.WALK_UP) {
+            return EntityDirection.UP;
+        }
+        if (lastDirection == Animation_enum.RIGHT || lastDirection == Animation_enum.WALK_RIGHT) {
+            return EntityDirection.RIGHT;
+        }
+        if (lastDirection == Animation_enum.LEFT || lastDirection == Animation_enum.WALK_LEFT) {
+            return EntityDirection.LEFT;
+        }
+        return null;
+    }
+
     private enum Animation_enum {
         DOWN,
         LEFT,
