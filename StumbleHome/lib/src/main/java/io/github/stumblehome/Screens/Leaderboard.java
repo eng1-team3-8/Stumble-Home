@@ -28,47 +28,7 @@ public class Leaderboard extends MenuScreen {
 
         // Draws leaderboard screen
         String boardData = readLeaderBoard();
-
-        Table leaderboard = new Table();
-        Label tempRow = new Label("Leaderboard:", skin);
-        tempRow.setFontScale(5f);
-        leaderboard.add(tempRow).pad(15);
-        leaderboard.row();
-
-        // Adds error message if leaderboard doesn't exist
-        if (boardData.equals("Complete Game To Set Score")) {
-            tempRow = new Label(boardData, skin);
-            tempRow.setFontScale(3f);
-            leaderboard.add(tempRow).pad(15);
-            leaderboard.row();
-        } else {
-            String[] splitBoard = boardData.split("\n");
-            List<String[]> ordered = new ArrayList<>();
-
-            for (String s : splitBoard) {
-                String[] tempData = s.split(",");
-
-                if (tempData.length >= 2) {
-                    if (ordered.size() > 0) {
-                        int pos = 0;
-                        while (Integer.valueOf(ordered.get(pos)[1])
-                                > Integer.valueOf(tempData[1])) {
-                            pos += 1;
-                        }
-                        ordered.add(pos, tempData);
-                    } else {
-                        ordered.add(tempData);
-                    }
-                }
-            }
-
-            for (String[] s : ordered) {
-                tempRow = new Label(s[0] + ": " + s[1], skin);
-                tempRow.setFontScale(3f);
-                leaderboard.add(tempRow).pad(10);
-                leaderboard.row();
-            }
-        }
+        Table leaderboard = leaderboardSetup(boardData);
 
         this.scrollPane = new ScrollPane(leaderboard, skin);
         scrollPane.setFillParent(true);
@@ -120,6 +80,65 @@ public class Leaderboard extends MenuScreen {
         stage.dispose();
         skin.dispose();
         scrollPane.clear();
+    }
+
+    public Table leaderboardSetup(String boardData) {
+        // Adds title to leaderboard
+        Table leaderboard = new Table();
+        Label tempRow = new Label("Leaderboard:", skin);
+        tempRow.setFontScale(5f);
+        leaderboard.add(tempRow).pad(15);
+        leaderboard.row();
+
+        // Adds error message if leaderboard doesn't exist
+        if (boardData.equals("Complete Game To Set Score")) {
+            tempRow = new Label(boardData, skin);
+            tempRow.setFontScale(3f);
+            leaderboard.add(tempRow).pad(15);
+            leaderboard.row();
+        }
+
+        // Otherwise read player scores into leaderboard
+        else {
+            // Reads in csv line by line
+            String[] splitBoard = boardData.split("\n");
+            List<String[]> ordered = orderValues(splitBoard);
+
+            // Inserts each score into the leaderboard
+            for (String[] s : ordered) {
+                tempRow = new Label(s[0] + ": " + s[1], skin);
+                tempRow.setFontScale(3f);
+                leaderboard.add(tempRow).pad(10);
+                leaderboard.row();
+            }
+        }
+        return leaderboard;
+    }
+
+    public List<String[]> orderValues(String[] splitBoard) {
+        List<String[]> ordered = new ArrayList<>();
+
+        // Orders csv table rows based on score
+        // Uses insertion sort
+        for (String s : splitBoard) {
+            // Splits rows into values
+            String[] tempData = s.split(",");
+
+            if (tempData.length >= 2) {
+                if (ordered.size() > 0) {
+                    int pos = 0;
+
+                    while (pos != ordered.size() && Integer.valueOf(ordered.get(pos)[1])
+                            > Integer.valueOf(tempData[1])) {
+                        pos += 1;
+                    }
+                    ordered.add(pos, tempData);
+                } else {
+                    ordered.add(tempData);
+                }
+            }
+        }
+        return ordered;
     }
 
     private String readLeaderBoard() {
