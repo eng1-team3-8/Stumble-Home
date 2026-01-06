@@ -116,7 +116,7 @@ public class GameScreen implements Screen {
     // Achievements Popup
     Stage stage;
     Dialog achievementBox;
-    boolean eventTriggered = true;
+    boolean eventTriggered = false;
 
     /**
      * Constructs the {@code GameScreen} and initializes the map, player, camera, and in-game events.
@@ -267,6 +267,7 @@ public class GameScreen implements Screen {
         if (eventTriggered) {
             achievementBox.show(stage);
             eventTriggered = false;
+
             achievementBox.addAction(
                     Actions.sequence(
                             Actions.delay(5f),
@@ -295,6 +296,8 @@ public class GameScreen implements Screen {
         achievementBox.getContentTable().padLeft(4f);
         achievementBox.getContentTable().padRight(4f);
 
+        // Applies correct viewport for screen size
+        stage.getViewport().apply();
         // Draws the achievements box on the stage
         stage.act(delta);
         stage.draw();
