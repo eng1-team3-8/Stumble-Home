@@ -69,7 +69,7 @@ public class GameScreen implements Screen {
     // Adding the Yorks and the Lancs roses
     private final Rose York;
     private final Rose Lancaster;
-    //Bob
+    // Bob
     private final Bob bob;
     private final String playerName;
     // The current map being rendered.
@@ -328,10 +328,10 @@ public class GameScreen implements Screen {
         }
 
         // Check if Bob has been squished
-      if (bob.checkColliding(playerCentreX, playerCentreY)) {
-        hiddenEventCounter++;
-        game.setScreen(new BossScreen(game, this.playerName));
-      }
+        if (bob.checkColliding(playerCentreX, playerCentreY)) {
+            hiddenEventCounter++;
+            game.setScreen(new BossScreen(game, this.playerName));
+        }
 
         // if long boi walk not completed, run logic
         if (!longBoi.doneWalk) {
