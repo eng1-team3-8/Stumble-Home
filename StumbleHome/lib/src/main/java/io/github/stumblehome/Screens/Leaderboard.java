@@ -107,7 +107,7 @@ public class Leaderboard extends MenuScreen {
 
             // Displays top 5 scores
             int i = 0;
-            while(i < 5 && i < ordered.size()) {
+            while (i < 5 && i < ordered.size()) {
                 String[] s = ordered.get(i);
                 tempRow = new Label(s[0] + ": " + s[1], skin);
                 tempRow.setFontScale(3f);
