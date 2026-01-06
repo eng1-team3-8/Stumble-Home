@@ -39,7 +39,7 @@ public class Chainsaw extends CollectableEntity {
             return false;
         }
         Chainsaw.remove_wall_strip(removable_walls, target_cells, direction);
-        // isTriggered = true;
+        isTriggered = true;
         return true;
     }
 

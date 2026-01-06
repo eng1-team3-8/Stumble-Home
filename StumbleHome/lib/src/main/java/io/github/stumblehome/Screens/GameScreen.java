@@ -219,6 +219,7 @@ public class GameScreen implements Screen {
                 Color.RED,
                 2f);
         msg.addMessage(Messages.BOTHSQUISHED, "I see, you just harbour chaos", Color.BLACK, 2f);
+        msg.addMessage(Messages.CHAINSAWPICKEDUP, "You've obtained a chainsaw. press e to cut a line of hedges!", Color.RED, 2f);
     }
 
     @Override
@@ -300,7 +301,7 @@ public class GameScreen implements Screen {
 
         if (chainsaw.checkColliding(playerCentreX, playerCentreY)) {
             helpfulEventCounter++;
-            // trigger message
+            msg.set_time(Messages.CHAINSAWPICKEDUP, 3f);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             // player attempts to use chainsaw
