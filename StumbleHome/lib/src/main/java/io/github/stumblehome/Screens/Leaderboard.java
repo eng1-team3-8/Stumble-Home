@@ -28,8 +28,6 @@ public class Leaderboard extends MenuScreen {
 
         // Draws leaderboard screen
         String boardData = readLeaderBoard();
-        String[] splitBoard = boardData.split("\n");
-        List<String[]> ordered = new ArrayList<>();
 
         Table leaderboard = new Table();
         Label tempRow = new Label("Leaderboard:", skin);
@@ -37,27 +35,39 @@ public class Leaderboard extends MenuScreen {
         leaderboard.add(tempRow).pad(15);
         leaderboard.row();
 
-        for (String s : splitBoard) {
-            String[] tempData = s.split(",");
+        // Adds error message if leaderboard doesn't exist
+        if (boardData.equals("Complete Game To Set Score")) {
+            tempRow = new Label(boardData, skin);
+            tempRow.setFontScale(3f);
+            leaderboard.add(tempRow).pad(15);
+            leaderboard.row();
+        } else {
+            String[] splitBoard = boardData.split("\n");
+            List<String[]> ordered = new ArrayList<>();
 
-            if (tempData.length >= 2) {
-                if (ordered.size() > 0) {
-                    int pos = 0;
-                    while (Integer.valueOf(ordered.get(pos)[1]) > Integer.valueOf(tempData[1])) {
-                        pos += 1;
+            for (String s : splitBoard) {
+                String[] tempData = s.split(",");
+
+                if (tempData.length >= 2) {
+                    if (ordered.size() > 0) {
+                        int pos = 0;
+                        while (Integer.valueOf(ordered.get(pos)[1])
+                                > Integer.valueOf(tempData[1])) {
+                            pos += 1;
+                        }
+                        ordered.add(pos, tempData);
+                    } else {
+                        ordered.add(tempData);
                     }
-                    ordered.add(pos, tempData);
-                } else {
-                    ordered.add(tempData);
                 }
             }
-        }
 
-        for (String[] s : ordered) {
-            tempRow = new Label(s[0] + ": " + s[1], skin);
-            tempRow.setFontScale(3f);
-            leaderboard.add(tempRow).pad(10);
-            leaderboard.row();
+            for (String[] s : ordered) {
+                tempRow = new Label(s[0] + ": " + s[1], skin);
+                tempRow.setFontScale(3f);
+                leaderboard.add(tempRow).pad(10);
+                leaderboard.row();
+            }
         }
 
         this.scrollPane = new ScrollPane(leaderboard, skin);
@@ -113,7 +123,13 @@ public class Leaderboard extends MenuScreen {
     }
 
     private String readLeaderBoard() {
-        FileHandle file = Gdx.files.local("leaderBoard.csv");
-        return file.readString();
+        boolean file_exists = Gdx.files.local("leaderBoard.csv").exists();
+
+        if (file_exists == false) {
+            return "Complete Game To Set Score";
+        } else {
+            FileHandle file = Gdx.files.local("leaderBoard.csv");
+            return file.readString();
+        }
     }
 }
