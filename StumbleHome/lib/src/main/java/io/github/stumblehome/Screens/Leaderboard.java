@@ -103,13 +103,17 @@ public class Leaderboard extends MenuScreen {
             // Reads in csv line by line
             String[] splitBoard = boardData.split("\n");
             List<String[]> ordered = orderValues(splitBoard);
-
             // Inserts each score into the leaderboard
-            for (String[] s : ordered) {
+
+            // Displays top 5 scores
+            int i = 0;
+            while(i < 5 && i < ordered.size()) {
+                String[] s = ordered.get(i);
                 tempRow = new Label(s[0] + ": " + s[1], skin);
                 tempRow.setFontScale(3f);
                 leaderboard.add(tempRow).pad(10);
                 leaderboard.row();
+                i++;
             }
         }
         return leaderboard;
