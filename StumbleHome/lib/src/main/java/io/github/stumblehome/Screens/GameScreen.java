@@ -184,7 +184,7 @@ public class GameScreen implements Screen {
         Lancaster = new Rose(new Texture("Sprites/LancasterRose.png"), 1f, new float[] {5f, 25f});
 
         // Bob
-        bob = new Bob(new Texture("Sprites/B-bThing.png"), 1f, new float[] {56f, 42f});
+        bob = new Bob(new Texture("Sprites/B-bThing.png"), 1f, new float[] {56f, 41f});
 
         // message handler
         msg = new MessageHandler(game);
