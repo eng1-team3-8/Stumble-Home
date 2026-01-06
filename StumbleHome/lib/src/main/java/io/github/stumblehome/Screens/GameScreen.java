@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
 import io.github.stumblehome.*;
 import io.github.stumblehome.Entities.Alcohol;
 import io.github.stumblehome.Entities.Bob;
@@ -267,7 +266,11 @@ public class GameScreen implements Screen {
         if (eventTriggered) {
             dialog.show(stage);
             eventTriggered = false;
-            dialog.addAction(Actions.sequence(Actions.delay(5f), Actions.fadeOut(0.5f), Actions.run(() -> dialog.hide())));
+            dialog.addAction(
+                    Actions.sequence(
+                            Actions.delay(5f),
+                            Actions.fadeOut(0.5f),
+                            Actions.run(() -> dialog.hide())));
         }
 
         // Only run player input and logic if not paused and there is enough time left
