@@ -85,7 +85,7 @@ public class Leaderboard extends MenuScreen {
     public Table leaderboardSetup(String boardData) {
         // Adds title to leaderboard
         Table leaderboard = new Table();
-        Label tempRow = new Label("Leaderboard:", skin);
+        Label tempRow = new Label("Leaderboard (Top 5):", skin);
         tempRow.setFontScale(5f);
         leaderboard.add(tempRow).pad(15);
         leaderboard.row();

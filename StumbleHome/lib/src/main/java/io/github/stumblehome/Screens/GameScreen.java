@@ -115,8 +115,8 @@ public class GameScreen implements Screen {
 
     // Achievements Popup
     Stage stage;
-    Dialog dialog;
-    boolean eventTriggered = false;
+    Dialog achievementBox;
+    boolean eventTriggered = true;
 
     /**
      * Constructs the {@code GameScreen} and initializes the map, player, camera, and in-game events.
@@ -238,7 +238,8 @@ public class GameScreen implements Screen {
         // Achievements Popup
         stage = new Stage(new ScreenViewport());
         Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-        dialog = new Dialog("Achievement", skin);
+        achievementBox = new Dialog("Achievement", skin);
+        achievementBox.getTitleTable().padBottom(15f);
     }
 
     @Override
@@ -264,13 +265,13 @@ public class GameScreen implements Screen {
         }
 
         if (eventTriggered) {
-            dialog.show(stage);
+            achievementBox.show(stage);
             eventTriggered = false;
-            dialog.addAction(
+            achievementBox.addAction(
                     Actions.sequence(
                             Actions.delay(5f),
                             Actions.fadeOut(0.5f),
-                            Actions.run(() -> dialog.hide())));
+                            Actions.run(() -> achievementBox.hide())));
         }
 
         // Only run player input and logic if not paused and there is enough time left
@@ -288,7 +289,13 @@ public class GameScreen implements Screen {
             game.setScreen(new LoseScreen(game, remainingTime, score));
         }
 
-        dialog.setPosition(Gdx.graphics.getWidth(), 0);
+        // Sets achievement box to bottom right
+        achievementBox.setPosition(Gdx.graphics.getWidth(), 0);
+        // Pads text to avoid truncation
+        achievementBox.getContentTable().padLeft(4f);
+        achievementBox.getContentTable().padRight(4f);
+
+        // Draws the achievements box on the stage
         stage.act(delta);
         stage.draw();
     }
@@ -504,6 +511,7 @@ public class GameScreen implements Screen {
 
     /** Draws all visible elements: map, player, events, and UI text. */
     private void draw() {
+        game.viewport.apply();
         // Clear the screen with black color
         ScreenUtils.clear(Color.BLACK);
 
@@ -577,6 +585,7 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         game.viewport.update(width, height);
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -610,8 +619,9 @@ public class GameScreen implements Screen {
 
     private void setAchievementText(String text) {
         eventTriggered = true;
-        dialog.getContentTable().clearChildren();
-        dialog.text(text);
+        achievementBox.getContentTable().clearChildren();
+        achievementBox.text(text);
+        achievementBox.pack();
     }
     ;
 }
