@@ -26,4 +26,6 @@ public class Alcohol extends CollectableEntity {
             player.SwapControls();
         }
     }
+
+    public void logic() {}
 }

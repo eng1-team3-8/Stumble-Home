@@ -20,4 +20,6 @@ public class Twig extends CollectableEntity {
     public Twig(Texture texture, float size, float[] position) {
         super(texture, size, position);
     }
+
+    public void logic() {}
 }

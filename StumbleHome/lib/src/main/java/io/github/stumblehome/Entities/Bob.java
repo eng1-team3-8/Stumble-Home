@@ -6,4 +6,6 @@ public class Bob extends CollectableEntity {
     public Bob(Texture texture, float size, float[] position) {
         super(texture, size, position);
     }
+
+    public void logic() {}
 }

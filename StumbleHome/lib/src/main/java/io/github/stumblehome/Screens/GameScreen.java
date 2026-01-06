@@ -187,7 +187,7 @@ public class GameScreen implements Screen {
         Lancaster = new Rose(new Texture("Sprites/LancasterRose.png"), 1f, new float[] {5f, 25f});
 
         // Chainsaw
-        chainsaw = new Chainsaw(new Texture("Sprites/Chainsaw.png"), 1f, new float[] {56f, 50f});
+        chainsaw = new Chainsaw(new Texture("Sprites/Chainsaw.png"), 1f, new float[] {54f, 41f});
 
         // Bob
         bob = new Bob(new Texture("Sprites/B-bThing.png"), 1f, new float[] {56f, 41f});
@@ -296,6 +296,15 @@ public class GameScreen implements Screen {
         if (twig.checkColliding(playerCentreX, playerCentreY)) {
             hinderingEventCounter++;
             player.slowDownPlayer(.5f);
+        }
+
+        if (chainsaw.checkColliding(playerCentreX, playerCentreY)) {
+            helpfulEventCounter++;
+            // trigger message
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            // player attempts to use chainsaw
+            chainsaw.UseChainsaw(player, collisionLayer);
         }
 
         // Check if collision with beer
@@ -462,6 +471,7 @@ public class GameScreen implements Screen {
         chicken.drawEntity(game.batch);
         York.drawEntity(game.batch);
         Lancaster.drawEntity(game.batch);
+        chainsaw.drawEntity(game.batch);
         bob.drawEntity(game.batch);
 
         game.batch.end();
