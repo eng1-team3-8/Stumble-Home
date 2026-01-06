@@ -2,13 +2,15 @@ package io.github.stumblehome.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.backends.lwjgl3.audio.Mp3;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.stumblehome.BossFight.BossFightStates;
@@ -37,7 +39,7 @@ public class BossScreen implements Screen {
     private Texture PacketUDP;
 
     // Music
-    private Mp3.Music BossMusic;
+    private Music BossMusic;
 
     // Sprite batch
     private SpriteBatch batch;
@@ -82,6 +84,11 @@ public class BossScreen implements Screen {
         this.Switch = new Texture("Sprites/BossFight/Switch.png");
         this.BrokenCable = new Texture("Sprites/BossFight/Cable-Cut.png");
         this.PacketUDP = new Texture("Sprites/BossFight/UDP-Packet.png");
+
+        // Music
+        this.BossMusic = Gdx.audio.newMusic(Gdx.files.internal("Sprites/BossFight/Boss-Music.mp3"));
+        this.BossMusic.setLooping(true);
+        this.BossMusic.play();
     }
 
     @Override
@@ -96,22 +103,36 @@ public class BossScreen implements Screen {
             TextButton infoButton = new TextButton("INFO", skin);
 
             // Set button positions
-            float startX = viewport.getWorldWidth() / 4;
-            float Y = viewport.getWorldHeight() / 4;
+            float startX = viewport.getWorldWidth() / 5;
+            float Y = viewport.getWorldHeight() / 5;
 
-            attackButton.setPosition(startX, Y);
-            infoButton.setPosition(startX * 3, Y);
-
-            // Set button scale
-            attackButton.setTransform(true);
-            infoButton.setTransform(true);
-
-            attackButton.setScale(4f);
-            infoButton.setScale(4f);
+            attackButton.setBounds(startX, Y, 200, 50);
+            infoButton.setBounds(startX * 3, Y, 200, 50);
 
             // Draw Buttons
             this.stage.addActor(attackButton);
             this.stage.addActor(infoButton);
+
+            // Button listeners
+            // Changes the state from options to attack
+            attackButton.addListener(
+                    new ClickListener() {
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            statesFSA.moveStates(1);
+                        }
+                    });
+
+            // Changes the state from options to info
+            infoButton.addListener(
+                    new ClickListener() {
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            statesFSA.moveStates(-1);
+                        }
+                    });
+
+            Gdx.input.setInputProcessor(this.stage);
         }
     }
 
@@ -125,7 +146,11 @@ public class BossScreen implements Screen {
             // Draw the elements
             this.batch.begin();
             this.batch.draw(
-                    MenuBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight() / 2);
+                    MenuBackground,
+                    0,
+                    0,
+                    viewport.getWorldWidth(),
+                    (viewport.getWorldHeight() / 5) * 2);
             this.batch.end();
 
             // Draw the stage
