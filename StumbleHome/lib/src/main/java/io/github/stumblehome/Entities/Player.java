@@ -20,7 +20,7 @@ public class Player extends Sprite {
     // Size of the player's collision box and sprite.
     public final float playerSize = 0.8f;
     // Delta time value for consistent movement speed.
-    private final float delta = Gdx.graphics.getDeltaTime();
+    private float delta = Gdx.graphics.getDeltaTime();
     // Width of the game map in tiles.
     private final float mapWidth;
     // Height of the game map in tiles.
@@ -179,7 +179,7 @@ public class Player extends Sprite {
         float moveX = 0;
         float moveY = 0;
         boolean moving = false;
-
+        delta = Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             // RIGHT key -> move LEFT
             moveX = player_speed * delta;

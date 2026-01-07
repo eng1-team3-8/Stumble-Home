@@ -49,10 +49,6 @@ public class LongBoiEvent extends Sprite {
     private float stateTime;
     // Variable which is true when player is in radius of long boi.
     private boolean near = false;
-    // Width of the game map in tiles.
-    private float mapWidth;
-    // Height of the game map in tiles.
-    private float mapHeight;
 
     /**
      * Constructs a new longBoiEvent with given sprite and initialises animations.
@@ -65,10 +61,6 @@ public class LongBoiEvent extends Sprite {
         // initialize animations
         initializeAnimations();
         this.collisionLayer = collisionLayer;
-
-        // initialize map dimensions from the collision layer so clamping has valid bounds
-        this.mapWidth = collisionLayer.getWidth();
-        this.mapHeight = collisionLayer.getHeight();
 
         // initialize position from the provided sprite (keeps the sprite where caller placed it)
         this.longX = sprite.getX();
