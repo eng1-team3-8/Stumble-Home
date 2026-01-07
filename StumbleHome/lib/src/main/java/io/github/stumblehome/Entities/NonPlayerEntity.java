@@ -67,10 +67,12 @@ public abstract class NonPlayerEntity extends Entity {
     }
 
     protected float getCentreX() {
-        return x_pos + frame_size / 2;
+        return this.getX() + frame_size / 2;
     }
 
     protected float getCentreY() {
-        return y_pos + frame_size / 2;
+        return this.getY() + frame_size / 2;
     }
+
+    public abstract boolean checkColliding(float playerCentreX, float playerCentreY);
 }

@@ -170,9 +170,9 @@ public class GameScreen implements Screen {
         bottle = new BottleEvent(new Texture("waterBottle.png"), 1f, new float[] {58f, 42f});
 
         // LongBoi event
-        longBoi = new LongBoiEvent(new Sprite(new Texture("longBoi.png")), collisionLayer);
-        longBoi.longX = mapWidth - 23 - longBoi.longSize / 2;
-        longBoi.longY = mapHeight - 38 - longBoi.longSize / 2;
+        longBoi =
+                new LongBoiEvent(
+                        new Texture("longBoi.png"), 2f, new float[] {48f, 13f}, collisionLayer);
 
         // Keycard event (not reimplemented yet)
         keycard = new KeycardEvent(new Texture("keyCard.png"), 1f, new float[] {56f, 42f});
@@ -416,7 +416,7 @@ public class GameScreen implements Screen {
         }
 
         // if long boi walk not completed, run logic
-        if (!longBoi.doneWalk) {
+        if (!longBoi.done_walk) {
             // check if player near longBoi
             if (longBoi.checkNear(playerCentreX, playerCentreY)) {
                 // player is near
@@ -432,7 +432,7 @@ public class GameScreen implements Screen {
             }
 
             // check if player collided with longBoi
-            if (longBoi.checkCollision(playerCentreX, playerCentreY)) {
+            if (longBoi.checkColliding(playerCentreX, playerCentreY)) {
                 int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
                 game.setScreen(new LoseScreen(game, remainingTime, score));
             }
@@ -523,17 +523,17 @@ public class GameScreen implements Screen {
         player.draw(game.batch);
 
         // draw events
-        bottle.drawEntity(game.batch);
+        bottle.draw(game.batch);
         longBoi.draw(game.batch);
-        keycard.drawEntity(game.batch);
-        twig.drawEntity(game.batch);
-        beer.drawEntity(game.batch);
-        vodka.drawEntity(game.batch);
-        chicken.drawEntity(game.batch);
-        York.drawEntity(game.batch);
-        Lancaster.drawEntity(game.batch);
-        chainsaw.drawEntity(game.batch);
-        bob.drawEntity(game.batch);
+        keycard.draw(game.batch);
+        twig.draw(game.batch);
+        beer.draw(game.batch);
+        vodka.draw(game.batch);
+        chicken.draw(game.batch);
+        York.draw(game.batch);
+        Lancaster.draw(game.batch);
+        chainsaw.draw(game.batch);
+        bob.draw(game.batch);
 
         game.batch.end();
 

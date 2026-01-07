@@ -58,7 +58,7 @@ public class BossFightLogic {
         System.out.println("Overlap is being checked");
         for (int i = 0; i < cables.length; i++) {
             System.out.println("Cable: " + i);
-            if (scissors.overlaps(cables[i])) {
+            if (scissors.checkColliding(cables[i].getX(), cables[i].getY())) {
                 System.out.println("Overlaps!");
                 if (this.cableStatus[i]) {
                     updateSprite(cables[i], statesFSA, i);

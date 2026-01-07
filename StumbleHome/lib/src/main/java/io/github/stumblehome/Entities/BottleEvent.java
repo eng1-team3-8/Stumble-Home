@@ -2,7 +2,7 @@ package io.github.stumblehome.Entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -41,12 +41,12 @@ public class BottleEvent extends CollectableEntity {
      * @param batch the sprite batch used for rendering
      */
     @Override
-    public void drawEntity(SpriteBatch batch) {
+    public void draw(Batch batch) {
         if (!isCollected) {
             // Determine which frame to draw
             TextureRegion frameToDraw = current_animation.getKeyFrame(state_time, true);
             // Draw the character with proper aspect ratio
-            batch.draw(frameToDraw, x_pos, y_pos, frame_size, frame_size);
+            batch.draw(frameToDraw, this.getX(), this.getY(), frame_size, frame_size);
         }
     }
 }

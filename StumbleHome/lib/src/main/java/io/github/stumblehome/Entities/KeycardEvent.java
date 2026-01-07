@@ -2,7 +2,7 @@ package io.github.stumblehome.Entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -38,10 +38,10 @@ public class KeycardEvent extends CollectableEntity {
      * @param batch the sprite batch used for rendering
      */
     @Override
-    public void drawEntity(SpriteBatch batch) {
+    public void draw(Batch batch) {
         if (!isCollected) {
             TextureRegion frameToDraw = current_animation.getKeyFrame(state_time, true);
-            batch.draw(frameToDraw, x_pos, y_pos, frame_size, frame_size);
+            batch.draw(frameToDraw, getX(), getY(), frame_size, frame_size);
         }
     }
 }
