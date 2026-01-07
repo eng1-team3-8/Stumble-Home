@@ -1,4 +1,4 @@
-package io.github.stumblehome;
+package io.github.stumblehome.Entities;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -13,60 +13,42 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 /** Handles the Long Boi event movement, animations, and interactions with the game world. */
 public class LongBoiEvent extends Sprite {
-    /** Sprite sheet containing all animation frames. */
-    public Texture longSheet;
-
-    // Currently active animation being played.
-    private Animation<TextureRegion> currentAnimation;
-
-    // Previous animation, used to reset timing when animation changes.
-    private Animation<TextureRegion> previousAnimation;
-
-    // Time elapsed in the current animation.
-    private float stateTime;
-
-    // Current x position of long boi on map.
-    public float longX;
-
-    // Current y position of long boi on map.
-    public float longY;
-
+    public static final String ASSET = "longBoi.png";
     // Scale of long boi frames.
     public final float longSize = 2f;
-
     // Size of longBoi collision box
     private final float longBoxWidth = 0.65f;
     private final float longBoxHeight = 1.024f;
-
     // Offset to centre the collision box
     private final float longBoxOffsetX = (longSize - longBoxWidth) / 2f;
     private final float longBoxOffsetY = 0f;
 
-    // Variable which is true when player is in radius of long boi.
-    private boolean near = false;
+    /** Sprite sheet containing all animation frames. */
+    public Texture longSheet;
 
+    // Current x position of long boi on map.
+    public float longX;
+    // Current y position of long boi on map.
+    public float longY;
     // Variable which is true when long boi has completed the walk.
     public boolean doneWalk = false;
-
     // Variable which is true when player collided with long boi.
     public boolean collided = false;
-
     // Distance between player and long boi to set near to true.
     public float radius = 6;
-
     // Layer containing collision information from the tiled map.
     TiledMapTileLayer collisionLayer;
-
     // Previous movement storage vars
     String prev_move_LR = ""; // Left / right
     String prev_move_UD = ""; // Up / down
-
-    // Width of the game map in tiles.
-    private float mapWidth;
-
-    // Height of the game map in tiles.
-    private float mapHeight;
-    public static final String ASSET = "longBoi.png";
+    // Currently active animation being played.
+    private Animation<TextureRegion> currentAnimation;
+    // Previous animation, used to reset timing when animation changes.
+    private Animation<TextureRegion> previousAnimation;
+    // Time elapsed in the current animation.
+    private float stateTime;
+    // Variable which is true when player is in radius of long boi.
+    private boolean near = false;
 
     /**
      * Constructs a new longBoiEvent with given sprite and initialises animations.
@@ -79,10 +61,6 @@ public class LongBoiEvent extends Sprite {
         // initialize animations
         initializeAnimations();
         this.collisionLayer = collisionLayer;
-
-        // initialize map dimensions from the collision layer so clamping has valid bounds
-        this.mapWidth = collisionLayer.getWidth();
-        this.mapHeight = collisionLayer.getHeight();
 
         // initialize position from the provided sprite (keeps the sprite where caller placed it)
         this.longX = sprite.getX();
@@ -209,10 +187,9 @@ public class LongBoiEvent extends Sprite {
     }
 
     /**
-     * This controls long boi's movement based on collisions with the maze
-     * Defaults to move up and right
-     * Reacts to collisions to semi-randomly move around the map
-     * The route taken will change a little on each run
+     * This controls long boi's movement based on collisions with the maze Defaults to move up and
+     * right Reacts to collisions to semi-randomly move around the map The route taken will change a
+     * little on each run
      */
     public void walkPath() {
         float delta = Gdx.graphics.getDeltaTime();
@@ -243,8 +220,8 @@ public class LongBoiEvent extends Sprite {
     }
 
     /**
-     * Checks if the Long Boi can move to a target position without hitting obstacles.
-     * Validates all four corners of the sprite's hitbox.
+     * Checks if the Long Boi can move to a target position without hitting obstacles. Validates all
+     * four corners of the sprite's hitbox.
      *
      * @param x the target x position
      * @param y the target y position
@@ -260,8 +237,8 @@ public class LongBoiEvent extends Sprite {
     }
 
     /**
-     * Determines whether a specific tile position allows the sprite to pass through.
-     * Handles special cases for certain tile types that have partial collision.
+     * Determines whether a specific tile position allows the sprite to pass through. Handles special
+     * cases for certain tile types that have partial collision.
      *
      * @param x the x coordinate to check
      * @param y the y coordinate to check

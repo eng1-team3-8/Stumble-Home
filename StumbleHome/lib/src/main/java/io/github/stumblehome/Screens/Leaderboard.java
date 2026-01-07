@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -19,56 +18,25 @@ public class Leaderboard extends MenuScreen {
     private ScrollPane scrollPane;
 
     public Leaderboard(StumbleHome game) {
-        this.game = game;
-        // Draws leaderboard screen
+        super(game);
+    }
+
+    @Override
+    public void show() {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
+        // Draws leaderboard screen
         String boardData = readLeaderBoard();
-        String[] splitBoard = boardData.split("\n");
-        List<String[]> ordered = new ArrayList<>();
-
-        Table leaderboard = new Table();
-        Label tempRow = new Label("Leaderboard:", skin);
-        tempRow.setFontScale(5f);
-        leaderboard.add(tempRow).pad(15);
-        leaderboard.row();
-
-        for (String s : splitBoard) {
-            String[] tempData = s.split(",");
-
-            if (tempData.length >= 2) {
-                if (ordered.size() > 0) {
-                    int pos = 0;
-                    while (Integer.valueOf(ordered.get(pos)[1]) > Integer.valueOf(tempData[1])) {
-                        pos += 1;
-                    }
-                    ordered.add(pos, tempData);
-                } else {
-                    ordered.add(tempData);
-                }
-            }
-        }
-
-        for (String[] s : ordered) {
-            tempRow = new Label(s[0] + ": " + s[1], skin);
-            tempRow.setFontScale(3f);
-            leaderboard.add(tempRow).pad(10);
-            leaderboard.row();
-        }
+        Table leaderboard = leaderboardSetup(boardData);
 
         this.scrollPane = new ScrollPane(leaderboard, skin);
         scrollPane.setFillParent(true);
         stage.addActor(scrollPane);
     }
 
-    @Override
-    public void show() {}
-
     /**
-     * Called once per frame to render the menu screen
-     * Edited to capture input for scrollable table
+     * Called once per frame to render the menu screen Edited to capture input for scrollable table
      *
      * @param delta the time in seconds since the last render.
      */
@@ -101,17 +69,6 @@ public class Leaderboard extends MenuScreen {
         }
     }
 
-    /**
-     * Called when the screen is resized.
-     *
-     * @param width  the new width of the screen in pixels.
-     * @param height the new height of the screen in pixels.
-     */
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
-
     @Override
     public void hide() {
         // TODO Auto-generated method stub
@@ -125,8 +82,78 @@ public class Leaderboard extends MenuScreen {
         scrollPane.clear();
     }
 
+    public Table leaderboardSetup(String boardData) {
+        // Adds title to leaderboard
+        Table leaderboard = new Table();
+        Label tempRow = new Label("Leaderboard (Top 5):", skin);
+        tempRow.setFontScale(5f);
+        leaderboard.add(tempRow).pad(15);
+        leaderboard.row();
+
+        // Adds error message if leaderboard doesn't exist
+        if (boardData.equals("Complete Game To Set Score")) {
+            tempRow = new Label(boardData, skin);
+            tempRow.setFontScale(3f);
+            leaderboard.add(tempRow).pad(15);
+            leaderboard.row();
+        }
+
+        // Otherwise read player scores into leaderboard
+        else {
+            // Reads in csv line by line
+            String[] splitBoard = boardData.split("\n");
+            List<String[]> ordered = orderValues(splitBoard);
+            // Inserts each score into the leaderboard
+
+            // Displays top 5 scores
+            int i = 0;
+            while (i < 5 && i < ordered.size()) {
+                String[] s = ordered.get(i);
+                tempRow = new Label(s[0] + ": " + s[1], skin);
+                tempRow.setFontScale(3f);
+                leaderboard.add(tempRow).pad(10);
+                leaderboard.row();
+                i++;
+            }
+        }
+        return leaderboard;
+    }
+
+    public List<String[]> orderValues(String[] splitBoard) {
+        List<String[]> ordered = new ArrayList<>();
+
+        // Orders csv table rows based on score
+        // Uses insertion sort
+        for (String s : splitBoard) {
+            // Splits rows into values
+            String[] tempData = s.split(",");
+
+            if (tempData.length >= 2) {
+                if (ordered.size() > 0) {
+                    int pos = 0;
+
+                    while (pos != ordered.size()
+                            && Integer.valueOf(ordered.get(pos)[1])
+                                    > Integer.valueOf(tempData[1])) {
+                        pos += 1;
+                    }
+                    ordered.add(pos, tempData);
+                } else {
+                    ordered.add(tempData);
+                }
+            }
+        }
+        return ordered;
+    }
+
     private String readLeaderBoard() {
-        FileHandle file = Gdx.files.local("leaderBoard.csv");
-        return file.readString();
+        boolean file_exists = Gdx.files.local("leaderBoard.csv").exists();
+
+        if (file_exists == false) {
+            return "Complete Game To Set Score";
+        } else {
+            FileHandle file = Gdx.files.local("leaderBoard.csv");
+            return file.readString();
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 
 /**
  * data structure to hold the necessary information about a message
+ *
  * @author Isaac M
  */
 public class MessageID {
@@ -14,6 +15,7 @@ public class MessageID {
 
     /**
      * creates a new messageID with a default time of 0
+     *
      * @param message text that the message will show
      * @param colour the color of the text of the message
      * @param size the size of the text on screen

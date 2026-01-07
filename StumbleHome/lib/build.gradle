@@ -9,8 +9,8 @@ plugins {
 }
 
 project.group = 'io.github.stumblehome'
-project.version = project.findProperty('projectVersion') ?: '1.0.0'
-ext.appName = 'Maze-game'
+project.version = project.findProperty('projectVersion') ?: 'local-SNAPSHOT'
+ext.appName = 'StumbleHome'
 
 java {
   sourceCompatibility = JavaVersion.VERSION_1_8

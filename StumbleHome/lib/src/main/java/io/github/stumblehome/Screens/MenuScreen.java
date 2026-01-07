@@ -21,6 +21,15 @@ public abstract class MenuScreen implements Screen {
     // Skin used for styling UI components.
     protected Skin skin;
 
+    public MenuScreen(final StumbleHome game) {
+        this.game = game;
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+    }
+
+    public MenuScreen(final StumbleHome game, String background) {
+        this(game);
+        this.background = new Texture(background);
+    }
     /**
      * Called once per frame to render the menu screen.
      *
@@ -47,12 +56,23 @@ public abstract class MenuScreen implements Screen {
         stage.draw();
     }
 
-    /**
-     * A menu screen should not by default need to change functionality when paused
-     */
+    /** A menu screen should not by default need to change functionality when paused */
     @Override
     public void pause() {}
 
     @Override
     public void resume() {}
+
+    /**
+     * Called when the screen size changes (e.g., window resize).
+     *
+     * @param width the new width in pixels.
+     * @param height the new height in pixels.
+     */
+    @Override
+    public void resize(int width, int height) {
+        game.viewport.update(width, height);
+        // Resizes button hit zones (and more)
+        this.show();
+    }
 }

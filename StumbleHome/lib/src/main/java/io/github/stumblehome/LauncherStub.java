@@ -4,8 +4,8 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 /**
- * Minimal launcher that starts the game using LWJGL3 backend so the produced
- * fat JAR is runnable with `java -jar StumbleHome-<version>.jar`.
+ * Minimal launcher that starts the game using LWJGL3 backend so the produced fat JAR is runnable
+ * with `java -jar StumbleHome-<version>.jar`.
  */
 public final class LauncherStub {
     public static void main(String[] args) {
