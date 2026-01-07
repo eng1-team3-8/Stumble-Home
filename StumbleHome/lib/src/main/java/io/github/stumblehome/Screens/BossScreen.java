@@ -68,7 +68,6 @@ public class BossScreen implements Screen {
 
     // Game state manager
     private BossFightStatesManager statesFSA;
-    private boolean stateChanged = false;
 
     // Logic handler
     private BossFightLogic logicHandler;
@@ -234,11 +233,16 @@ public class BossScreen implements Screen {
                         new BossFightEntity[] {cable1, cable2, cable3, cable4}, batch);
 
                 // Draw the scissors
-                this.logicHandler.moveScissors(
-                        viewport,
-                        batch,
-                        scissors,
-                        new BossFightEntity[] {cable1, cable2, cable3, cable4});
+                try {
+                    this.logicHandler.moveScissors(
+                            viewport,
+                            batch,
+                            scissors,
+                            new BossFightEntity[] {cable1, cable2, cable3, cable4},
+                            statesFSA);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
 
                 Gdx.input.setInputProcessor(this.attackStage);
 
