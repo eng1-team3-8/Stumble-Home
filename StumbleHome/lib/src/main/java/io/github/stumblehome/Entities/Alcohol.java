@@ -11,7 +11,6 @@ public class Alcohol extends CollectableEntity {
     public static final String ASSET_TSING = "Sprites/Tsingtao.png";
     public static final String ASSET_SMIRN = "Sprites/Smirnoff.png";
 
-
     /**
      * A constructor for entities that don't have any animations
      *

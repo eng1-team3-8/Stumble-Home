@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.Texture;
 public class Food extends CollectableEntity {
     public static final String ASSET = "Sprites/Chicken.png";
 
-
     /**
      * A constructor for entities that don't have any animations
      *

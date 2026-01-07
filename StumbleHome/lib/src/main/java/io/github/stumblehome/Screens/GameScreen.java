@@ -172,7 +172,10 @@ public class GameScreen implements Screen {
         // LongBoi event
         longBoi =
                 new LongBoiEvent(
-                        new Texture(LongBoiEvent.ASSET), 2f, new float[] {48f, 13f}, collisionLayer);
+                        new Texture(LongBoiEvent.ASSET),
+                        2f,
+                        new float[] {48f, 13f},
+                        collisionLayer);
 
         // Keycard event (not reimplemented yet)
         keycard = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {56f, 42f});
