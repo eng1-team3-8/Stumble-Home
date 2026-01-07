@@ -58,7 +58,11 @@ public class MessageHandler {
      */
     public void updateMessages() {
         int counter = 0;
+        Queue<Messages> iterate_queue = new LinkedList<Messages>();
         for (Messages msg : shown_queue) {
+            iterate_queue.add(msg);
+        }
+        for (Messages msg : iterate_queue) {
             counter++;
             shift_time(msg, -Gdx.graphics.getDeltaTime());
             if (messages.get(msg).time_left == 0) {

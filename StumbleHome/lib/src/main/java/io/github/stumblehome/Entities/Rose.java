@@ -9,4 +9,6 @@ public class Rose extends CollectableEntity {
     public Rose(Texture texture, float size, float[] position) {
         super(texture, size, position);
     }
+
+    public void logic() {}
 }

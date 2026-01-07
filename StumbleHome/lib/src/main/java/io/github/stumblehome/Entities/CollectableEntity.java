@@ -14,13 +14,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public abstract class CollectableEntity extends NonPlayerEntity {
 
     // Boolean value to see if the entity is colliding with the player
-    boolean isColliding = false;
+    private boolean isColliding = false;
 
     // Boolean value to see if the entity has been collected
-    boolean isCollected = false;
+    public boolean isCollected = false;
 
     // Boolean value to see if the event caused by the collision has been triggered yet
-    boolean isTriggered = false;
+    public boolean isTriggered = false;
 
     /**
      * A constructor for entities that have animations
@@ -93,7 +93,4 @@ public abstract class CollectableEntity extends NonPlayerEntity {
             this.draw(batch);
         }
     }
-
-    @Override
-    public void logic() {}
 }

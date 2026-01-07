@@ -28,4 +28,6 @@ public class Food extends CollectableEntity {
         }
         player.isDrunk = false;
     }
+
+    public void logic() {}
 }

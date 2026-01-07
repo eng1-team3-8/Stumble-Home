@@ -12,7 +12,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.stumblehome.*;
 import io.github.stumblehome.Entities.Alcohol;
 import io.github.stumblehome.Entities.Bob;
@@ -108,6 +113,11 @@ public class GameScreen implements Screen {
     private int hinderingEventCounter = 0;
     private float time;
 
+    // Achievements Popup
+    Stage stage;
+    Dialog achievementBox;
+    boolean eventTriggered = false;
+
     /**
      * Constructs the {@code GameScreen} and initializes the map, player, camera, and in-game events.
      *
@@ -187,7 +197,7 @@ public class GameScreen implements Screen {
         Lancaster = new Rose(new Texture("Sprites/LancasterRose.png"), 1f, new float[] {5f, 25f});
 
         // Chainsaw
-        chainsaw = new Chainsaw(new Texture("Sprites/Chainsaw.png"), 1f, new float[] {56f, 50f});
+        chainsaw = new Chainsaw(new Texture("Sprites/Chainsaw.png"), 1f, new float[] {54f, 41f});
 
         // Bob
         bob = new Bob(new Texture("Sprites/B-bThing.png"), 1f, new float[] {56f, 41f});
@@ -219,6 +229,17 @@ public class GameScreen implements Screen {
                 Color.RED,
                 2f);
         msg.addMessage(Messages.BOTHSQUISHED, "I see, you just harbour chaos", Color.BLACK, 2f);
+        msg.addMessage(
+                Messages.CHAINSAWPICKEDUP,
+                "You've obtained a chainsaw. press e to cut a line of hedges!",
+                Color.RED,
+                2f);
+
+        // Achievements Popup
+        stage = new Stage(new ScreenViewport());
+        Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        achievementBox = new Dialog("Achievement", skin);
+        achievementBox.getTitleTable().padBottom(15f);
     }
 
     @Override
@@ -234,13 +255,24 @@ public class GameScreen implements Screen {
      */
     @Override
     public void render(float delta) {
-        // Increments the cloack
+        // Increments the clock
         this.time += Gdx.graphics.getDeltaTime();
 
         // Toggle pause when SPACE is pressed
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
                 || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             paused = !paused; // flip pause state
+        }
+
+        if (eventTriggered) {
+            achievementBox.show(stage);
+            eventTriggered = false;
+
+            achievementBox.addAction(
+                    Actions.sequence(
+                            Actions.delay(5f),
+                            Actions.fadeOut(0.5f),
+                            Actions.run(() -> achievementBox.hide())));
         }
 
         // Only run player input and logic if not paused and there is enough time left
@@ -257,6 +289,18 @@ public class GameScreen implements Screen {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
             game.setScreen(new LoseScreen(game, remainingTime, score));
         }
+
+        // Sets achievement box to bottom right
+        achievementBox.setPosition((Gdx.graphics.getWidth() / 2), 0);
+        // Pads text to avoid truncation
+        achievementBox.getContentTable().padLeft(4f);
+        achievementBox.getContentTable().padRight(4f);
+
+        // Applies correct viewport for screen size
+        stage.getViewport().apply();
+        // Draws the achievements box on the stage
+        stage.act(delta);
+        stage.draw();
     }
 
     /**
@@ -283,6 +327,8 @@ public class GameScreen implements Screen {
             }
             player.isDrunk = false;
             helpfulEventCounter++;
+
+            setAchievementText("Glad that wasn't Vodka!");
         }
 
         // check collision with keycard
@@ -290,24 +336,43 @@ public class GameScreen implements Screen {
             hasKeycard = true;
             hinderingEventCounter++;
             msg.set_time(Messages.PICKUPKEYCARD, 3f);
+
+            setAchievementText("Swipe the card!");
         }
 
         // Check collision with twig
         if (twig.checkColliding(playerCentreX, playerCentreY)) {
             hinderingEventCounter++;
             player.slowDownPlayer(.5f);
+
+            setAchievementText("Broken Ankle");
+        }
+
+        if (chainsaw.checkColliding(playerCentreX, playerCentreY)) {
+            helpfulEventCounter++;
+            // trigger message
+
+            setAchievementText("Here's Johnny!");
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            // player attempts to use chainsaw
+            chainsaw.UseChainsaw(player, collisionLayer);
         }
 
         // Check if collision with beer
         if (beer.checkColliding(playerCentreX, playerCentreY)) {
             hinderingEventCounter++;
             beer.makeDrunk(player);
+
+            setAchievementText("BEER ME!");
         }
 
         // Check if collision with vodka
         if (vodka.checkColliding(playerCentreX, playerCentreY)) {
             hinderingEventCounter++;
             vodka.makeDrunk(player);
+
+            setAchievementText("Down the vodka");
         }
 
         // Check if collision with chicken
@@ -317,6 +382,8 @@ public class GameScreen implements Screen {
                 msg.set_time(Messages.REMEMBERKEYCARD, 3f);
             }
             chicken.eatFood(player);
+
+            setAchievementText("Lava Chicken... TASTY AS HELL");
         }
 
         // Check if the Yorks rose has been stepped on
@@ -324,6 +391,8 @@ public class GameScreen implements Screen {
             hiddenEventCounter++;
             msg.set_time(Messages.YORKSQUISHED, 3f);
             York.isSquished = true;
+
+            setAchievementText("War of the Roses...");
         }
 
         // Check if the Lancaster rose has been stepped on
@@ -331,6 +400,8 @@ public class GameScreen implements Screen {
             hiddenEventCounter++;
             msg.set_time(Messages.LANCASTERSQUISHED, 3f);
             Lancaster.isSquished = true;
+
+            setAchievementText("Traitor!!!");
         }
 
         // CHeck if both roses have been squished.
@@ -340,12 +411,16 @@ public class GameScreen implements Screen {
             msg.set_time(Messages.BOTHSQUISHED, 3f);
             York.isSquished = false;
             Lancaster.isSquished = false;
+
+            setAchievementText("Switched sides have you??");
         }
 
         // Check if Bob has been squished
         if (bob.checkColliding(playerCentreX, playerCentreY)) {
             hiddenEventCounter++;
             game.setScreen(new BossScreen(game, this.playerName));
+
+            setAchievementText("Someone didn't like SYS1...");
         }
 
         // if long boi walk not completed, run logic
@@ -355,6 +430,8 @@ public class GameScreen implements Screen {
                 // player is near
                 msg.set_time(Messages.LONGBOIAPPEAR, 2f);
                 hiddenEventCounter++;
+
+                setAchievementText("Raised from dead... RUN!");
             }
 
             // walk long boi as long as 'near' variable set to true
@@ -437,6 +514,7 @@ public class GameScreen implements Screen {
 
     /** Draws all visible elements: map, player, events, and UI text. */
     private void draw() {
+        game.viewport.apply();
         // Clear the screen with black color
         ScreenUtils.clear(Color.BLACK);
 
@@ -462,6 +540,7 @@ public class GameScreen implements Screen {
         chicken.drawEntity(game.batch);
         York.drawEntity(game.batch);
         Lancaster.drawEntity(game.batch);
+        chainsaw.drawEntity(game.batch);
         bob.drawEntity(game.batch);
 
         game.batch.end();
@@ -509,6 +588,7 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         game.viewport.update(width, height);
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -533,11 +613,19 @@ public class GameScreen implements Screen {
         chicken.dispose();
         York.dispose();
         Lancaster.dispose();
+        stage.dispose();
+        achievementBox.getContentTable().clearChildren();
+        achievementBox.remove();
     }
 
     private void saveLeaderBoardScore(int score) {
         FileHandle writeFile = Gdx.files.local("leaderBoard.csv");
         writeFile.writeString(playerName + "," + Integer.toString(score) + "\n", true);
     }
-    ;
+
+    private void setAchievementText(String text) {
+        eventTriggered = true;
+        achievementBox.getContentTable().clearChildren();
+        achievementBox.text(text);
+    }
 }

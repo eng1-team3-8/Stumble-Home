@@ -325,17 +325,34 @@ public class Player extends Sprite {
     }
 
     public EntityDirection getDirection() {
-        if (lastDirection == Animation_enum.DOWN || lastDirection == Animation_enum.WALK_DOWN) {
-            return EntityDirection.DOWN;
-        }
-        if (lastDirection == Animation_enum.UP || lastDirection == Animation_enum.WALK_UP) {
-            return EntityDirection.UP;
-        }
-        if (lastDirection == Animation_enum.RIGHT || lastDirection == Animation_enum.WALK_RIGHT) {
-            return EntityDirection.RIGHT;
-        }
-        if (lastDirection == Animation_enum.LEFT || lastDirection == Animation_enum.WALK_LEFT) {
-            return EntityDirection.LEFT;
+        if (isDrunk) {
+            if (lastDirection == Animation_enum.DOWN || lastDirection == Animation_enum.WALK_DOWN) {
+                return EntityDirection.DOWN;
+            }
+            if (lastDirection == Animation_enum.UP || lastDirection == Animation_enum.WALK_UP) {
+                return EntityDirection.UP;
+            }
+            if (lastDirection == Animation_enum.RIGHT
+                    || lastDirection == Animation_enum.WALK_RIGHT) {
+                return EntityDirection.RIGHT;
+            }
+            if (lastDirection == Animation_enum.LEFT || lastDirection == Animation_enum.WALK_LEFT) {
+                return EntityDirection.LEFT;
+            }
+        } else {
+            if (lastDirection == Animation_enum.DOWN || lastDirection == Animation_enum.WALK_DOWN) {
+                return EntityDirection.UP;
+            }
+            if (lastDirection == Animation_enum.UP || lastDirection == Animation_enum.WALK_UP) {
+                return EntityDirection.DOWN;
+            }
+            if (lastDirection == Animation_enum.RIGHT
+                    || lastDirection == Animation_enum.WALK_RIGHT) {
+                return EntityDirection.LEFT;
+            }
+            if (lastDirection == Animation_enum.LEFT || lastDirection == Animation_enum.WALK_LEFT) {
+                return EntityDirection.RIGHT;
+            }
         }
         return null;
     }
