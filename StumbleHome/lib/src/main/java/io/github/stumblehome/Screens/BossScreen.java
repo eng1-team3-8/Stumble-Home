@@ -61,7 +61,10 @@ public class BossScreen implements Screen {
 
     // Entities
     private Scissors scissors;
-    private BossFightEntity Cable;
+    private BossFightEntity cable1;
+    private BossFightEntity cable2;
+    private BossFightEntity cable3;
+    private BossFightEntity cable4;
 
     // Game state manager
     private BossFightStatesManager statesFSA;
@@ -84,9 +87,6 @@ public class BossScreen implements Screen {
         // Create the state manager
         this.statesFSA = new BossFightStatesManager();
 
-        // Create the logic handler
-        this.logicHandler = new BossFightLogic();
-
         // Creates the stage
         this.optionsStage = new Stage(viewport);
         this.infoStage = new Stage(viewport);
@@ -102,9 +102,21 @@ public class BossScreen implements Screen {
                 new Scissors(
                         new Texture("Sprites/BossFight/Scissors.png"), 100f, new float[] {105, 2});
 
-        this.Cable =
+        this.cable1 =
                 new BossFightEntity(
-                        new Texture("Sprites/BossFight/Cable.png"), 1f, new float[] {2, 3});
+                        new Texture("Sprites/BossFight/Cable.png"), 150f, new float[] {199, 0});
+
+        this.cable2 =
+                new BossFightEntity(
+                        new Texture("Sprites/BossFight/Cable.png"), 150f, new float[] {287, 0});
+
+        this.cable3 =
+                new BossFightEntity(
+                        new Texture("Sprites/BossFight/Cable.png"), 150f, new float[] {375, 0});
+
+        this.cable4 =
+                new BossFightEntity(
+                        new Texture("Sprites/BossFight/Cable.png"), 150f, new float[] {463, 0});
 
         // Assign the textures
         this.MenuBackground = new Texture("Sprites/BossFight/Menu-Background.png");
@@ -116,6 +128,9 @@ public class BossScreen implements Screen {
         this.BossMusic = Gdx.audio.newMusic(Gdx.files.internal("Sprites/BossFight/Boss-Music.mp3"));
         this.BossMusic.setLooping(true);
         //        this.BossMusic.play(); // Uncomment when you want music
+
+        // Create the logic handler
+        this.logicHandler = new BossFightLogic(this.BrokenCable);
     }
 
     @Override
@@ -214,9 +229,16 @@ public class BossScreen implements Screen {
                         viewport.getWorldWidth() / 2,
                         viewport.getWorldHeight() / 2);
 
-                this.logicHandler.moveScissors(viewport, batch, scissors);
-                //                scissors.move(viewport);
-                //                scissors.draw(batch);
+                // Draw the cables
+                this.logicHandler.drawCables(
+                        new BossFightEntity[] {cable1, cable2, cable3, cable4}, batch);
+
+                // Draw the scissors
+                this.logicHandler.moveScissors(
+                        viewport,
+                        batch,
+                        scissors,
+                        new BossFightEntity[] {cable1, cable2, cable3, cable4});
 
                 Gdx.input.setInputProcessor(this.attackStage);
 
