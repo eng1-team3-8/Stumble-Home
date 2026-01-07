@@ -36,4 +36,8 @@ public class BossFightEntity extends NonPlayerEntity {
 
         return distance < 1f;
     }
+
+    public void updatePosition() {
+        this.setPosition(this.x_pos, this.y_pos);
+    }
 }
