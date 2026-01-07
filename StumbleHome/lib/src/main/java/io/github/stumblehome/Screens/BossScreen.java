@@ -159,7 +159,11 @@ public class BossScreen implements Screen {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        statesFSA.moveStates(1);
+                        if (logicHandler.isFinalStage()) {
+                            statesFSA.moveStates(0);
+                        } else {
+                            statesFSA.moveStates(1);
+                        }
                     }
                 });
 
@@ -199,6 +203,8 @@ public class BossScreen implements Screen {
     public void render(float delta) {
         // Make the Screen grey
         ScreenUtils.clear(Color.GRAY);
+
+        this.scaledByViewport = viewport.getWorldWidth() / 800;
 
         // Draw the elements
         this.batch.begin();
@@ -246,6 +252,9 @@ public class BossScreen implements Screen {
 
                 Gdx.input.setInputProcessor(this.attackStage);
 
+                break;
+
+            case FINALATTACK:
                 break;
             case WIN:
                 Gdx.input.setInputProcessor(this.winStage);
