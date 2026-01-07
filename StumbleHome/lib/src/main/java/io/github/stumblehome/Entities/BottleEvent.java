@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * player, this affects their movement controls.
  */
 public class BottleEvent extends CollectableEntity {
+    public static final String ASSET = "waterBottle.png";
 
     /**
      * calling constructor of superclass

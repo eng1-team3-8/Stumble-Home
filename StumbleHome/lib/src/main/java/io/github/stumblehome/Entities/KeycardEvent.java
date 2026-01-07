@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * animated sprite until collected by the player.
  */
 public class KeycardEvent extends CollectableEntity {
+    public static final String ASSET = "keyCard.png";
 
     /**
      * calling constructor of superclass

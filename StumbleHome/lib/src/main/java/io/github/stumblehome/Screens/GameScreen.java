@@ -167,35 +167,35 @@ public class GameScreen implements Screen {
 
         // events
         // Bottle event (not reimplemented yet)
-        bottle = new BottleEvent(new Texture("waterBottle.png"), 1f, new float[] {58f, 42f});
+        bottle = new BottleEvent(new Texture(BottleEvent.ASSET), 1f, new float[] {58f, 42f});
 
         // LongBoi event
         longBoi =
                 new LongBoiEvent(
-                        new Texture("longBoi.png"), 2f, new float[] {48f, 13f}, collisionLayer);
+                        new Texture(LongBoiEvent.ASSET), 2f, new float[] {48f, 13f}, collisionLayer);
 
         // Keycard event (not reimplemented yet)
-        keycard = new KeycardEvent(new Texture("keyCard.png"), 1f, new float[] {56f, 42f});
+        keycard = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {56f, 42f});
 
         // Twig event
-        twig = new Twig(new Texture("Sprites/Stick.png"), 1f, new float[] {51f, 19f});
+        twig = new Twig(new Texture(Twig.ASSET), 1f, new float[] {51f, 19f});
 
         // Alcohol bottles
-        beer = new Alcohol(new Texture("Sprites/Tsingtao.png"), 1f, new float[] {62f, 5f});
-        vodka = new Alcohol(new Texture("Sprites/Smirnoff.png"), 1f, new float[] {35f, 2f});
+        beer = new Alcohol(new Texture(Alcohol.ASSET_TSING), 1f, new float[] {62f, 5f});
+        vodka = new Alcohol(new Texture(Alcohol.ASSET_SMIRN), 1f, new float[] {35f, 2f});
 
         // Chicken
-        chicken = new Food(new Texture("Sprites/Chicken.png"), 1f, new float[] {54f, 42f});
+        chicken = new Food(new Texture(Food.ASSET), 1f, new float[] {54f, 42f});
 
         // The roses
-        York = new Rose(new Texture("Sprites/YorkRose.png"), 1f, new float[] {2f, 25f});
-        Lancaster = new Rose(new Texture("Sprites/LancasterRose.png"), 1f, new float[] {5f, 25f});
+        York = new Rose(new Texture(Rose.ASSET_YORK), 1f, new float[] {2f, 25f});
+        Lancaster = new Rose(new Texture(Rose.ASSET_LANC), 1f, new float[] {5f, 25f});
 
         // Chainsaw
-        chainsaw = new Chainsaw(new Texture("Sprites/Chainsaw.png"), 1f, new float[] {54f, 41f});
+        chainsaw = new Chainsaw(new Texture(Chainsaw.ASSET), 1f, new float[] {54f, 41f});
 
         // Bob
-        bob = new Bob(new Texture("Sprites/B-bThing.png"), 1f, new float[] {56f, 41f});
+        bob = new Bob(new Texture(Bob.ASSET), 1f, new float[] {56f, 41f});
 
         // message handler
         msg = new MessageHandler(game);
