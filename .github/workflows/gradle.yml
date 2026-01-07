@@ -43,7 +43,8 @@ jobs:
               IS_PRERELEASE="false"
             fi
           else
-            VERSION="1.0.0-dev"
+            # Use local-SNAPSHOT for non-tag builds (consistent with build.gradle default)
+            VERSION="local-SNAPSHOT"
             IS_PRERELEASE="true"
           fi
 
@@ -63,6 +64,9 @@ jobs:
           cache-read-only: false
           cache-cleanup: always
           add-job-summary: on-failure
+          build-scan-publish: true
+          build-scan-terms-of-service-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-service-agree: "yes"
 
       - name: Build JAR with version (includes Spotless check)
         run: |
@@ -115,6 +119,9 @@ jobs:
         with:
           cache-read-only: true  # Use read-only cache since build job already populated it
           cache-cleanup: always
+          build-scan-publish: true
+          build-scan-terms-of-service-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-service-agree: "yes"
 
       # Ubuntu: Run full tests with coverage
       - name: Run tests with coverage (Ubuntu)
@@ -191,6 +198,9 @@ jobs:
         with:
           cache-read-only: true  # Use read-only cache since build job already populated it
           cache-cleanup: always
+          build-scan-publish: true
+          build-scan-terms-of-service-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-service-agree: "yes"
 
       - name: Build macOS app bundle
         run: |
