@@ -111,7 +111,6 @@ public class GameScreen implements Screen {
     private int hiddenEventCounter = 0;
     private int helpfulEventCounter = 0;
     private int hinderingEventCounter = 0;
-    private float time;
 
     // Achievements Popup
     Stage stage;
@@ -255,9 +254,6 @@ public class GameScreen implements Screen {
      */
     @Override
     public void render(float delta) {
-        // Increments the clock
-        this.time += Gdx.graphics.getDeltaTime();
-
         // Toggle pause when SPACE is pressed
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
                 || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
