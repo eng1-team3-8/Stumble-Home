@@ -8,10 +8,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import io.github.stumblehome.Player;
+import io.github.stumblehome.Entities.Player;
 import org.junit.jupiter.api.Test;
 
 public class PlayerTest extends AbstractHeadlessGdxTest {
+    public static final String ASSET = "character.png";
 
     @Test
     public void testCollisionWithMazeWall() {

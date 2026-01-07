@@ -1,4 +1,4 @@
-package io.github.stumblehome;
+package io.github.stumblehome.Entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -17,64 +17,38 @@ import java.util.Map;
  * Supports both normal and reversed controls depending on the player's state.
  */
 public class Player extends Sprite {
-    // Spritesheet containing all player animation frames.
-    public Texture characterSheet;
-
-    // Map of all animations with key of animation name
-    private Map<Animation_enum, Animation<TextureRegion>> animations;
-
-    // Currently active animation being played.
-    private Animation<TextureRegion> currentAnimation;
-
-    // Previous animation, used to reset timing when animation changes.
-    private Animation<TextureRegion> previousAnimation;
-
-    // Time elapsed in the current animation.
-    private float stateTime;
-
-    private enum Animation_enum {
-        DOWN,
-        LEFT,
-        RIGHT,
-        UP,
-        WALK_DOWN,
-        WALK_LEFT,
-        WALK_RIGHT,
-        WALK_UP
-    }
-
-    // The direction the player was last moving or facing.
-    private Animation_enum lastDirection = Animation_enum.DOWN;
-
-    // Current x position of the player on the map.
-    public float playerX;
-
-    // Current y position of the player on the map.
-    public float playerY;
-
     // Size of the player's collision box and sprite.
     public final float playerSize = 0.8f;
-
     // Delta time value for consistent movement speed.
-    private final float delta = Gdx.graphics.getDeltaTime();
-
-    // Controls whether the player has reversed controls (1 = drunk, 0 = sober).
-    public boolean isDrunk = true;
-
+    private float delta = Gdx.graphics.getDeltaTime();
     // Width of the game map in tiles.
     private final float mapWidth;
-
     // Height of the game map in tiles.
     private final float mapHeight;
-
+    // Spritesheet containing all player animation frames.
+    public Texture characterSheet;
+    // Current x position of the player on the map.
+    public float playerX;
+    // Current y position of the player on the map.
+    public float playerY;
+    // Controls whether the player has reversed controls (1 = drunk, 0 = sober).
+    public boolean isDrunk = true;
     // Speed of the player
     public float player_speed;
-
     // Boolean to see if the player can get drunk (default true, only false after a meal)
     public boolean canGetDrunk = true;
-
     // Layer containing collision information from the tiled map.
     TiledMapTileLayer collisionLayer;
+    // Map of all animations with key of animation name
+    private Map<Animation_enum, Animation<TextureRegion>> animations;
+    // Currently active animation being played.
+    private Animation<TextureRegion> currentAnimation;
+    // Previous animation, used to reset timing when animation changes.
+    private Animation<TextureRegion> previousAnimation;
+    // Time elapsed in the current animation.
+    private float stateTime;
+    // The direction the player was last moving or facing.
+    private Animation_enum lastDirection = Animation_enum.DOWN;
 
     /**
      * Constructs a new player with the given sprite, map boundaries and layer which contains
@@ -205,7 +179,7 @@ public class Player extends Sprite {
         float moveX = 0;
         float moveY = 0;
         boolean moving = false;
-
+        delta = Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             // RIGHT key -> move LEFT
             moveX = player_speed * delta;
@@ -348,5 +322,49 @@ public class Player extends Sprite {
             amount *= -1;
         }
         this.player_speed += amount;
+    }
+
+    public EntityDirection getDirection() {
+        if (isDrunk) {
+            if (lastDirection == Animation_enum.DOWN || lastDirection == Animation_enum.WALK_DOWN) {
+                return EntityDirection.DOWN;
+            }
+            if (lastDirection == Animation_enum.UP || lastDirection == Animation_enum.WALK_UP) {
+                return EntityDirection.UP;
+            }
+            if (lastDirection == Animation_enum.RIGHT
+                    || lastDirection == Animation_enum.WALK_RIGHT) {
+                return EntityDirection.RIGHT;
+            }
+            if (lastDirection == Animation_enum.LEFT || lastDirection == Animation_enum.WALK_LEFT) {
+                return EntityDirection.LEFT;
+            }
+        } else {
+            if (lastDirection == Animation_enum.DOWN || lastDirection == Animation_enum.WALK_DOWN) {
+                return EntityDirection.UP;
+            }
+            if (lastDirection == Animation_enum.UP || lastDirection == Animation_enum.WALK_UP) {
+                return EntityDirection.DOWN;
+            }
+            if (lastDirection == Animation_enum.RIGHT
+                    || lastDirection == Animation_enum.WALK_RIGHT) {
+                return EntityDirection.LEFT;
+            }
+            if (lastDirection == Animation_enum.LEFT || lastDirection == Animation_enum.WALK_LEFT) {
+                return EntityDirection.RIGHT;
+            }
+        }
+        return null;
+    }
+
+    private enum Animation_enum {
+        DOWN,
+        LEFT,
+        RIGHT,
+        UP,
+        WALK_DOWN,
+        WALK_LEFT,
+        WALK_RIGHT,
+        WALK_UP
     }
 }

@@ -1,18 +1,23 @@
-package io.github.stumblehome;
+package io.github.stumblehome.Entities;
 
 import com.badlogic.gdx.graphics.Texture;
 
 /**
- * Class for alcoholic drinks.
- * Inherits from collectable entity
+ * Class for alcoholic drinks. Inherits from collectable entity
+ *
  * @author Lenny
  */
 public class Alcohol extends CollectableEntity {
+    public static final String ASSET_TSING = "Sprites/Tsingtao.png";
+    public static final String ASSET_SMIRN = "Sprites/Smirnoff.png";
+
     /**
      * A constructor for entities that don't have any animations
+     *
      * @param texture Texture: The texture of the entity
      * @param size float: The size of the entity
-     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X, and 1 is Y.
+     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X,
+     *     and 1 is Y.
      */
     public Alcohol(Texture texture, float size, float[] position) {
         super(texture, size, position);
@@ -24,4 +29,6 @@ public class Alcohol extends CollectableEntity {
             player.SwapControls();
         }
     }
+
+    public void logic() {}
 }

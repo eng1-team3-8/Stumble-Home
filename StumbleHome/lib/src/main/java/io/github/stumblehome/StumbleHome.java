@@ -10,30 +10,25 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.stumblehome.Screens.MainMenuScreen;
 
 /**
- * Main game class that initializes core rendering resources and manages screen transitions.
- * Sets up the camera, viewport, and rendering batch used throughout the game.
+ * Main game class that initializes core rendering resources and manages screen transitions. Sets up
+ * the camera, viewport, and rendering batch used throughout the game.
  */
 public class StumbleHome extends Game {
 
-    // Batch used for drawing sprites and textures.
-    public SpriteBatch batch;
-
-    // Font used for rendering text on screen.
-    public BitmapFont font;
-
-    // Camera for rendering the game world.
-    public OrthographicCamera camera;
-
     // Viewport height in world units - zoomed for better visibility of player navigation.
     final float VIEWPORT_HEIGHT = 12;
-
+    // Batch used for drawing sprites and textures.
+    public SpriteBatch batch;
+    // Font used for rendering text on screen.
+    public BitmapFont font;
+    // Camera for rendering the game world.
+    public OrthographicCamera camera;
     // Viewport managing screen-to-world coordinate mapping.
     public Viewport viewport;
 
     /**
-     * Called when the game is first created.
-     * Initializes rendering resources, sets up the camera and viewport,
-     * then transitions to the main menu screen.
+     * Called when the game is first created. Initializes rendering resources, sets up the camera and
+     * viewport, then transitions to the main menu screen.
      */
     @Override
     public void create() {
@@ -53,17 +48,14 @@ public class StumbleHome extends Game {
         this.setScreen(new MainMenuScreen(this));
     }
 
-    /**
-     * Renders the current screen.
-     * Delegates to the active screen's render method.
-     */
+    /** Renders the current screen. Delegates to the active screen's render method. */
     public void render() {
         super.render();
     }
 
     /**
-     * Cleans up resources when the game is closed.
-     * Disposes of the sprite batch and font to prevent memory leaks.
+     * Cleans up resources when the game is closed. Disposes of the sprite batch and font to prevent
+     * memory leaks.
      */
     public void dispose() {
         batch.dispose();

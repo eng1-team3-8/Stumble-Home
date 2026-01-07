@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -15,45 +14,35 @@ import io.github.stumblehome.StumbleHome;
 
 /**
  * The {@code MainMenuScreen} class is the main menu screen for the StumbleHome game.
- * <p>
- * It displays three interactive buttons: <b>Play</b>, <b>Tutorial</b>, and <b>Exit</b>.
- * The screen also supports showing a tutorial image overlay that can be closed by pressing
- * the ESC key or clicking the on screen.
- * </p>
  *
- * <p>This class implements LibGDX {@link Screen} interface, which shows
- * methods for managing a screen in a game.</p>
+ * <p>It displays three interactive buttons: <b>Play</b>, <b>Tutorial</b>, and <b>Exit</b>. The
+ * screen also supports showing a tutorial image overlay that can be closed by pressing the ESC key
+ * or clicking the on screen.
  *
- *
+ * <p>This class implements LibGDX {@link Screen} interface, which shows methods for managing a
+ * screen in a game.
  */
 public class MainMenuScreen extends MenuScreen {
+    TextField playerNameInput;
     // Image displayed when the tutorial is shown.
     private Texture tutorialImage;
-
     // Flag that determines whether the tutorial image is currently displayed.
     private boolean showTutorial = false;
 
-    TextField playerNameInput;
-
     public MainMenuScreen(final StumbleHome game) {
-        this.game = game;
+        super(game, "MainMenu.png");
+        // Textures for the main menu and the tutorial
+        tutorialImage = new Texture("tutorial.png");
     }
 
     /**
      * Called when this screen becomes the current screen for the game.
-     * <p>
-     * Initializes the background, tutorial image, buttons, and input processing.
-     * </p>
+     *
+     * <p>Initializes the background, tutorial image, buttons, and input processing.
      */
     @Override
     public void show() {
-        // Textures for the main menu and the tutorial
-        background = new Texture("MainMenu.png");
-        tutorialImage = new Texture("tutorial.png");
-
-        // Sets up the UI
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
         // create buttons
         TextButton playButton = new TextButton("Play", skin);
@@ -121,10 +110,9 @@ public class MainMenuScreen extends MenuScreen {
                         Gdx.app.exit();
                     }
                 });
-
-        // set stage to receive input
         Gdx.input.setInputProcessor(stage);
     }
+
     /**
      * Called every frame to render the screen.
      *
@@ -138,9 +126,7 @@ public class MainMenuScreen extends MenuScreen {
         render_tutorial();
     }
 
-    /**
-     * renders the tutorial page if it is not active, removes it if esc is pressed
-     */
+    /** renders the tutorial page if it is not active, removes it if esc is pressed */
     private void render_tutorial() {
         if (showTutorial && tutorialImage != null) {
             game.batch.begin();
@@ -172,18 +158,12 @@ public class MainMenuScreen extends MenuScreen {
 
     /**
      * Called when this screen is no longer the current screen for the game.
-     * <p>Removes the input processor to prevent input handling when inactive.</p>
+     *
+     * <p>Removes the input processor to prevent input handling when inactive.
      */
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        game.viewport.update(width, height);
-        // Resizes button hit zones (and more)
-        this.show();
     }
 
     @Override

@@ -1,31 +1,34 @@
-package io.github.stumblehome;
+package io.github.stumblehome.Entities;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * This is a class that creates entities that can be collected
+ *
  * @author Lenny, Isaac
  */
 public abstract class CollectableEntity extends NonPlayerEntity {
 
     // Boolean value to see if the entity is colliding with the player
-    boolean isColliding = false;
+    private boolean isColliding = false;
 
     // Boolean value to see if the entity has been collected
-    boolean isCollected = false;
+    public boolean isCollected = false;
 
     // Boolean value to see if the event caused by the collision has been triggered yet
-    boolean isTriggered = false;
+    public boolean isTriggered = false;
 
     /**
      * A constructor for entities that have animations
+     *
      * @param texture Texture: The texture of the entity
      * @param size float: The size of the entity
-     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X, and 1 is Y.
+     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X,
+     *     and 1 is Y.
      * @param frame_width integer: The frame width of the animation
      * @param frame_height integer: The frame height of the animation
      * @param num_animations integer: The number of animations
@@ -42,18 +45,20 @@ public abstract class CollectableEntity extends NonPlayerEntity {
 
     /**
      * A constructor for entities that don't have any animations
+     *
      * @param texture Texture: The texture of the entity
      * @param size float: The size of the entity
-     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X, and 1 is Y.
+     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X,
+     *     and 1 is Y.
      */
     public CollectableEntity(Texture texture, float size, float[] position) {
         super(texture, size, position);
     }
 
     /**
-     * This method checks if the player is within a certain distance of the centre of the entity.
-     * If so, it updates the isColliding parameter.
-     * It works by using pythagoras' theorem to calculate the straight line distance between the player and the entity
+     * This method checks if the player is within a certain distance of the centre of the entity. If
+     * so, it updates the isColliding parameter. It works by using pythagoras' theorem to calculate
+     * the straight line distance between the player and the entity
      *
      * @param playerX float: the x coordinate of the player
      * @param playerY float: the y coordinate of the player
@@ -80,14 +85,13 @@ public abstract class CollectableEntity extends NonPlayerEntity {
 
     /**
      * Draws the entity, if it hasn't been collected yet
+     *
      * @param batch SpriteBatch: The spritebatch that will be drawn on
      */
-    public void drawEntity(SpriteBatch batch) {
+    @Override
+    public void draw(Batch batch) {
         if (!this.isCollected) {
-            this.draw(batch);
+            super.draw(batch);
         }
     }
-
-    @Override
-    public void logic() {}
 }
