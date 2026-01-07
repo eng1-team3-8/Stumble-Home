@@ -14,7 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.stumblehome.BossFight.BossFightLogic;
 import io.github.stumblehome.BossFight.BossFightStatesManager;
+import io.github.stumblehome.BossFight.Scissors;
 import io.github.stumblehome.Entities.BossFightEntity;
 import io.github.stumblehome.StumbleHome;
 
@@ -58,12 +60,15 @@ public class BossScreen implements Screen {
     private FitViewport viewport;
 
     // Entities
-    private BossFightEntity Scissors;
+    private Scissors scissors;
     private BossFightEntity Cable;
 
     // Game state manager
     private BossFightStatesManager statesFSA;
     private boolean stateChanged = false;
+
+    // Logic handler
+    private BossFightLogic logicHandler;
 
     public BossScreen(final StumbleHome game, final String playerName) {
         this.game = game;
@@ -79,6 +84,9 @@ public class BossScreen implements Screen {
         // Create the state manager
         this.statesFSA = new BossFightStatesManager();
 
+        // Create the logic handler
+        this.logicHandler = new BossFightLogic();
+
         // Creates the stage
         this.optionsStage = new Stage(viewport);
         this.infoStage = new Stage(viewport);
@@ -90,9 +98,9 @@ public class BossScreen implements Screen {
         this.font.setColor(Color.BLUE);
 
         // Create the BossFightEntities
-        this.Scissors =
-                new BossFightEntity(
-                        new Texture("Sprites/BossFight/Scissors.png"), 1f, new float[] {2, 2});
+        this.scissors =
+                new Scissors(
+                        new Texture("Sprites/BossFight/Scissors.png"), 100f, new float[] {105, 2});
 
         this.Cable =
                 new BossFightEntity(
@@ -205,6 +213,10 @@ public class BossScreen implements Screen {
                         0,
                         viewport.getWorldWidth() / 2,
                         viewport.getWorldHeight() / 2);
+
+                this.logicHandler.moveScissors(viewport, batch, scissors);
+                //                scissors.move(viewport);
+                //                scissors.draw(batch);
 
                 Gdx.input.setInputProcessor(this.attackStage);
 
