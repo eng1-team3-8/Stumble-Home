@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import io.github.stumblehome.BossFight.BossFightStates;
 import io.github.stumblehome.BossFight.BossFightStatesManager;
 import io.github.stumblehome.Entities.BossFightEntity;
 import io.github.stumblehome.StumbleHome;
@@ -30,9 +30,9 @@ public class BossScreen implements Screen {
     // Mike
     private Texture Mike;
     // Menu Background
-    private Texture MenuBackground;
+    private final Texture MenuBackground;
     // Switch
-    private Texture Switch;
+    private final Texture Switch;
     // Cables
     private Texture BrokenCable;
     // Packets
@@ -43,9 +43,16 @@ public class BossScreen implements Screen {
 
     // Sprite batch
     private SpriteBatch batch;
+    private SpriteBatch background;
 
     // Stage
-    private Stage stage;
+    private Stage optionsStage;
+    private Stage infoStage;
+    private Stage attackStage;
+    private Stage winStage;
+
+    // Text for info
+    private BitmapFont font;
 
     // Viewport
     private FitViewport viewport;
@@ -56,12 +63,14 @@ public class BossScreen implements Screen {
 
     // Game state manager
     private BossFightStatesManager statesFSA;
+    private boolean stateChanged = false;
 
     public BossScreen(final StumbleHome game, final String playerName) {
         this.game = game;
         this.playerName = playerName;
 
         this.batch = new SpriteBatch();
+        this.background = new SpriteBatch();
 
         // Create the viewport
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -69,6 +78,16 @@ public class BossScreen implements Screen {
 
         // Create the state manager
         this.statesFSA = new BossFightStatesManager();
+
+        // Creates the stage
+        this.optionsStage = new Stage(viewport);
+        this.infoStage = new Stage(viewport);
+        this.attackStage = new Stage(viewport);
+        this.winStage = new Stage(viewport);
+
+        // Creates the text
+        this.font = new BitmapFont();
+        this.font.setColor(Color.BLUE);
 
         // Create the BossFightEntities
         this.Scissors =
@@ -88,52 +107,70 @@ public class BossScreen implements Screen {
         // Music
         this.BossMusic = Gdx.audio.newMusic(Gdx.files.internal("Sprites/BossFight/Boss-Music.mp3"));
         this.BossMusic.setLooping(true);
-        this.BossMusic.play();
+        //        this.BossMusic.play(); // Uncomment when you want music
     }
 
     @Override
     public void show() {
-        if (this.statesFSA.returnState() == BossFightStates.OPTIONS) {
-            this.stage = new Stage();
 
-            Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+        Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-            // Create Buttons
-            TextButton attackButton = new TextButton("ATTACK", skin);
-            TextButton infoButton = new TextButton("INFO", skin);
+        // Options stage
+        // Create Buttons
+        TextButton attackButton = new TextButton("ATTACK", skin);
+        TextButton infoButton = new TextButton("INFO", skin);
 
-            // Set button positions
-            float startX = viewport.getWorldWidth() / 5;
-            float Y = viewport.getWorldHeight() / 5;
+        // Set button positions
+        float startX = viewport.getWorldWidth() / 5;
+        float Y = viewport.getWorldHeight() / 5;
 
-            attackButton.setBounds(startX, Y, 200, 50);
-            infoButton.setBounds(startX * 3, Y, 200, 50);
+        attackButton.setBounds(startX, Y, 200, 50);
+        infoButton.setBounds(startX * 3, Y, 200, 50);
 
-            // Draw Buttons
-            this.stage.addActor(attackButton);
-            this.stage.addActor(infoButton);
+        // Draw Buttons
+        this.optionsStage.addActor(attackButton);
+        this.optionsStage.addActor(infoButton);
 
-            // Button listeners
-            // Changes the state from options to attack
-            attackButton.addListener(
-                    new ClickListener() {
-                        @Override
-                        public void clicked(InputEvent event, float x, float y) {
-                            statesFSA.moveStates(1);
-                        }
-                    });
+        // Button listeners
+        // Changes the state from options to attack
+        attackButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        statesFSA.moveStates(1);
+                    }
+                });
 
-            // Changes the state from options to info
-            infoButton.addListener(
-                    new ClickListener() {
-                        @Override
-                        public void clicked(InputEvent event, float x, float y) {
-                            statesFSA.moveStates(-1);
-                        }
-                    });
+        // Changes the state from options to info
+        infoButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        statesFSA.moveStates(-1);
+                    }
+                });
 
-            Gdx.input.setInputProcessor(this.stage);
-        }
+        // Info stage
+        // Create the back button
+        TextButton backButton = new TextButton("BACK", skin);
+
+        // Set button position and scale
+        float X = (viewport.getWorldWidth() / 5) * 3;
+        Y = viewport.getWorldHeight() / 5;
+
+        backButton.setBounds(X, Y, 200, 50);
+
+        // Draw the button
+        this.infoStage.addActor(backButton);
+
+        // Button listener
+        backButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        statesFSA.moveStates(1);
+                    }
+                });
     }
 
     @Override
@@ -141,21 +178,44 @@ public class BossScreen implements Screen {
         // Make the Screen grey
         ScreenUtils.clear(Color.GRAY);
 
-        // Only draw menu if we are in the select state
-        if (this.statesFSA.returnState() == BossFightStates.OPTIONS) {
-            // Draw the elements
-            this.batch.begin();
-            this.batch.draw(
-                    MenuBackground,
-                    0,
-                    0,
-                    viewport.getWorldWidth(),
-                    (viewport.getWorldHeight() / 5) * 2);
-            this.batch.end();
+        // Draw the elements
+        this.batch.begin();
+        this.batch.draw(
+                MenuBackground, 0, 0, viewport.getWorldWidth(), (viewport.getWorldHeight()));
 
-            // Draw the stage
-            this.stage.draw();
+        switch (this.statesFSA.returnState()) {
+            case OPTIONS:
+                // Draw the stage and the buttons
+                this.optionsStage.draw();
+                Gdx.input.setInputProcessor(this.optionsStage);
+                break;
+            case INFO:
+                this.font.draw(batch, "Dr Mike J Freeman - the legendary lecturer", 100, 100);
+
+                this.infoStage.draw();
+                Gdx.input.setInputProcessor(this.infoStage);
+
+                break;
+            case ATTACK:
+
+                // Draw the switch
+                this.batch.draw(
+                        Switch,
+                        viewport.getWorldWidth() / 4,
+                        0,
+                        viewport.getWorldWidth() / 2,
+                        viewport.getWorldHeight() / 2);
+
+                Gdx.input.setInputProcessor(this.attackStage);
+
+                break;
+            case WIN:
+                Gdx.input.setInputProcessor(this.winStage);
+
+                break;
         }
+
+        this.batch.end();
     }
 
     @Override
