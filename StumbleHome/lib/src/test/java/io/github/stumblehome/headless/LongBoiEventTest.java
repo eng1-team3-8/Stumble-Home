@@ -173,8 +173,10 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testMultipleLongBoisIndependent() {
-        LongBoiEvent l1 = new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
-        LongBoiEvent l2 = new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
+        LongBoiEvent l1 =
+                new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
+        LongBoiEvent l2 =
+                new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
         l1.longX = 0.0f;
         l1.longY = 0.0f;
         l2.longX = 20.0f;
@@ -232,8 +234,10 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testMultipleLongBoisGameplay() {
-        LongBoiEvent l1 = new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
-        LongBoiEvent l2 = new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
+        LongBoiEvent l1 =
+                new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
+        LongBoiEvent l2 =
+                new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
         l1.longX = 0.0f;
         l1.longY = 0.0f;
         l2.longX = 10.0f;
