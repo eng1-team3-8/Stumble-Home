@@ -266,6 +266,24 @@ public class BottleEventTest extends AbstractHeadlessGdxTest {
     }
 
     @Test
+    public void testAnimationFrameProgression() {
+        bottle.bottleX = 5.0f;
+        bottle.bottleY = 5.0f;
+
+        for (int i = 0; i < 20; i++) {
+            bottle.logic();
+            assertNotNull(bottle.bottleSheet);
+        }
+
+        bottle.checkCollision(5.75f, 5.75f);
+        for (int i = 0; i < 10; i++) {
+            bottle.logic();
+        }
+
+        assertNotNull(bottle.bottleSheet);
+    }
+
+    @Test
     public void testCollisionWithDifferentApproaches() {
         bottle.bottleX = 0.0f;
         bottle.bottleY = 0.0f;
@@ -287,14 +305,19 @@ public class BottleEventTest extends AbstractHeadlessGdxTest {
     }
 
     @Test
-    public void testComplexCollisionBoundaries() {
-        bottle.bottleX = 0.0f;
-        bottle.bottleY = 0.0f;
+    public void testAnimationContinuityAcrossFrames() {
+        bottle.bottleX = 10.0f;
+        bottle.bottleY = 10.0f;
 
-        boolean centerCollision = bottle.checkCollision(0.75f, 0.75f);
-        boolean farCollision = bottle.checkCollision(2.0f, 0.75f);
+        for (int i = 0; i < 30; i++) {
+            bottle.logic();
+        }
 
-        assertTrue(centerCollision);
-        assertFalse(farCollision);
+        boolean collision = bottle.checkCollision(10.75f, 10.75f);
+        assertTrue(collision);
+
+        bottle.logic();
+        boolean secondAttempt = bottle.checkCollision(10.75f, 10.75f);
+        assertFalse(secondAttempt);
     }
 }
