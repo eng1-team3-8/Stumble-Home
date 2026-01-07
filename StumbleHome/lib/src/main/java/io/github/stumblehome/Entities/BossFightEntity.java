@@ -34,7 +34,7 @@ public class BossFightEntity extends NonPlayerEntity {
                         pow(other.getCentreX() - this.getCentreX(), 2)
                                 + pow(other.getCentreY() - this.getCentreY(), 2));
 
-        return distance < 1f;
+        return distance < 30f;
     }
 
     public void updatePosition() {
