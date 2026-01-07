@@ -17,10 +17,12 @@ public class BossFightLogic {
         this.cutCable = cutCable;
     }
 
-    private void checkIfStopped(BossFightEntity[] cables, Scissors scissors) {
+    private void checkIfStopped(
+            BossFightEntity[] cables, Scissors scissors, BossFightStatesManager statesFSA)
+            throws InterruptedException {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !isStopped) {
             isStopped = true;
-            this.checkOverlap(cables, scissors);
+            this.checkOverlap(cables, scissors, statesFSA);
         }
 
         // Below is code for testing
@@ -30,8 +32,13 @@ public class BossFightLogic {
     }
 
     public void moveScissors(
-            Viewport viewport, SpriteBatch batch, Scissors scissors, BossFightEntity[] cables) {
-        this.checkIfStopped(cables, scissors);
+            Viewport viewport,
+            SpriteBatch batch,
+            Scissors scissors,
+            BossFightEntity[] cables,
+            BossFightStatesManager statesFSA)
+            throws InterruptedException {
+        this.checkIfStopped(cables, scissors, statesFSA);
         if (!isStopped) {
             scissors.move(viewport);
         }
@@ -45,21 +52,27 @@ public class BossFightLogic {
         }
     }
 
-    public void checkOverlap(BossFightEntity[] cables, Scissors scissors) {
+    public void checkOverlap(
+            BossFightEntity[] cables, Scissors scissors, BossFightStatesManager statesFSA)
+            throws InterruptedException {
         System.out.println("Overlap is being checked");
         for (int i = 0; i < cables.length; i++) {
             System.out.println("Cable: " + i);
             if (scissors.overlaps(cables[i])) {
                 System.out.println("Overlaps!");
                 if (this.cableStatus[i]) {
-                    this.cableStatus[i] = false;
-                    updateSprite(cables[i]);
+                    updateSprite(cables[i], statesFSA, i);
                 }
             }
         }
     }
 
-    private void updateSprite(BossFightEntity cable) {
+    private void updateSprite(BossFightEntity cable, BossFightStatesManager statesFSA, int cableNo)
+            throws InterruptedException {
+        this.cableStatus[cableNo] = false;
         cable.setTexture(this.cutCable);
+        Thread.sleep(500);
+        this.isStopped = false;
+        statesFSA.moveStates(-1);
     }
 }
