@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 public class Chainsaw extends CollectableEntity {
+    public static final String ASSET = "Sprites/Chainsaw.png";
+
     /**
      * calling constructor of superclass
      */

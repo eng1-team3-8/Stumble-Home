@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
  * @author Lenny
  */
 public class Twig extends CollectableEntity {
+    public static final String ASSET = "Sprites/Stick.png";
 
     /**
      * A constructor for entities that don't have any animations

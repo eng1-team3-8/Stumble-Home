@@ -12,6 +12,7 @@ import io.github.stumblehome.Entities.Player;
 import org.junit.jupiter.api.Test;
 
 public class PlayerTest extends AbstractHeadlessGdxTest {
+    public static final String ASSET = "character.png";
 
     @Test
     public void testCollisionWithMazeWall() {
