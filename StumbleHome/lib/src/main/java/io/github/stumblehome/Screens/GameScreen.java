@@ -167,9 +167,7 @@ public class GameScreen implements Screen {
 
         // events
         // Bottle event (not reimplemented yet)
-        bottle = new BottleEvent(new Sprite(new Texture("waterBottle.png")));
-        bottle.bottleX = mapWidth - 3 - bottle.bottleSize / 2;
-        bottle.bottleY = mapHeight - 23 - bottle.bottleSize / 2;
+        bottle = new BottleEvent(new Texture("waterBottle.png"), 1f, new float[] {58f, 42f});
 
         // LongBoi event
         longBoi = new LongBoiEvent(new Sprite(new Texture("longBoi.png")), collisionLayer);
@@ -177,9 +175,7 @@ public class GameScreen implements Screen {
         longBoi.longY = mapHeight - 38 - longBoi.longSize / 2;
 
         // Keycard event (not reimplemented yet)
-        keycard = new KeycardEvent(new Sprite(new Texture("keyCard.png")));
-        keycard.keycardX = mapWidth - 57 - keycard.keycardSize / 2;
-        keycard.keycardY = mapHeight - 5 - keycard.keycardSize / 2;
+        keycard = new KeycardEvent(new Texture("keyCard.png"), 1f, new float[] {56f, 42f});
 
         // Twig event
         twig = new Twig(new Texture("Sprites/Stick.png"), 1f, new float[] {51f, 19f});
@@ -315,7 +311,7 @@ public class GameScreen implements Screen {
         float playerCentreY = player.playerY + player.playerSize / 2;
 
         // Check collision between player and water bottle
-        if (bottle.checkCollision(playerCentreX, playerCentreY)) {
+        if (bottle.checkColliding(playerCentreX, playerCentreY)) {
             // Player collected the water bottle - becomes sober
             if (player.isDrunk) {
                 player.SwapControls();
@@ -328,7 +324,7 @@ public class GameScreen implements Screen {
         }
 
         // check collision with keycard
-        if (keycard.checkCollision(playerCentreX, playerCentreY)) {
+        if (keycard.checkColliding(playerCentreX, playerCentreY)) {
             hasKeycard = true;
             hinderingEventCounter++;
             msg.set_time(Messages.PICKUPKEYCARD, 3f);
@@ -527,9 +523,9 @@ public class GameScreen implements Screen {
         player.draw(game.batch);
 
         // draw events
-        bottle.draw(game.batch);
+        bottle.drawEntity(game.batch);
         longBoi.draw(game.batch);
-        keycard.draw(game.batch);
+        keycard.drawEntity(game.batch);
         twig.drawEntity(game.batch);
         beer.drawEntity(game.batch);
         vodka.drawEntity(game.batch);

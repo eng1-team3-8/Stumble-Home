@@ -31,7 +31,6 @@ public abstract class NonPlayerEntity extends Entity {
             int frame_height,
             int num_animations) {
         super(texture, size, position);
-
         initialiseAnimations(frame_width, frame_height, num_animations);
     }
 
@@ -49,16 +48,18 @@ public abstract class NonPlayerEntity extends Entity {
 
     private void initialiseAnimations(int frame_width, int frame_height, int num_animations) {
         TextureRegion[] texture_frames = new TextureRegion[num_animations];
-        for (int frame = 0; frame < num_animations; frame++) {
+        for (int frame = 0; frame < num_animations; ) {
             for (int side_frame = 0; side_frame < 2; side_frame++) {
-                texture_frames[frame] =
-                        new TextureRegion(
-                                getTexture(),
-                                frame_width * side_frame,
-                                frame_height * (int) (frame / 2),
-                                frame_width,
-                                frame_height);
-                frame++;
+                if (frame < num_animations) {
+                    texture_frames[frame] =
+                            new TextureRegion(
+                                    getTexture(),
+                                    frame_width * side_frame,
+                                    frame_height * (int) (frame / 2),
+                                    frame_width,
+                                    frame_height);
+                    frame++;
+                }
             }
         }
         current_animation = new Animation<>(0.3f, texture_frames);
