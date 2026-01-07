@@ -12,6 +12,7 @@ public class BossFightLogic {
     private boolean isStopped = false;
     private boolean[] cableStatus = {true, true, true, true};
     private final Texture cutCable;
+    private boolean finalStage = false;
 
     public BossFightLogic(Texture cutCable) {
         this.cutCable = cutCable;
@@ -62,6 +63,7 @@ public class BossFightLogic {
                 System.out.println("Overlaps!");
                 if (this.cableStatus[i]) {
                     updateSprite(cables[i], statesFSA, i);
+                    scissors.setX(105f);
                 }
             }
         }
@@ -73,6 +75,20 @@ public class BossFightLogic {
         cable.setTexture(this.cutCable);
         Thread.sleep(500);
         this.isStopped = false;
+        this.checkIfAllWiresCut();
         statesFSA.moveStates(-1);
+    }
+
+    private void checkIfAllWiresCut() {
+        for (int i = 0; i < cableStatus.length; i++) {
+            if (cableStatus[i]) {
+                return;
+            }
+        }
+        this.finalStage = true;
+    }
+
+    public boolean isFinalStage() {
+        return this.finalStage;
     }
 }
