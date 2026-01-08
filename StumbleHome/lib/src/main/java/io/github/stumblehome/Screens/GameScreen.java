@@ -444,7 +444,10 @@ public class GameScreen implements Screen {
         // Check if Bob has been squished
         if (bob.checkColliding(playerCentreX, playerCentreY)) {
             hiddenEventCounter++;
-            music.pause();
+
+            if (musicToggle) {
+                music.pause();
+            }
             game.setScreen(new BossScreen(game, this, musicToggle, volume));
 
             setAchievementText("Someone didn't like SYS1...");
@@ -652,7 +655,10 @@ public class GameScreen implements Screen {
         stage.dispose();
         achievementBox.getContentTable().clearChildren();
         achievementBox.remove();
-        music.dispose();
+
+        if (musicToggle) {
+            music.dispose();
+        }
     }
 
     private void saveLeaderBoardScore(int score) {

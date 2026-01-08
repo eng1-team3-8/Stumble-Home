@@ -507,6 +507,8 @@ public class BossScreen implements Screen {
         this.winStage.dispose();
 
         // Dispose the music
-        this.BossMusic.dispose();
+        if (musicToggle) {
+            this.BossMusic.dispose();
+        }
     }
 }
