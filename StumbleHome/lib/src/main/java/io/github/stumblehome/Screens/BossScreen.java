@@ -83,11 +83,21 @@ public class BossScreen implements Screen {
     // The game screen
     private final GameScreen gameScreen;
 
+    // Music control
+    final boolean musicToggle;
+    private float volume;
+
     public BossScreen(
-            final StumbleHome game, final String playerName, final GameScreen gameScreen) {
+            final StumbleHome game,
+            final String playerName,
+            final GameScreen gameScreen,
+            final boolean musicToggle,
+            float volume) {
         this.game = game;
         this.playerName = playerName;
         this.gameScreen = gameScreen;
+        this.musicToggle = musicToggle;
+        this.volume = volume;
 
         this.batch = new SpriteBatch();
         this.background = new SpriteBatch();
@@ -137,10 +147,14 @@ public class BossScreen implements Screen {
         this.BrokenCable = new Texture("Sprites/BossFight/Cable-Cut.png");
         this.PacketUDP = new Texture("Sprites/BossFight/UDP-Packet.png");
 
-        // Music
-        this.BossMusic = Gdx.audio.newMusic(Gdx.files.internal("Sprites/BossFight/Boss-Music.mp3"));
-        this.BossMusic.setLooping(true);
-        //        this.BossMusic.play(); // Uncomment when you want music
+        // Plays music if enabled
+        if (musicToggle) {
+            this.BossMusic =
+                    Gdx.audio.newMusic(Gdx.files.internal("Sprites/BossFight/Boss-Music.mp3"));
+            this.BossMusic.setLooping(true);
+            this.BossMusic.setVolume(volume);
+            this.BossMusic.play();
+        }
 
         // Create the logic handler
         this.logicHandler = new BossFightLogic(this.BrokenCable, this.statesFSA);
@@ -385,5 +399,7 @@ public class BossScreen implements Screen {
     public void hide() {}
 
     @Override
-    public void dispose() {}
+    public void dispose() {
+        this.BossMusic.dispose();
+    }
 }
