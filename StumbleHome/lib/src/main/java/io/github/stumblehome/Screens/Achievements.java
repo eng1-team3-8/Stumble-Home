@@ -14,16 +14,25 @@ import java.util.Map;
 
 public class Achievements extends MenuScreen {
     private ScrollPane scrollPane;
+
+    // Map containing achievements completed
     private Map<String, Boolean> achievementData;
+
+    // Contains all achievements in the game
     private String[] achievements;
+    // Used to select mode (last player's achievement status or list)
     private boolean playerAchievements;
 
+    // Used to display player achievement status
+    // Used on win screen
     public Achievements(StumbleHome game, Map<String, Boolean> achievementData) {
         super(game);
         this.achievementData = achievementData;
         playerAchievements = true;
     }
 
+    // Used to instantiate list of achievements
+    // Used on main menu
     public Achievements(StumbleHome game) {
         super(game);
         playerAchievements = false;
@@ -90,6 +99,7 @@ public class Achievements extends MenuScreen {
     }
 
     public Table achievementSetup() {
+        // Adds all achievements
         achievements =
                 new String[] {
                     "Glad that wasn't Vodka!",
@@ -113,6 +123,7 @@ public class Achievements extends MenuScreen {
         leaderboard.add(tempRow).pad(15);
         leaderboard.row();
 
+        // Displays correct type of achievement board
         if (playerAchievements) {
             for (String achievement : achievements) {
                 if (achievementData.containsKey(achievement)) {
