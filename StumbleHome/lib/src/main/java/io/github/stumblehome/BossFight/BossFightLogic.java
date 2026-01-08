@@ -13,6 +13,8 @@ public class BossFightLogic {
     private boolean[] cableStatus = {true, true, true, true};
     private final Texture cutCable;
     private boolean finalStage = false;
+    private int playerHealth = 100;
+    private int mikeHealth = 100;
 
     public BossFightLogic(Texture cutCable) {
         this.cutCable = cutCable;
@@ -23,13 +25,17 @@ public class BossFightLogic {
             throws InterruptedException {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !isStopped) {
             isStopped = true;
+            System.out.println("It is being checked");
             this.checkOverlap(cables, scissors, statesFSA);
+            this.isStopped = false;
+            statesFSA.moveStates(-1);
+            scissors.setX(105f);
         }
 
         // Below is code for testing
-        //        else if  (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && isStopped) {
-        //          isStopped = false;
-        //        }
+        //                else if  (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && isStopped) {
+        //                  isStopped = false;
+        //                }
     }
 
     public void moveScissors(
@@ -50,6 +56,7 @@ public class BossFightLogic {
     public void drawCables(BossFightEntity[] cables, SpriteBatch batch) {
         for (int i = 0; i < cables.length; i++) {
             cables[i].draw(batch);
+            //            System.out.println("Cable " + i + "X coordinate = " + cables[i].getX());
         }
     }
 
@@ -63,7 +70,6 @@ public class BossFightLogic {
                 System.out.println("Overlaps!");
                 if (this.cableStatus[i]) {
                     updateSprite(cables[i], statesFSA, i);
-                    scissors.setX(105f);
                 }
             }
         }
@@ -74,9 +80,9 @@ public class BossFightLogic {
         this.cableStatus[cableNo] = false;
         cable.setTexture(this.cutCable);
         Thread.sleep(500);
-        this.isStopped = false;
+        //        this.isStopped = false;
         this.checkIfAllWiresCut();
-        statesFSA.moveStates(-1);
+        //        statesFSA.moveStates(-1);
     }
 
     private void checkIfAllWiresCut() {
@@ -90,5 +96,20 @@ public class BossFightLogic {
 
     public boolean isFinalStage() {
         return this.finalStage;
+    }
+
+    public void attackMike() {
+        double damage = Math.random();
+        damage = damage * 40;
+
+        this.mikeHealth -= (int) damage;
+    }
+
+    public int getMikeHealth() {
+        return this.mikeHealth;
+    }
+
+    public int getPlayerHealth() {
+        return this.playerHealth;
     }
 }
