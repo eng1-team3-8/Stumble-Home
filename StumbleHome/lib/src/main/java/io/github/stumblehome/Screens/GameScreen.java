@@ -30,6 +30,7 @@ import io.github.stumblehome.Entities.Rose;
 import io.github.stumblehome.Entities.Twig;
 import io.github.stumblehome.Messages.MessageHandler;
 import io.github.stumblehome.Messages.Messages;
+import java.util.HashMap;
 
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
@@ -117,6 +118,9 @@ public class GameScreen implements Screen {
     private boolean eventTriggered = true;
     private float oldWidth = 0;
     private float dialogScaleFactor = 0;
+
+    // Achievement Tracker
+    HashMap<String, Boolean> achievementData = new HashMap<>();
 
     /**
      * Constructs the {@code GameScreen} and initializes the map, player, camera, and in-game events.
@@ -479,7 +483,7 @@ public class GameScreen implements Screen {
             saveLeaderBoardScore(score);
 
             reachedFinish = true;
-            game.setScreen(new WinScreen(game, remainingTime, score));
+            game.setScreen(new WinScreen(game, remainingTime, score, achievementData));
             dispose();
         }
 
@@ -638,5 +642,7 @@ public class GameScreen implements Screen {
         eventTriggered = true;
         achievementBox.getContentTable().clearChildren();
         achievementBox.text(text);
+
+        achievementData.put(text, true);
     }
 }
