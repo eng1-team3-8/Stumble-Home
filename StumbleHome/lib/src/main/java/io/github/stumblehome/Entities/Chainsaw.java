@@ -21,20 +21,20 @@ public class Chainsaw extends CollectableEntity {
         int[] target_cells = {0, 0};
         switch (direction) {
             case UP:
-                target_cells[0] = (int) player.playerX;
-                target_cells[1] = (int) player.playerY + 1;
+                target_cells[0] = (int) player.getX();
+                target_cells[1] = (int) player.getY() + 1;
                 break;
             case DOWN:
-                target_cells[0] = (int) player.playerX;
-                target_cells[1] = (int) player.playerY;
+                target_cells[0] = (int) player.getX();
+                target_cells[1] = (int) player.getY();
                 break;
             case RIGHT:
-                target_cells[0] = (int) player.playerX + 1;
-                target_cells[1] = (int) player.playerY;
+                target_cells[0] = (int) player.getX() + 1;
+                target_cells[1] = (int) player.getY();
                 break;
             case LEFT:
-                target_cells[0] = (int) player.playerX - 1;
-                target_cells[1] = (int) player.playerY;
+                target_cells[0] = (int) player.getX() - 1;
+                target_cells[1] = (int) player.getY();
                 break;
         }
         if (removable_walls.getCell(target_cells[0], target_cells[1]) == null) {
