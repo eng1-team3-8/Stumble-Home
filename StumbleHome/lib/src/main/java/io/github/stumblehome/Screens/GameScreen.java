@@ -235,7 +235,7 @@ public class GameScreen implements Screen {
         // Achievements Popup
         stage = new Stage(new ScreenViewport());
         Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-        
+
         achievementBox = new Dialog("Achievement", skin);
         achievementBox.getTitleTable().padBottom(15f);
         achievementBox.setColor(Color.LIME);
@@ -294,9 +294,10 @@ public class GameScreen implements Screen {
             mod = -1f;
         }
         // Sets achievement box to bottom right
-        float w = Gdx.graphics.getWidth() - (achievementBox.getWidth() * (dialogScaleFactor * mod + 0.25f));
+        float w =
+                Gdx.graphics.getWidth()
+                        - (achievementBox.getWidth() * (dialogScaleFactor * mod + 0.25f));
         achievementBox.setPosition(w, 0);
-        System.out.println((achievementBox.getWidth() * (dialogScaleFactor* mod + 0.25f)));
         // Pads text to avoid truncation
         achievementBox.getContentTable().padLeft(4f);
         achievementBox.getContentTable().padRight(4f);
@@ -596,8 +597,8 @@ public class GameScreen implements Screen {
 
         // Scales achievement box to new screen size
         float temp = dialogScaleFactor;
-        dialogScaleFactor = (width/oldWidth);
-        if (temp > dialogScaleFactor){
+        dialogScaleFactor = (width / oldWidth);
+        if (temp > dialogScaleFactor) {
             dialogScaleFactor = -dialogScaleFactor;
         }
         achievementBox.scaleBy(dialogScaleFactor - 1);
