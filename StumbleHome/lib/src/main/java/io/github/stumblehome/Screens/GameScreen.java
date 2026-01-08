@@ -445,7 +445,7 @@ public class GameScreen implements Screen {
         if (bob.checkColliding(playerCentreX, playerCentreY)) {
             hiddenEventCounter++;
             music.pause();
-            game.setScreen(new BossScreen(game, this.playerName, this, musicToggle, volume));
+            game.setScreen(new BossScreen(game, this, musicToggle, volume));
 
             setAchievementText("Someone didn't like SYS1...");
         }
