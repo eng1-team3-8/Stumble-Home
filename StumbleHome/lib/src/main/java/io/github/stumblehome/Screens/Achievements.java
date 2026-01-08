@@ -123,6 +123,11 @@ public class Achievements extends MenuScreen {
         leaderboard.add(tempRow).pad(15);
         leaderboard.row();
 
+        tempRow = new Label("Press ESC to exit", skin);
+        tempRow.setFontScale(1f);
+        leaderboard.add(tempRow).pad(5);
+        leaderboard.row();
+
         // Displays correct type of achievement board
         if (playerAchievements) {
             for (String achievement : achievements) {

@@ -90,11 +90,15 @@ public class Leaderboard extends MenuScreen {
         leaderboard.add(tempRow).pad(15);
         leaderboard.row();
 
+        tempRow = new Label("Press ESC to exit", skin);
+        leaderboard.add(tempRow).pad(15);
+        leaderboard.row();
+
         // Adds error message if leaderboard doesn't exist
         if (boardData.equals("Complete Game To Set Score")) {
             tempRow = new Label(boardData, skin);
             tempRow.setFontScale(3f);
-            leaderboard.add(tempRow).pad(15);
+            leaderboard.add(tempRow).pad(5);
             leaderboard.row();
         }
 
