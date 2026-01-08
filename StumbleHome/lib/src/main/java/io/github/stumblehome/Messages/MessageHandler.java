@@ -45,7 +45,11 @@ public class MessageHandler {
      */
     public boolean addMessage(Messages mssg, String message_text, Color colour, float size) {
         if (messages.containsKey(mssg)) {
-            messages.put(mssg, new MessageID(message_text, colour, size));
+            try {
+                messages.put(mssg, new MessageID(message_text, colour, size));
+            } catch (IllegalArgumentException exception) {
+                return false;
+            }
             return true;
         }
         return false;
@@ -64,8 +68,8 @@ public class MessageHandler {
         }
         for (Messages msg : iterate_queue) {
             counter++;
-            shift_time(msg, -Gdx.graphics.getDeltaTime());
-            if (messages.get(msg).time_left == 0) {
+            shiftTime(msg, -Gdx.graphics.getDeltaTime());
+            if (messages.get(msg).getTime() == 0) {
                 shown_queue.remove(msg);
             } else {
                 drawCenteredText(messages.get(msg), counter);
@@ -92,14 +96,18 @@ public class MessageHandler {
      * @param msg key of the message being referenced
      * @param new_time the new time that the message will be shown for, overrides previous time
      */
-    public void set_time(Messages msg, float new_time) {
+    public boolean setTime(Messages msg, float new_time) {
+        if (messages.get(msg) == null) {
+            return false;
+        }
         if (new_time < 0) {
             new_time = 0;
         }
-        if (new_time > 0 && messages.get(msg).time_left == 0) {
+        if (new_time > 0 && messages.get(msg).getTime() == 0) {
             shown_queue.add(msg);
         }
-        messages.get(msg).time_left = new_time;
+        messages.get(msg).setTime(new_time);
+        return true;
     }
 
     /**
@@ -109,8 +117,8 @@ public class MessageHandler {
      * @param time_difference the amount by which the time remaining is changed by, the new time is
      *     the old time + the time_difference
      */
-    public void shift_time(Messages msg, float time_difference) {
-        set_time(msg, messages.get(msg).time_left + time_difference);
+    public void shiftTime(Messages msg, float time_difference) {
+        setTime(msg, messages.get(msg).getTime() + time_difference);
     }
 
     /**
@@ -128,10 +136,10 @@ public class MessageHandler {
                         .setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         game.batch.begin();
-        game.font.getData().setScale(mssg_id.size);
-        game.font.setColor(mssg_id.colour);
+        game.font.getData().setScale(mssg_id.getSize());
+        game.font.setColor(mssg_id.getColour());
 
-        GlyphLayout layout = new GlyphLayout(game.font, mssg_id.message);
+        GlyphLayout layout = new GlyphLayout(game.font, mssg_id.getMessage());
         float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
         float y = (Gdx.graphics.getHeight() - layout.height * message_priority);
         game.font.draw(game.batch, layout, x, y);

@@ -3,9 +3,7 @@ package io.github.stumblehome.headless.ScreenTests;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.badlogic.gdx.Gdx;
-
 import io.github.stumblehome.headless.AbstractHeadlessGdxTest;
-
 import org.junit.jupiter.api.Test;
 
 public class MenuAssetTests extends AbstractHeadlessGdxTest {
