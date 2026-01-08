@@ -288,15 +288,12 @@ public class GameScreen implements Screen {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
             game.setScreen(new LoseScreen(game, remainingTime, score));
         }
-
-        float mod = 1;
+        ;
         if (dialogScaleFactor < 0) {
-            mod = -1f;
+            dialogScaleFactor = dialogScaleFactor * -1;
         }
         // Sets achievement box to bottom right
-        float w =
-                Gdx.graphics.getWidth()
-                        - (achievementBox.getWidth() * (dialogScaleFactor * mod + 0.25f));
+        float w = Gdx.graphics.getWidth() / 2;
         achievementBox.setPosition(w, 0);
         // Pads text to avoid truncation
         achievementBox.getContentTable().padLeft(4f);
@@ -436,7 +433,7 @@ public class GameScreen implements Screen {
                 msg.set_time(Messages.LONGBOIAPPEAR, 2f);
                 hiddenEventCounter++;
 
-                setAchievementText("Raised from dead... RUN!");
+                setAchievementText("Raised from the dead... RUN!");
             }
 
             // walk long boi as long as 'near' variable set to true
