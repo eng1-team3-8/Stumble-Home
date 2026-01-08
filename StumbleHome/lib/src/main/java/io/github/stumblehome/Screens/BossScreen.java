@@ -45,15 +45,14 @@ public class BossScreen implements Screen {
     private Music BossMusic;
 
     // Sprite batch
-    private SpriteBatch batch;
-    private SpriteBatch background;
+    private final SpriteBatch batch;
 
     // Stage
-    private Stage optionsStage;
-    private Stage infoStage;
-    private Stage attackStage;
-    private Stage finalAttackStage;
-    private Stage winStage;
+    private final Stage optionsStage;
+    private final Stage infoStage;
+    private final Stage attackStage;
+    private final Stage finalAttackStage;
+    private final Stage winStage;
 
     // Text for info
     private BitmapFont font;
@@ -80,6 +79,9 @@ public class BossScreen implements Screen {
     private float mikeWidth;
     private float playerWidth;
 
+    // Variable to move Mike
+    private float mikeX;
+
     // The game screen
     private final GameScreen gameScreen;
 
@@ -90,7 +92,6 @@ public class BossScreen implements Screen {
         this.gameScreen = gameScreen;
 
         this.batch = new SpriteBatch();
-        this.background = new SpriteBatch();
 
         // Create the viewport
         this.viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -113,25 +114,39 @@ public class BossScreen implements Screen {
         // Create the BossFightEntities
         this.scissors =
                 new Scissors(
-                        new Texture("Sprites/BossFight/Scissors.png"), 100f, new float[] {105, 2});
+                        new Texture("Sprites/BossFight/Scissors.png"),
+                        viewport.getWorldWidth() / 8,
+                        new float[] {
+                            (this.viewport.getWorldWidth() / 160) * 21,
+                            this.viewport.getWorldHeight() / 250
+                        });
 
         this.cable1 =
                 new BossFightEntity(
-                        new Texture("Sprites/BossFight/Cable.png"), 150f, new float[] {199, 0});
+                        new Texture("Sprites/BossFight/Cable.png"),
+                        (viewport.getWorldWidth() / 16) * 3,
+                        new float[] {(this.viewport.getWorldWidth() / 800) * 199, 0});
 
         this.cable2 =
                 new BossFightEntity(
-                        new Texture("Sprites/BossFight/Cable.png"), 150f, new float[] {287, 0});
+                        new Texture("Sprites/BossFight/Cable.png"),
+                        (viewport.getWorldWidth() / 16) * 3,
+                        new float[] {(this.viewport.getWorldWidth() / 800) * 287, 0});
 
         this.cable3 =
                 new BossFightEntity(
-                        new Texture("Sprites/BossFight/Cable.png"), 150f, new float[] {375, 0});
+                        new Texture("Sprites/BossFight/Cable.png"),
+                        (viewport.getWorldWidth() / 16) * 3,
+                        new float[] {(this.viewport.getWorldWidth() / 32) * 15, 0});
 
         this.cable4 =
                 new BossFightEntity(
-                        new Texture("Sprites/BossFight/Cable.png"), 150f, new float[] {463, 0});
+                        new Texture("Sprites/BossFight/Cable.png"),
+                        (viewport.getWorldWidth() / 16) * 3,
+                        new float[] {(this.viewport.getWorldWidth() / 800) * 463, 0});
 
         // Assign the textures
+        this.Mike = new Texture("Sprites/BossFight/Mike.png");
         this.MenuBackground = new Texture("Sprites/BossFight/MenuBackground.png");
         this.Switch = new Texture("Sprites/BossFight/Switch.png");
         this.BrokenCable = new Texture("Sprites/BossFight/Cable-Cut.png");
@@ -140,22 +155,28 @@ public class BossScreen implements Screen {
         // Music
         this.BossMusic = Gdx.audio.newMusic(Gdx.files.internal("Sprites/BossFight/Boss-Music.mp3"));
         this.BossMusic.setLooping(true);
-        //        this.BossMusic.play(); // Uncomment when you want music
+        this.BossMusic.play(); // Uncomment when you want music
 
         // Create the logic handler
-        this.logicHandler = new BossFightLogic(this.BrokenCable, this.statesFSA);
+        this.logicHandler = new BossFightLogic(this.BrokenCable, this.statesFSA, this.viewport);
 
         // Health bars
         this.mikeHealth =
                 new NinePatch(new Texture("Sprites/BossFight/RedGradient.png"), 0, 0, 0, 0);
         this.playerHealth =
                 new NinePatch(new Texture("Sprites/BossFight/RedGradient.png"), 0, 0, 0, 0);
+
+        // Mike's X coordinate (for him to move at the end)
+        this.mikeX = (viewport.getWorldWidth() / 2) - (this.viewport.getWorldWidth() / 80) * 9;
     }
 
     @Override
     public void show() {
 
         Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+
+        float buttonWidth = this.viewport.getWorldWidth() / 4;
+        float buttonHeight = this.viewport.getWorldHeight() / 10;
 
         // Options stage
         // Create Buttons
@@ -166,8 +187,8 @@ public class BossScreen implements Screen {
         float startX = viewport.getWorldWidth() / 5;
         float Y = viewport.getWorldHeight() / 5;
 
-        attackButton.setBounds(startX, Y, 200, 50);
-        infoButton.setBounds(startX * 3, Y, 200, 50);
+        attackButton.setBounds(startX, Y, buttonWidth, buttonHeight);
+        infoButton.setBounds(startX * 3, Y, buttonWidth, buttonHeight);
 
         // Draw Buttons
         this.optionsStage.addActor(attackButton);
@@ -204,7 +225,7 @@ public class BossScreen implements Screen {
         float X = (viewport.getWorldWidth() / 5) * 3;
         Y = viewport.getWorldHeight() / 5;
 
-        backButton.setBounds(X, Y, 200, 50);
+        backButton.setBounds(X, Y, buttonWidth, buttonHeight);
 
         // Draw the button
         this.infoStage.addActor(backButton);
@@ -225,7 +246,7 @@ public class BossScreen implements Screen {
         X = (viewport.getWorldWidth() / 2);
         Y = viewport.getWorldHeight() / 5;
 
-        attackBossButton.setBounds(X, Y, 200, 50);
+        attackBossButton.setBounds(X, Y, buttonWidth, buttonHeight);
 
         // Draw the button
         this.finalAttackStage.addActor(attackBossButton);
@@ -249,7 +270,7 @@ public class BossScreen implements Screen {
         X = viewport.getWorldWidth() / 2;
         Y = viewport.getWorldHeight() / 2;
 
-        leaveButton.setBounds(X, Y, 200, 50);
+        leaveButton.setBounds(X, Y, buttonWidth, buttonHeight);
 
         // Draw the button
         this.winStage.addActor(leaveButton);
@@ -259,8 +280,7 @@ public class BossScreen implements Screen {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        //                    System.out.println(logicHandler.getMikeHealth() + " "
-                        // + mikeWidth);
+                        BossMusic.stop();
                         game.setScreen(gameScreen);
                     }
                 });
@@ -271,26 +291,59 @@ public class BossScreen implements Screen {
         // Make the Screen grey
         ScreenUtils.clear(Color.GRAY);
 
+        System.out.println(viewport.getWorldWidth() + " " + viewport.getWorldHeight());
+
         this.mikeWidth = ((float) this.logicHandler.getMikeHealth() / 100) * 400;
         this.playerWidth = ((float) this.logicHandler.getPlayerHealth() / 100) * 100;
 
         // Draw the elements
         this.batch.begin();
 
+        // If player won, Mike runs away
+        if (this.logicHandler.checkIfWon()) {
+            this.mikeX++;
+        }
+
+        // Draw Mike
+        this.batch.draw(
+                this.Mike,
+                this.mikeX,
+                viewport.getWorldHeight() / 2,
+                (this.viewport.getWorldWidth() / 40) * 9,
+                (this.viewport.getWorldHeight() / 25) * 9);
+
+        // Draw the background for the menu
+        this.batch.draw(
+                this.MenuBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight() / 2);
+
         // Create Mike's health bar
-        this.mikeHealth.draw(batch, 200, 400, mikeWidth, 50);
-        this.mikeHealth.scale(50, 50);
-        this.font.draw(batch, "MIKE FREEMAN", 360, 475);
+        this.mikeHealth.draw(
+                batch,
+                this.viewport.getWorldWidth() / 4,
+                (this.viewport.getWorldHeight() / 5) * 4,
+                mikeWidth,
+                this.viewport.getWorldHeight() / 10);
+        this.mikeHealth.scale(
+                this.viewport.getWorldWidth() / 16, this.viewport.getWorldWidth() / 16);
+        this.font.draw(
+                batch,
+                "MIKE FREEMAN",
+                (this.viewport.getWorldWidth() / 5) * 2,
+                (this.viewport.getWorldHeight() / 20) * 19);
 
         // Create the player's health bar
-        this.playerHealth.draw(batch, 600, 10, playerWidth, 25);
+        this.playerHealth.draw(
+                batch,
+                (this.viewport.getWorldWidth() / 4) * 3,
+                this.viewport.getWorldHeight() / 50,
+                playerWidth,
+                25);
         this.playerHealth.scale(20, 20);
-        this.font.draw(batch, "Player Health", 610, 30);
-
-        // This doesn't draw for some reason - it seemed it just decided from one day to the next
-        // not to work
-        this.batch.draw(
-                this.MenuBackground, 1, 1, viewport.getWorldWidth(), viewport.getWorldHeight() / 2);
+        this.font.draw(
+                batch,
+                "Player Health",
+                (this.viewport.getWorldWidth() / 80) * 61,
+                (this.viewport.getWorldHeight() / 50) * 3);
 
         switch (this.statesFSA.returnState()) {
             case OPTIONS:
@@ -300,7 +353,11 @@ public class BossScreen implements Screen {
                 Gdx.input.setInputProcessor(this.optionsStage);
                 break;
             case INFO:
-                this.font.draw(batch, "Dr Mike J Freeman - the legendary lecturer", 100, 100);
+                this.font.draw(
+                        batch,
+                        "Dr Mike J Freeman - the legendary lecturer",
+                        this.viewport.getWorldWidth() / 8,
+                        this.viewport.getWorldHeight() / 5);
 
                 this.batch.end();
 
@@ -348,8 +405,8 @@ public class BossScreen implements Screen {
                 this.font.draw(
                         batch,
                         "You Win!!!!!!\r\nMike has retreated to some far off place (his office)",
-                        100,
-                        100);
+                        this.viewport.getWorldWidth() / 8,
+                        this.viewport.getWorldHeight() / 5);
                 this.batch.end();
                 this.winStage.draw();
                 Gdx.input.setInputProcessor(this.winStage);
@@ -360,8 +417,8 @@ public class BossScreen implements Screen {
                         "You lost!\r\n"
                             + "Mike has gotten the better of you (he was going easy as well) and"
                             + " you now have plenty of time to reflect\r\n",
-                        100,
-                        100);
+                        this.viewport.getWorldWidth() / 8,
+                        this.viewport.getWorldHeight() / 5);
                 this.batch.end();
                 this.winStage.draw();
                 Gdx.input.setInputProcessor(this.winStage);
@@ -385,5 +442,33 @@ public class BossScreen implements Screen {
     public void hide() {}
 
     @Override
-    public void dispose() {}
+    public void dispose() {
+        // Dispose the entities first
+        this.cable1.dispose();
+        this.cable2.dispose();
+        this.cable3.dispose();
+        this.cable4.dispose();
+
+        this.scissors.dispose();
+
+        // Dispose the textures
+        this.Mike.dispose();
+        this.MenuBackground.dispose();
+        this.Switch.dispose();
+        this.BrokenCable.dispose();
+        this.PacketUDP.dispose();
+
+        // Dispose the spritebatch
+        this.batch.dispose();
+
+        // Dispose the stages
+        this.infoStage.dispose();
+        this.optionsStage.dispose();
+        this.attackStage.dispose();
+        this.finalAttackStage.dispose();
+        this.winStage.dispose();
+
+        // Dispose the music
+        this.BossMusic.dispose();
+    }
 }
