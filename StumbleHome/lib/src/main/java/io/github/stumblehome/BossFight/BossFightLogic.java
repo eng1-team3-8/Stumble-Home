@@ -15,21 +15,25 @@ public class BossFightLogic {
     private boolean finalStage = false;
     private int playerHealth = 100;
     private int mikeHealth = 100;
+    private boolean playerWon = false;
+    private BossFightStatesManager statesFSA;
 
-    public BossFightLogic(Texture cutCable) {
+    public BossFightLogic(Texture cutCable, BossFightStatesManager statesFSA) {
         this.cutCable = cutCable;
+        this.statesFSA = statesFSA;
     }
 
-    private void checkIfStopped(
-            BossFightEntity[] cables, Scissors scissors, BossFightStatesManager statesFSA)
+    private void checkIfStopped(BossFightEntity[] cables, Scissors scissors)
             throws InterruptedException {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !isStopped) {
             isStopped = true;
             System.out.println("It is being checked");
-            this.checkOverlap(cables, scissors, statesFSA);
+            this.checkOverlap(cables, scissors);
             this.isStopped = false;
-            statesFSA.moveStates(-1);
+            this.statesFSA.moveStates(1);
             scissors.setX(105f);
+            this.mikeAttacks();
+            System.out.println("Player health: " + this.playerHealth);
         }
 
         // Below is code for testing
@@ -39,13 +43,9 @@ public class BossFightLogic {
     }
 
     public void moveScissors(
-            Viewport viewport,
-            SpriteBatch batch,
-            Scissors scissors,
-            BossFightEntity[] cables,
-            BossFightStatesManager statesFSA)
+            Viewport viewport, SpriteBatch batch, Scissors scissors, BossFightEntity[] cables)
             throws InterruptedException {
-        this.checkIfStopped(cables, scissors, statesFSA);
+        this.checkIfStopped(cables, scissors);
         if (!isStopped) {
             scissors.move(viewport);
         }
@@ -60,8 +60,7 @@ public class BossFightLogic {
         }
     }
 
-    public void checkOverlap(
-            BossFightEntity[] cables, Scissors scissors, BossFightStatesManager statesFSA)
+    public void checkOverlap(BossFightEntity[] cables, Scissors scissors)
             throws InterruptedException {
         System.out.println("Overlap is being checked");
         for (int i = 0; i < cables.length; i++) {
@@ -69,20 +68,17 @@ public class BossFightLogic {
             if (scissors.checkColliding(cables[i].getX(), cables[i].getY())) {
                 System.out.println("Overlaps!");
                 if (this.cableStatus[i]) {
-                    updateSprite(cables[i], statesFSA, i);
+                    updateSprite(cables[i], i);
                 }
             }
         }
     }
 
-    private void updateSprite(BossFightEntity cable, BossFightStatesManager statesFSA, int cableNo)
-            throws InterruptedException {
+    private void updateSprite(BossFightEntity cable, int cableNo) throws InterruptedException {
         this.cableStatus[cableNo] = false;
         cable.setTexture(this.cutCable);
         Thread.sleep(500);
-        //        this.isStopped = false;
         this.checkIfAllWiresCut();
-        //        statesFSA.moveStates(-1);
     }
 
     private void checkIfAllWiresCut() {
@@ -103,6 +99,11 @@ public class BossFightLogic {
         damage = damage * 40;
 
         this.mikeHealth -= (int) damage;
+
+        if (this.mikeHealth <= 0) {
+            this.mikeHealth = 0;
+            this.statesFSA.moveStates(1);
+        }
     }
 
     public int getMikeHealth() {
@@ -111,5 +112,19 @@ public class BossFightLogic {
 
     public int getPlayerHealth() {
         return this.playerHealth;
+    }
+
+    public void mikeAttacks() {
+        double damage = Math.random();
+        damage = damage * 10;
+
+        if (!this.playerWon) {
+            this.playerHealth -= (int) damage;
+        }
+
+        if (this.playerHealth <= 0) {
+            this.playerHealth = 0;
+            this.statesFSA.moveStates(0);
+        }
     }
 }
