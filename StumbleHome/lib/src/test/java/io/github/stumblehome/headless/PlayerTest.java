@@ -15,13 +15,13 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import io.github.stumblehome.Player;
 
 public class PlayerTest extends AbstractHeadlessGdxTest {
-    //Initianalize the player for using in each Test
+    // Initianalize the player for using in each Test
     public Player testUnit;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
 
-        //E
+        // E
         TiledMap map = new TmxMapLoader().load("map.tmx");
 
         // Set up map size to be the same as the game
@@ -44,13 +44,12 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
                         mapHeight,
                         collisionLayer);
 
-
         testUnit = player;
     }
 
     @Test
     public void testCollisionWithMazeWall() {
-        //Assiging test unit
+        // Assiging test unit
         Player player = testUnit;
 
         // Test moving to coords without wall
@@ -70,22 +69,22 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
     }
 
     @Test
-    public void testSwapControls(){
+    public void testSwapControls() {
 
         Player player = testUnit;
 
         assertTrue(player.isDrunk, "Player class attribute isDrunk should have the value True");
         player.SwapControls();
-        assertFalse(player.isDrunk,"Player class method SwapControl must reverse isDrunk value");
-        assertEquals(5f,player.player_speed,"Speed is not reversing");
+        assertFalse(player.isDrunk, "Player class method SwapControl must reverse isDrunk value");
+        assertEquals(5f, player.player_speed, "Speed is not reversing");
         player.SwapControls();
-        assertTrue(player.isDrunk, "Double SwapControls method should return True value for isDrunk");
-        assertEquals(-5f,player.player_speed);
-
+        assertTrue(
+                player.isDrunk, "Double SwapControls method should return True value for isDrunk");
+        assertEquals(-5f, player.player_speed);
     }
 
     @Test
-    public void testSlowDown(){
+    public void testSlowDown() {
         Player player = testUnit;
 
         player.slowDownPlayer(4);
@@ -93,20 +92,19 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         player.slowDownPlayer(1);
         assertEquals(0, player.player_speed);
         player.slowDownPlayer(1);
-        assertEquals(1f,player.player_speed);
+        assertEquals(1f, player.player_speed);
     }
 
     @Test
-    public void testSpeedUp(){
+    public void testSpeedUp() {
         Player player = testUnit;
 
         player.speedUpPlayer(6);
-        assertEquals(-11f,player.player_speed);
+        assertEquals(-11f, player.player_speed);
 
         player.SwapControls();
         player.speedUpPlayer(5);
         assertEquals(16f, player.player_speed);
-
     }
 
     @Test
