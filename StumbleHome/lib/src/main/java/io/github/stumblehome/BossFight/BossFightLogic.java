@@ -14,14 +14,30 @@ import io.github.stumblehome.Entities.BossFightEntity;
  */
 public class BossFightLogic {
 
+    // Boolean to see if the scissors have been stopped
     private boolean isStopped = false;
+
+    // Boolean array holding the status of the wires
+    // True if active, False if cut
     private boolean[] cableStatus = {true, true, true, true};
+
+    // Texture of the cut cable
     private final Texture cutCable;
+
+    //Boolean holding if it is the final stage
     private boolean finalStage = false;
+
+    // Health variables for the player and Mike
     private int playerHealth = 100;
     private int mikeHealth = 100;
+
+    // Boolean holding if the player has won or not
     private boolean playerWon = false;
+
+    // The FSA of the boss fight
     private BossFightStatesManager statesFSA;
+
+    // The viewport of the bossfight
     private FitViewport viewport;
 
   /**
