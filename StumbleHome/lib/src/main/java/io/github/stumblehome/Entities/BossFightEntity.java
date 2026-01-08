@@ -29,7 +29,10 @@ public class BossFightEntity extends NonPlayerEntity {
         return false;
     }
 
-    @Override
+  /**
+   * This method checks if the x-axis of the two object overlap
+   */
+  @Override
     public void logic() {}
 
     public boolean checkOverlap(float playerCentreX, FitViewport viewport) {
@@ -41,7 +44,10 @@ public class BossFightEntity extends NonPlayerEntity {
         return distance < (viewport.getWorldWidth() / 80) * 3;
     }
 
-    public void updatePosition() {
+  /**
+   * Setter for the position
+   */
+  public void updatePosition() {
         this.setPosition(this.getX(), this.getY());
     }
 }
