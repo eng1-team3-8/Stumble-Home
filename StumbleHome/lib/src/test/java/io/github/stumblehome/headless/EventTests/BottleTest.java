@@ -36,4 +36,3 @@ public class BottleEventTest extends AbstractHeadlessGdxTest {
         assertFalse(bottle.checkCollision(0.75f, 0.75f));
     }
 }
-

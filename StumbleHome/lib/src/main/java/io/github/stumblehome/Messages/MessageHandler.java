@@ -139,4 +139,12 @@ public class MessageHandler {
         game.font.getData().setScale(1f);
         game.batch.end();
     }
+
+    public Map<Messages, MessageID> getMessages() {
+        return messages;
+    }
+
+    public Queue<Messages> getShown_queue() {
+        return shown_queue;
+    }
 }

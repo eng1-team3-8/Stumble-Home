@@ -36,4 +36,3 @@ public class KeycardEventTest extends AbstractHeadlessGdxTest {
         assertFalse(keycard.checkCollision(0.5f, 0.5f));
     }
 }
-
