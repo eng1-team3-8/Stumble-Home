@@ -5,48 +5,33 @@ import static java.lang.Math.sqrt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 /** Handles the Long Boi event movement, animations, and interactions with the game world. */
-public class LongBoiEvent extends Sprite {
+public class LongBoiEvent extends NonPlayerEntity {
     public static final String ASSET = "longBoi.png";
-    // Scale of long boi frames.
-    public final float longSize = 2f;
+
     // Size of longBoi collision box
     private final float longBoxWidth = 0.65f;
     private final float longBoxHeight = 1.024f;
     // Offset to centre the collision box
-    private final float longBoxOffsetX = (longSize - longBoxWidth) / 2f;
+    private final float longBoxOffsetX;
     private final float longBoxOffsetY = 0f;
 
-    /** Sprite sheet containing all animation frames. */
-    public Texture longSheet;
-
-    // Current x position of long boi on map.
-    public float longX;
-    // Current y position of long boi on map.
-    public float longY;
     // Variable which is true when long boi has completed the walk.
-    public boolean doneWalk = false;
+    public boolean done_walk = false;
     // Variable which is true when player collided with long boi.
     public boolean collided = false;
     // Distance between player and long boi to set near to true.
     public float radius = 6;
     // Layer containing collision information from the tiled map.
-    TiledMapTileLayer collisionLayer;
+    private TiledMapTileLayer collision_layer;
     // Previous movement storage vars
     String prev_move_LR = ""; // Left / right
     String prev_move_UD = ""; // Up / down
-    // Currently active animation being played.
-    private Animation<TextureRegion> currentAnimation;
-    // Previous animation, used to reset timing when animation changes.
-    private Animation<TextureRegion> previousAnimation;
-    // Time elapsed in the current animation.
-    private float stateTime;
+
     // Variable which is true when player is in radius of long boi.
     private boolean near = false;
 
@@ -55,37 +40,15 @@ public class LongBoiEvent extends Sprite {
      *
      * @param sprite the sprite containing long boi texture.
      */
-    public LongBoiEvent(Sprite sprite, TiledMapTileLayer collisionLayer) {
-        super(sprite);
+    public LongBoiEvent(
+            Texture texture, float size, float[] position, TiledMapTileLayer collision) {
+        super(texture, size, position, 32, 32, 2);
 
-        // initialize animations
-        initializeAnimations();
-        this.collisionLayer = collisionLayer;
-
+        this.collision_layer = collision;
+        longBoxOffsetX = (frame_size - longBoxWidth) / 2f;
         // initialize position from the provided sprite (keeps the sprite where caller placed it)
-        this.longX = sprite.getX();
-        this.longY = sprite.getY();
-    }
-
-    /** Loads all animation frames from the long boi spritesheet. */
-    private void initializeAnimations() {
-        int frameWidth = 32;
-        int frameHeight = 32;
-
-        longSheet = this.getTexture();
-
-        // set idle frame
-        // idleFrame = new TextureRegion(longSheet, 0, 32, frameWidth, frameHeight);
-
-        // walking frames
-        TextureRegion[] longFrames = new TextureRegion[2];
-        longFrames[0] = new TextureRegion(longSheet, 0, 0, frameWidth, frameHeight);
-        longFrames[1] = new TextureRegion(longSheet, 32, 0, frameWidth, frameHeight);
-        Animation<TextureRegion> animation = new Animation<>(0.3f, longFrames);
-
-        stateTime = 0f;
-
-        currentAnimation = animation;
+        this.setX(position[0]);
+        this.setY(position[1]);
     }
 
     /**
@@ -95,13 +58,13 @@ public class LongBoiEvent extends Sprite {
     public void logic() {
         if (near) {
             // Reset animation time if animation changed
-            if (currentAnimation != previousAnimation) {
-                stateTime = 0f;
-                previousAnimation = currentAnimation;
+            if (current_animation != previous_animation) {
+                state_time = 0f;
+                previous_animation = current_animation;
             }
 
             // Update animation time
-            stateTime += Gdx.graphics.getDeltaTime();
+            state_time += Gdx.graphics.getDeltaTime();
         }
     }
 
@@ -110,12 +73,13 @@ public class LongBoiEvent extends Sprite {
      *
      * @param batch the sprite batch used for rendering.
      */
-    public void draw(SpriteBatch batch) {
-        TextureRegion frameToDraw;
-        if (near & !doneWalk) {
-            frameToDraw = currentAnimation.getKeyFrame(stateTime, true);
+    @Override
+    public void draw(Batch batch) {
+        TextureRegion frame_to_draw;
+        if (near & !done_walk) {
+            frame_to_draw = current_animation.getKeyFrame(state_time, true);
             // draw long boi
-            batch.draw(frameToDraw, longX, longY, longSize, longSize);
+            batch.draw(frame_to_draw, this.getX(), this.getY(), frame_size, frame_size);
         }
     }
 
@@ -127,7 +91,8 @@ public class LongBoiEvent extends Sprite {
      * @param playerCentreY the centre of player in y direction.
      * @return true if player has collided with long boi
      */
-    public boolean checkCollision(float playerCentreX, float playerCentreY) {
+    @Override
+    public boolean checkColliding(float playerCentreX, float playerCentreY) {
         if (collided) {
             return true;
         }
@@ -174,14 +139,6 @@ public class LongBoiEvent extends Sprite {
         return nearing;
     }
 
-    private float getCentreX() {
-        return longX + longSize / 2;
-    }
-
-    private float getCentreY() {
-        return longY + longSize / 2;
-    }
-
     public boolean getNear() {
         return near;
     }
@@ -197,22 +154,26 @@ public class LongBoiEvent extends Sprite {
 
         // New collision based movement algorithm
         // Moves long boi, uses previous move check to maintain direction switch on collision
-        if (this.canMoveTo(longX + delta * speed, longY) && !prev_move_LR.equals("left")) {
-            longX += delta * speed;
+        if (this.canMoveTo(this.getX() + delta * speed, this.getY())
+                && !prev_move_LR.equals("left")) {
+            this.setX(this.getX() + delta * speed);
             prev_move_LR = "right";
-        } else if (this.canMoveTo(longX - delta * speed, longY) && !prev_move_LR.equals("right")) {
-            longX -= delta * speed;
+        } else if (this.canMoveTo(this.getX() - delta * speed, this.getY())
+                && !prev_move_LR.equals("right")) {
+            this.setX(this.getX() - delta * speed);
             prev_move_LR = "left";
         } else {
             prev_move_LR = "";
         }
 
         // Same as above but for up/down
-        if (this.canMoveTo(longX, longY + delta * speed) && !prev_move_UD.equals("down")) {
-            longY += delta * speed;
+        if (this.canMoveTo(this.getX(), this.getY() + delta * speed)
+                && !prev_move_UD.equals("down")) {
+            this.setY(this.getY() + delta * speed);
             prev_move_UD = "up";
-        } else if (this.canMoveTo(longX, longY - delta * speed) && !prev_move_UD.equals("up")) {
-            longY -= delta * speed;
+        } else if (this.canMoveTo(this.getX(), this.getY() - delta * speed)
+                && !prev_move_UD.equals("up")) {
+            this.setY(this.getY() - delta * speed);
             prev_move_UD = "down";
         } else {
             prev_move_UD = "";
@@ -248,7 +209,7 @@ public class LongBoiEvent extends Sprite {
         int tileX = (int) x;
         int tileY = (int) y;
 
-        TiledMapTileLayer.Cell cell = collisionLayer.getCell(tileX, tileY);
+        TiledMapTileLayer.Cell cell = collision_layer.getCell(tileX, tileY);
         if (cell == null || cell.getTile() == null) return true;
 
         int tileId = cell.getTile().getId();

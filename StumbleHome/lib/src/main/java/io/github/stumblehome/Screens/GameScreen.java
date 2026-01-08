@@ -167,35 +167,38 @@ public class GameScreen implements Screen {
 
         // events
         // Bottle event (not reimplemented yet)
-        bottle = new BottleEvent(new Texture("waterBottle.png"), 1f, new float[] {58f, 42f});
+        bottle = new BottleEvent(new Texture(BottleEvent.ASSET), 1f, new float[] {58f, 42f});
 
         // LongBoi event
-        longBoi = new LongBoiEvent(new Sprite(new Texture("longBoi.png")), collisionLayer);
-        longBoi.longX = mapWidth - 23 - longBoi.longSize / 2;
-        longBoi.longY = mapHeight - 38 - longBoi.longSize / 2;
+        longBoi =
+                new LongBoiEvent(
+                        new Texture(LongBoiEvent.ASSET),
+                        2f,
+                        new float[] {48f, 13f},
+                        collisionLayer);
 
         // Keycard event (not reimplemented yet)
-        keycard = new KeycardEvent(new Texture("keyCard.png"), 1f, new float[] {56f, 42f});
+        keycard = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {56f, 42f});
 
         // Twig event
-        twig = new Twig(new Texture("Sprites/Stick.png"), 1f, new float[] {51f, 19f});
+        twig = new Twig(new Texture(Twig.ASSET), 1f, new float[] {51f, 19f});
 
         // Alcohol bottles
-        beer = new Alcohol(new Texture("Sprites/Tsingtao.png"), 1f, new float[] {62f, 5f});
-        vodka = new Alcohol(new Texture("Sprites/Smirnoff.png"), 1f, new float[] {35f, 2f});
+        beer = new Alcohol(new Texture(Alcohol.ASSET_TSING), 1f, new float[] {62f, 5f});
+        vodka = new Alcohol(new Texture(Alcohol.ASSET_SMIRN), 1f, new float[] {35f, 2f});
 
         // Chicken
-        chicken = new Food(new Texture("Sprites/Chicken.png"), 1f, new float[] {54f, 42f});
+        chicken = new Food(new Texture(Food.ASSET), 1f, new float[] {54f, 42f});
 
         // The roses
-        York = new Rose(new Texture("Sprites/YorkRose.png"), 1f, new float[] {2f, 25f});
-        Lancaster = new Rose(new Texture("Sprites/LancasterRose.png"), 1f, new float[] {5f, 25f});
+        York = new Rose(new Texture(Rose.ASSET_YORK), 1f, new float[] {2f, 25f});
+        Lancaster = new Rose(new Texture(Rose.ASSET_LANC), 1f, new float[] {5f, 25f});
 
         // Chainsaw
-        chainsaw = new Chainsaw(new Texture("Sprites/Chainsaw.png"), 1f, new float[] {54f, 41f});
+        chainsaw = new Chainsaw(new Texture(Chainsaw.ASSET), 1f, new float[] {54f, 41f});
 
         // Bob
-        bob = new Bob(new Texture("Sprites/B-bThing.png"), 1f, new float[] {56f, 41f});
+        bob = new Bob(new Texture(Bob.ASSET), 1f, new float[] {56f, 41f});
 
         // message handler
         msg = new MessageHandler(game);
@@ -416,7 +419,7 @@ public class GameScreen implements Screen {
         }
 
         // if long boi walk not completed, run logic
-        if (!longBoi.doneWalk) {
+        if (!longBoi.done_walk) {
             // check if player near longBoi
             if (longBoi.checkNear(playerCentreX, playerCentreY)) {
                 // player is near
@@ -432,7 +435,7 @@ public class GameScreen implements Screen {
             }
 
             // check if player collided with longBoi
-            if (longBoi.checkCollision(playerCentreX, playerCentreY)) {
+            if (longBoi.checkColliding(playerCentreX, playerCentreY)) {
                 int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
                 game.setScreen(new LoseScreen(game, remainingTime, score));
             }
@@ -523,17 +526,17 @@ public class GameScreen implements Screen {
         player.draw(game.batch);
 
         // draw events
-        bottle.drawEntity(game.batch);
+        bottle.draw(game.batch);
         longBoi.draw(game.batch);
-        keycard.drawEntity(game.batch);
-        twig.drawEntity(game.batch);
-        beer.drawEntity(game.batch);
-        vodka.drawEntity(game.batch);
-        chicken.drawEntity(game.batch);
-        York.drawEntity(game.batch);
-        Lancaster.drawEntity(game.batch);
-        chainsaw.drawEntity(game.batch);
-        bob.drawEntity(game.batch);
+        keycard.draw(game.batch);
+        twig.draw(game.batch);
+        beer.draw(game.batch);
+        vodka.draw(game.batch);
+        chicken.draw(game.batch);
+        York.draw(game.batch);
+        Lancaster.draw(game.batch);
+        chainsaw.draw(game.batch);
+        bob.draw(game.batch);
 
         game.batch.end();
 

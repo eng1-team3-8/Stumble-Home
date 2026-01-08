@@ -24,10 +24,6 @@ public abstract class Entity extends Sprite {
     protected Animation<TextureRegion> previous_animation;
     // Time elapsed in the current animation.
     protected float state_time;
-    // The current X position of the entity
-    protected float x_pos;
-    // The current Y position of the entity
-    protected float y_pos;
 
     /**
      * The base constructor of the entity
@@ -43,8 +39,8 @@ public abstract class Entity extends Sprite {
         this.setSize(size, size);
         this.setPosition(
                 position[0], position[1]); // Sets the position of the sprite using the array
-        this.x_pos = position[0];
-        this.y_pos = position[1];
+        this.setX(position[0]);
+        this.setY(position[1]);
     }
 
     /**

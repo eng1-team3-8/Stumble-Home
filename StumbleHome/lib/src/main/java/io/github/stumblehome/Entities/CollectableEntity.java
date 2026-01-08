@@ -4,7 +4,7 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 /**
  * This is a class that creates entities that can be collected
@@ -88,9 +88,10 @@ public abstract class CollectableEntity extends NonPlayerEntity {
      *
      * @param batch SpriteBatch: The spritebatch that will be drawn on
      */
-    public void drawEntity(SpriteBatch batch) {
+    @Override
+    public void draw(Batch batch) {
         if (!this.isCollected) {
-            this.draw(batch);
+            super.draw(batch);
         }
     }
 }

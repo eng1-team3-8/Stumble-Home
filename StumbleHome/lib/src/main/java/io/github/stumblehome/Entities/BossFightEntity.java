@@ -27,17 +27,18 @@ public class BossFightEntity extends NonPlayerEntity {
     @Override
     public void logic() {}
 
-    public boolean overlaps(BossFightEntity other) {
+    @Override
+    public boolean checkColliding(float playerCentreX, float playerCentreY) {
 
         double distance =
                 sqrt(
-                        pow(other.getCentreX() - this.getCentreX(), 2)
-                                + pow(other.getCentreY() - this.getCentreY(), 2));
+                        pow(playerCentreX - this.getCentreX(), 2)
+                                + pow(playerCentreY - this.getCentreY(), 2));
 
         return distance < 30f;
     }
 
     public void updatePosition() {
-        this.setPosition(this.x_pos, this.y_pos);
+        this.setPosition(this.getX(), this.getY());
     }
 }
