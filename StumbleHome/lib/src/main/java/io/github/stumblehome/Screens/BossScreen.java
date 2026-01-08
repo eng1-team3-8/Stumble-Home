@@ -21,13 +21,18 @@ import io.github.stumblehome.BossFight.Scissors;
 import io.github.stumblehome.Entities.BossFightEntity;
 import io.github.stumblehome.StumbleHome;
 
+/**
+ * The class for the screen of the boss fight. This is where everything is drawn. The logic for
+ * the bossfight is split between a few different classes:
+ * The finite state machine is in BossFightStateManager, the logic is
+ * in BossFightLogic, and the entities are in BossFightEntity and Scissors.
+ *
+ * @author Lenny
+ */
 public class BossScreen implements Screen {
 
     // The game instance
     private final StumbleHome game;
-
-    // Players name
-    private final String playerName;
 
     // Textures of the boss-fight object
     // Mike
@@ -85,10 +90,15 @@ public class BossScreen implements Screen {
     // The game screen
     private final GameScreen gameScreen;
 
+  /**
+   * This is the constructor for the bossfight.
+   *
+   * @param game StumbleHome: The game instance
+   * @param gameScreen GameScreen: The gamescreen it has just come from, so it can return to it after the fight
+   */
     public BossScreen(
-            final StumbleHome game, final String playerName, final GameScreen gameScreen) {
+            final StumbleHome game, final GameScreen gameScreen) {
         this.game = game;
-        this.playerName = playerName;
         this.gameScreen = gameScreen;
 
         this.batch = new SpriteBatch();
@@ -170,7 +180,12 @@ public class BossScreen implements Screen {
         this.mikeX = (viewport.getWorldWidth() / 2) - (this.viewport.getWorldWidth() / 80) * 9;
     }
 
-    @Override
+  /**
+   * This show method is where the various different stages are constructed.
+   * The different stages correspond to the different states, with the only shared
+   * stage being the win/loss stage.
+   */
+  @Override
     public void show() {
 
         Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
@@ -286,7 +301,14 @@ public class BossScreen implements Screen {
                 });
     }
 
-    @Override
+  /**
+   * This is where the different components get drawn depending on the
+   * current state.
+   * If there is any logic, external methods are called.
+   *
+   * @param delta The time in seconds since the last render.
+   */
+  @Override
     public void render(float delta) {
         // Make the Screen grey
         ScreenUtils.clear(Color.GRAY);
@@ -441,6 +463,9 @@ public class BossScreen implements Screen {
     @Override
     public void hide() {}
 
+  /**
+   * Disposing all the components after the boss fight
+   */
     @Override
     public void dispose() {
         // Dispose the entities first
