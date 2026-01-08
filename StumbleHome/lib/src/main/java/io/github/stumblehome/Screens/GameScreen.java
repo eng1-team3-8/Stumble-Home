@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -153,14 +152,12 @@ public class GameScreen implements Screen {
         // Initialize player
         player =
                 new Player(
-                        new Sprite(new Texture("character.png")),
+                        new Texture(Player.ASSET),
+                        0.8f,
+                        new float[] {60f, 50f},
                         mapWidth,
                         mapHeight,
                         collisionLayer);
-
-        // Position player at start point of map
-        player.playerX = mapWidth - 12 - player.playerSize / 2;
-        player.playerY = mapHeight - 2 - player.playerSize / 2;
 
         // Center camera on player position
         game.camera.position.set(mapWidth / 2, mapHeight / 2, 0);
@@ -310,8 +307,8 @@ public class GameScreen implements Screen {
         keycard.logic();
         longBoi.logic();
 
-        float playerCentreX = player.playerX + player.playerSize / 2;
-        float playerCentreY = player.playerY + player.playerSize / 2;
+        float playerCentreX = player.getX() + player.frame_size / 2;
+        float playerCentreY = player.getY() + player.frame_size / 2;
 
         // Check collision between player and water bottle
         if (bottle.checkColliding(playerCentreX, playerCentreY)) {
@@ -443,8 +440,8 @@ public class GameScreen implements Screen {
 
         // Make camera follow player
         // Camera should be centered on player (add half player size to get center)
-        float playerCenterX = player.playerX + player.playerSize / 2;
-        float playerCenterY = player.playerY + player.playerSize / 2;
+        float playerCenterX = player.getX() + player.frame_size / 2;
+        float playerCenterY = player.getY() + player.frame_size / 2;
 
         game.camera.position.set(playerCenterX, playerCenterY, 0);
 
@@ -489,10 +486,10 @@ public class GameScreen implements Screen {
         float finishZoneY = 6f;
         float finishZoneWidth = 5f;
         float finishZoneHeight = 3f;
-        return player.playerX < finishZoneX + finishZoneWidth
-                && player.playerX + player.playerSize > finishZoneX
-                && player.playerY < finishZoneY + finishZoneHeight
-                && player.playerY + player.playerSize > finishZoneY;
+        return player.getX() < finishZoneX + finishZoneWidth
+                && player.getX() + player.frame_size > finishZoneX
+                && player.getY() < finishZoneY + finishZoneHeight
+                && player.getY() + player.frame_size > finishZoneY;
     }
 
     private void clampCamera() {

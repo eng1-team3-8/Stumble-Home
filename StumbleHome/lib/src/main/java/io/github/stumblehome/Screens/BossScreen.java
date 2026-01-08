@@ -204,7 +204,7 @@ public class BossScreen implements Screen {
         // Make the Screen grey
         ScreenUtils.clear(Color.GRAY);
 
-//        this.scaledByViewport = viewport.getWorldWidth() / 800;
+        //        this.scaledByViewport = viewport.getWorldWidth() / 800;
 
         // Draw the elements
         this.batch.begin();

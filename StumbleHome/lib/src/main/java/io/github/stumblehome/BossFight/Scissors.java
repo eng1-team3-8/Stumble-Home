@@ -38,7 +38,7 @@ public class Scissors extends BossFightEntity {
     }
 
     public void setX(float x) {
-        this.x_pos = x;
+        this.setX(x);
         this.updatePosition();
     }
 }
