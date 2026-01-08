@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -51,6 +52,7 @@ public class BossScreen implements Screen {
     private Stage optionsStage;
     private Stage infoStage;
     private Stage attackStage;
+    private Stage finalAttackStage;
     private Stage winStage;
 
     // Text for info
@@ -72,6 +74,10 @@ public class BossScreen implements Screen {
     // Logic handler
     private BossFightLogic logicHandler;
 
+    // Health bar
+    private NinePatch health;
+    private float width;
+
     public BossScreen(final StumbleHome game, final String playerName) {
         this.game = game;
         this.playerName = playerName;
@@ -90,6 +96,7 @@ public class BossScreen implements Screen {
         this.optionsStage = new Stage(viewport);
         this.infoStage = new Stage(viewport);
         this.attackStage = new Stage(viewport);
+        this.finalAttackStage = new Stage(viewport);
         this.winStage = new Stage(viewport);
 
         // Creates the text
@@ -130,6 +137,9 @@ public class BossScreen implements Screen {
 
         // Create the logic handler
         this.logicHandler = new BossFightLogic(this.BrokenCable);
+
+        // Health bar
+        this.health = new NinePatch(new Texture("Sprites/BossFight/RedGradient.png"), 0, 0, 0, 0);
     }
 
     @Override
@@ -197,6 +207,29 @@ public class BossScreen implements Screen {
                         statesFSA.moveStates(1);
                     }
                 });
+
+        // Create the final attack stage
+
+        TextButton attackBossButton = new TextButton("ATTACK", skin);
+
+        X = (viewport.getWorldWidth() / 2);
+        Y = viewport.getWorldHeight() / 5;
+
+        attackBossButton.setBounds(X, Y, 200, 50);
+
+        // Draw the button
+        this.finalAttackStage.addActor(attackBossButton);
+
+        // Button listener
+        attackBossButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        logicHandler.attackMike();
+                        System.out.println(logicHandler.getMikeHealth() + " " + width);
+                        statesFSA.moveStates(-1);
+                    }
+                });
     }
 
     @Override
@@ -204,21 +237,31 @@ public class BossScreen implements Screen {
         // Make the Screen grey
         ScreenUtils.clear(Color.GRAY);
 
-//        this.scaledByViewport = viewport.getWorldWidth() / 800;
+        this.width = ((float) this.logicHandler.getMikeHealth() / 100) * 400;
+
+        //        this.scaledByViewport = viewport.getWorldWidth() / 800;
 
         // Draw the elements
         this.batch.begin();
+
+        this.health.draw(batch, 200, 400, width, 50);
+        this.health.scale(50, 50);
+        this.font.draw(batch, "MIKE FREEMAN", 360, 475);
+
         this.batch.draw(
-                MenuBackground, 0, 0, viewport.getWorldWidth(), (viewport.getWorldHeight()));
+                this.MenuBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight() / 2);
 
         switch (this.statesFSA.returnState()) {
             case OPTIONS:
                 // Draw the stage and the buttons
+                this.batch.end();
                 this.optionsStage.draw();
                 Gdx.input.setInputProcessor(this.optionsStage);
                 break;
             case INFO:
                 this.font.draw(batch, "Dr Mike J Freeman - the legendary lecturer", 100, 100);
+
+                this.batch.end();
 
                 this.infoStage.draw();
                 Gdx.input.setInputProcessor(this.infoStage);
@@ -250,19 +293,25 @@ public class BossScreen implements Screen {
                     throw new RuntimeException(e);
                 }
 
+                this.batch.end();
+
                 Gdx.input.setInputProcessor(this.attackStage);
 
                 break;
 
             case FINALATTACK:
+                this.batch.end();
+                this.finalAttackStage.draw();
+                Gdx.input.setInputProcessor(this.finalAttackStage);
                 break;
             case WIN:
+                this.batch.end();
                 Gdx.input.setInputProcessor(this.winStage);
 
                 break;
         }
 
-        this.batch.end();
+        //        this.batch.end();
     }
 
     @Override
