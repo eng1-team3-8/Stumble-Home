@@ -1,7 +1,6 @@
 package io.github.stumblehome.Entities;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
+import static java.lang.Math.*;
 
 import com.badlogic.gdx.graphics.Texture;
 
@@ -30,10 +29,9 @@ public class BossFightEntity extends NonPlayerEntity {
     @Override
     public boolean checkColliding(float playerCentreX, float playerCentreY) {
 
-        double distance =
-                sqrt(
-                        pow(playerCentreX - this.getCentreX(), 2)
-                                + pow(playerCentreY - this.getCentreY(), 2));
+        double distance = abs(playerCentreX - this.getX());
+
+        System.out.println(distance + " " + playerCentreX + " " + this.getX());
 
         return distance < 30f;
     }
