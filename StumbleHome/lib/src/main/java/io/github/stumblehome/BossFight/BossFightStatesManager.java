@@ -9,17 +9,29 @@ package io.github.stumblehome.BossFight;
  */
 public class BossFightStatesManager {
 
+    // The current state of the machine
     private BossFightStates currentState;
 
-    public BossFightStatesManager() {
+  /**
+   * This constructor creates the machine and sets the state to OPTIONS
+   */
+  public BossFightStatesManager() {
         this.currentState = BossFightStates.OPTIONS;
     }
 
-    public BossFightStates returnState() {
+  /**
+   * Getter for the current state
+   * @return BossFightStates
+   */
+  public BossFightStates returnState() {
         return this.currentState;
     }
 
-    public void moveStates(int move) {
+  /**
+   * This is the method enclosing all the transitions between the states
+   * @param move integer: How many places to move (0 is for states that were added later)
+   */
+  public void moveStates(int move) {
         // Validity checking, states can only move one state at a time - the automata can only move
         // from its state to the next
         // or to the previous state
