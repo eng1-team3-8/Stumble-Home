@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.stumblehome.Entities.BossFightEntity;
 
@@ -17,10 +18,13 @@ public class BossFightLogic {
     private int mikeHealth = 100;
     private boolean playerWon = false;
     private BossFightStatesManager statesFSA;
+    private FitViewport viewport;
 
-    public BossFightLogic(Texture cutCable, BossFightStatesManager statesFSA) {
+    public BossFightLogic(
+            Texture cutCable, BossFightStatesManager statesFSA, FitViewport viewport) {
         this.cutCable = cutCable;
         this.statesFSA = statesFSA;
+        this.viewport = viewport;
     }
 
     private void checkIfStopped(BossFightEntity[] cables, Scissors scissors)
@@ -65,7 +69,7 @@ public class BossFightLogic {
         System.out.println("Overlap is being checked");
         for (int i = 0; i < cables.length; i++) {
             System.out.println("Cable: " + i);
-            if (scissors.checkColliding(cables[i].getX(), cables[i].getY())) {
+            if (scissors.checkOverlap(cables[i].getX(), this.viewport)) {
                 System.out.println("Overlaps!");
                 if (this.cableStatus[i]) {
                     updateSprite(cables[i], i);
@@ -102,6 +106,7 @@ public class BossFightLogic {
 
         if (this.mikeHealth <= 0) {
             this.mikeHealth = 0;
+            this.playerWon = true;
             this.statesFSA.moveStates(1);
         }
     }
@@ -126,5 +131,9 @@ public class BossFightLogic {
             this.playerHealth = 0;
             this.statesFSA.moveStates(0);
         }
+    }
+
+    public boolean checkIfWon() {
+        return this.playerWon;
     }
 }
