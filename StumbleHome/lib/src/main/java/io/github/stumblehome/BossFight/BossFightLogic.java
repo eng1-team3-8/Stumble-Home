@@ -24,7 +24,7 @@ public class BossFightLogic {
     // Texture of the cut cable
     private final Texture cutCable;
 
-    //Boolean holding if it is the final stage
+    // Boolean holding if it is the final stage
     private boolean finalStage = false;
 
     // Health variables for the player and Mike
@@ -40,13 +40,13 @@ public class BossFightLogic {
     // The viewport of the bossfight
     private FitViewport viewport;
 
-  /**
-   * Constructor for the BossFightLogic object
-   *
-   * @param cutCable Texture: The texture of the cut cable to update the cable object to, once it has been cut
-   * @param statesFSA BossFightStatesManager: The FSA of the boss fight, allowing the logic handler to update the state
-   * @param viewport FitViewport: The viewport of the bossfight, allowing for the logic events to be scaled
-   */
+    /**
+     * Constructor for the BossFightLogic object
+     *
+     * @param cutCable Texture: The texture of the cut cable to update the cable object to, once it has been cut
+     * @param statesFSA BossFightStatesManager: The FSA of the boss fight, allowing the logic handler to update the state
+     * @param viewport FitViewport: The viewport of the bossfight, allowing for the logic events to be scaled
+     */
     public BossFightLogic(
             Texture cutCable, BossFightStatesManager statesFSA, FitViewport viewport) {
         this.cutCable = cutCable;
@@ -54,14 +54,14 @@ public class BossFightLogic {
         this.viewport = viewport;
     }
 
-  /**
-   * This method checks if the scissors are stopped, and when they are checks if the
-   * scissors and the cable overlaps, makes mike attack and changes the state.
-   * ]
-   * @param cables BossFightEntity[]: The array of cables
-   * @param scissors Scissors: The scissors
-   * @throws InterruptedException
-   */
+    /**
+     * This method checks if the scissors are stopped, and when they are checks if the
+     * scissors and the cable overlaps, makes mike attack and changes the state.
+     * ]
+     * @param cables BossFightEntity[]: The array of cables
+     * @param scissors Scissors: The scissors
+     * @throws InterruptedException
+     */
     private void checkIfStopped(BossFightEntity[] cables, Scissors scissors)
             throws InterruptedException {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !isStopped) {
@@ -81,15 +81,15 @@ public class BossFightLogic {
         //                }
     }
 
-  /**
-   * This is the method that checks if the space has been pressed, and if not keeps the scissors moving
-   *
-   * @param viewport FitViewport: The viewport to ensure that everything scales
-   * @param batch SpriteBatch: The sprite batch, allowing the scissors to be drawn
-   * @param scissors Scissors: The scissors
-   * @param cables BossFightEntity[]: The array of cables
-   * @throws InterruptedException
-   */
+    /**
+     * This is the method that checks if the space has been pressed, and if not keeps the scissors moving
+     *
+     * @param viewport FitViewport: The viewport to ensure that everything scales
+     * @param batch SpriteBatch: The sprite batch, allowing the scissors to be drawn
+     * @param scissors Scissors: The scissors
+     * @param cables BossFightEntity[]: The array of cables
+     * @throws InterruptedException
+     */
     public void moveScissors(
             Viewport viewport, SpriteBatch batch, Scissors scissors, BossFightEntity[] cables)
             throws InterruptedException {
@@ -101,27 +101,27 @@ public class BossFightLogic {
         scissors.draw(batch);
     }
 
-  /**
-   * This method draws all the cables in the cables array
-   *
-   * @param cables BossFightEntity[]: The array of cables
-   * @param batch SpriteBatch: The sprite batch allowing the cables to be drawn
-   */
-  public void drawCables(BossFightEntity[] cables, SpriteBatch batch) {
+    /**
+     * This method draws all the cables in the cables array
+     *
+     * @param cables BossFightEntity[]: The array of cables
+     * @param batch SpriteBatch: The sprite batch allowing the cables to be drawn
+     */
+    public void drawCables(BossFightEntity[] cables, SpriteBatch batch) {
         for (int i = 0; i < cables.length; i++) {
             cables[i].draw(batch);
         }
     }
 
-  /**
-   * This method checks if there is an overlap between any of the cables and the scissors
-   *
-   *
-   * @param cables BossFightEntity[]: The array of cables
-   * @param scissors Scissors: The scissors
-   * @throws InterruptedException
-   */
-  public void checkOverlap(BossFightEntity[] cables, Scissors scissors)
+    /**
+     * This method checks if there is an overlap between any of the cables and the scissors
+     *
+     *
+     * @param cables BossFightEntity[]: The array of cables
+     * @param scissors Scissors: The scissors
+     * @throws InterruptedException
+     */
+    public void checkOverlap(BossFightEntity[] cables, Scissors scissors)
             throws InterruptedException {
         System.out.println("Overlap is being checked");
         for (int i = 0; i < cables.length; i++) {
@@ -153,21 +153,21 @@ public class BossFightLogic {
         this.finalStage = true;
     }
 
-  /**
-   * A getter to check if the bossfight is in its final stage
-   * @return boolean
-   */
-  public boolean isFinalStage() {
+    /**
+     * A getter to check if the bossfight is in its final stage
+     * @return boolean
+     */
+    public boolean isFinalStage() {
         return this.finalStage;
     }
 
-  /**
-   * This method attacks Mike
-   *
-   * The attacks are randomly generated and multiplied.
-   * Additionally, if Mike's health is at 0, the player wins
-   */
-  public void attackMike() {
+    /**
+     * This method attacks Mike
+     *
+     * The attacks are randomly generated and multiplied.
+     * Additionally, if Mike's health is at 0, the player wins
+     */
+    public void attackMike() {
         double damage = Math.random();
         damage = damage * 40;
 
@@ -180,26 +180,26 @@ public class BossFightLogic {
         }
     }
 
-  /**
-   * Getter for Mike's health
-   * @return integer
-   */
-  public int getMikeHealth() {
+    /**
+     * Getter for Mike's health
+     * @return integer
+     */
+    public int getMikeHealth() {
         return this.mikeHealth;
     }
 
-  /**
-   * Getter for player health
-   * @return integer
-   */
-  public int getPlayerHealth() {
+    /**
+     * Getter for player health
+     * @return integer
+     */
+    public int getPlayerHealth() {
         return this.playerHealth;
     }
 
-  /**
-   * Method for Mike attacking the player
-   */
-  public void mikeAttacks() {
+    /**
+     * Method for Mike attacking the player
+     */
+    public void mikeAttacks() {
         double damage = Math.random();
         damage = damage * 10;
 
@@ -213,11 +213,11 @@ public class BossFightLogic {
         }
     }
 
-  /**
-   * Getter checking if the player has won
-   * @return boolean
-   */
-  public boolean checkIfWon() {
+    /**
+     * Getter checking if the player has won
+     * @return boolean
+     */
+    public boolean checkIfWon() {
         return this.playerWon;
     }
 }
