@@ -288,13 +288,12 @@ public class GameScreen implements Screen {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
             game.setScreen(new LoseScreen(game, remainingTime, score));
         }
-;
+        ;
         if (dialogScaleFactor < 0) {
-            dialogScaleFactor = dialogScaleFactor*-1;
+            dialogScaleFactor = dialogScaleFactor * -1;
         }
         // Sets achievement box to bottom right
-        float w =
-                Gdx.graphics.getWidth()/2;
+        float w = Gdx.graphics.getWidth() / 2;
         achievementBox.setPosition(w, 0);
         // Pads text to avoid truncation
         achievementBox.getContentTable().padLeft(4f);
