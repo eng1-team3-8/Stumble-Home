@@ -409,7 +409,7 @@ public class GameScreen implements Screen {
         // Check if Bob has been squished
         if (bob.checkColliding(playerCentreX, playerCentreY)) {
             hiddenEventCounter++;
-            game.setScreen(new BossScreen(game, this.playerName));
+            game.setScreen(new BossScreen(game, this.playerName, this));
 
             setAchievementText("Someone didn't like SYS1...");
         }
