@@ -112,9 +112,11 @@ public class GameScreen implements Screen {
     private int hinderingEventCounter = 0;
 
     // Achievements Popup
-    Stage stage;
-    Dialog achievementBox;
-    boolean eventTriggered = false;
+    private Stage stage;
+    private Dialog achievementBox;
+    private boolean eventTriggered = true;
+    private float oldWidth = 0;
+    private float dialogScaleFactor = 0;
 
     /**
      * Constructs the {@code GameScreen} and initializes the map, player, camera, and in-game events.
@@ -233,8 +235,13 @@ public class GameScreen implements Screen {
         // Achievements Popup
         stage = new Stage(new ScreenViewport());
         Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+
         achievementBox = new Dialog("Achievement", skin);
         achievementBox.getTitleTable().padBottom(15f);
+        achievementBox.setColor(Color.LIME);
+        achievementBox.scaleBy(0.25f);
+
+        oldWidth = Gdx.graphics.getWidth();
     }
 
     @Override
@@ -282,8 +289,15 @@ public class GameScreen implements Screen {
             game.setScreen(new LoseScreen(game, remainingTime, score));
         }
 
+        float mod = 1;
+        if (dialogScaleFactor < 0) {
+            mod = -1f;
+        }
         // Sets achievement box to bottom right
-        achievementBox.setPosition((Gdx.graphics.getWidth() / 2), 0);
+        float w =
+                Gdx.graphics.getWidth()
+                        - (achievementBox.getWidth() * (dialogScaleFactor * mod + 0.25f));
+        achievementBox.setPosition(w, 0);
         // Pads text to avoid truncation
         achievementBox.getContentTable().padLeft(4f);
         achievementBox.getContentTable().padRight(4f);
@@ -580,6 +594,15 @@ public class GameScreen implements Screen {
     public void resize(int width, int height) {
         game.viewport.update(width, height);
         stage.getViewport().update(width, height, true);
+
+        // Scales achievement box to new screen size
+        float temp = dialogScaleFactor;
+        dialogScaleFactor = (width / oldWidth);
+        if (temp > dialogScaleFactor) {
+            dialogScaleFactor = -dialogScaleFactor;
+        }
+        achievementBox.scaleBy(dialogScaleFactor - 1);
+        oldWidth = width;
     }
 
     @Override
