@@ -74,13 +74,20 @@ public class BossScreen implements Screen {
     // Logic handler
     private BossFightLogic logicHandler;
 
-    // Health bar
-    private NinePatch health;
-    private float width;
+    // Health bars
+    private NinePatch mikeHealth;
+    private NinePatch playerHealth;
+    private float mikeWidth;
+    private float playerWidth;
 
-    public BossScreen(final StumbleHome game, final String playerName) {
+    // The game screen
+    private final GameScreen gameScreen;
+
+    public BossScreen(
+            final StumbleHome game, final String playerName, final GameScreen gameScreen) {
         this.game = game;
         this.playerName = playerName;
+        this.gameScreen = gameScreen;
 
         this.batch = new SpriteBatch();
         this.background = new SpriteBatch();
@@ -136,10 +143,13 @@ public class BossScreen implements Screen {
         //        this.BossMusic.play(); // Uncomment when you want music
 
         // Create the logic handler
-        this.logicHandler = new BossFightLogic(this.BrokenCable);
+        this.logicHandler = new BossFightLogic(this.BrokenCable, this.statesFSA);
 
-        // Health bar
-        this.health = new NinePatch(new Texture("Sprites/BossFight/RedGradient.png"), 0, 0, 0, 0);
+        // Health bars
+        this.mikeHealth =
+                new NinePatch(new Texture("Sprites/BossFight/RedGradient.png"), 0, 0, 0, 0);
+        this.playerHealth =
+                new NinePatch(new Texture("Sprites/BossFight/RedGradient.png"), 0, 0, 0, 0);
     }
 
     @Override
@@ -226,8 +236,32 @@ public class BossScreen implements Screen {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         logicHandler.attackMike();
-                        System.out.println(logicHandler.getMikeHealth() + " " + width);
+                        System.out.println(logicHandler.getMikeHealth() + " " + mikeWidth);
                         statesFSA.moveStates(-1);
+                        logicHandler.mikeAttacks();
+                    }
+                });
+
+        // Create the shared win/loss stage (there's only an acknowledgement button)
+
+        TextButton leaveButton = new TextButton("LEAVE", skin);
+
+        X = viewport.getWorldWidth() / 2;
+        Y = viewport.getWorldHeight() / 2;
+
+        leaveButton.setBounds(X, Y, 200, 50);
+
+        // Draw the button
+        this.winStage.addActor(leaveButton);
+
+        // Button listener
+        leaveButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        //                    System.out.println(logicHandler.getMikeHealth() + " "
+                        // + mikeWidth);
+                        game.setScreen(gameScreen);
                     }
                 });
     }
@@ -237,19 +271,26 @@ public class BossScreen implements Screen {
         // Make the Screen grey
         ScreenUtils.clear(Color.GRAY);
 
-        this.width = ((float) this.logicHandler.getMikeHealth() / 100) * 400;
-
-        //        this.scaledByViewport = viewport.getWorldWidth() / 800;
+        this.mikeWidth = ((float) this.logicHandler.getMikeHealth() / 100) * 400;
+        this.playerWidth = ((float) this.logicHandler.getPlayerHealth() / 100) * 100;
 
         // Draw the elements
         this.batch.begin();
 
-        this.health.draw(batch, 200, 400, width, 50);
-        this.health.scale(50, 50);
+        // Create Mike's health bar
+        this.mikeHealth.draw(batch, 200, 400, mikeWidth, 50);
+        this.mikeHealth.scale(50, 50);
         this.font.draw(batch, "MIKE FREEMAN", 360, 475);
 
+        // Create the player's health bar
+        this.playerHealth.draw(batch, 600, 10, playerWidth, 25);
+        this.playerHealth.scale(20, 20);
+        this.font.draw(batch, "Player Health", 610, 30);
+
+        // This doesn't draw for some reason - it seemed it just decided from one day to the next
+        // not to work
         this.batch.draw(
-                this.MenuBackground, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight() / 2);
+                this.MenuBackground, 1, 1, viewport.getWorldWidth(), viewport.getWorldHeight() / 2);
 
         switch (this.statesFSA.returnState()) {
             case OPTIONS:
@@ -287,8 +328,7 @@ public class BossScreen implements Screen {
                             viewport,
                             batch,
                             scissors,
-                            new BossFightEntity[] {cable1, cable2, cable3, cable4},
-                            statesFSA);
+                            new BossFightEntity[] {cable1, cable2, cable3, cable4});
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -305,10 +345,26 @@ public class BossScreen implements Screen {
                 Gdx.input.setInputProcessor(this.finalAttackStage);
                 break;
             case WIN:
+                this.font.draw(
+                        batch,
+                        "You Win!!!!!!\r\nMike has retreated to some far off place (his office)",
+                        100,
+                        100);
                 this.batch.end();
+                this.winStage.draw();
                 Gdx.input.setInputProcessor(this.winStage);
-
                 break;
+            case LOST:
+                this.font.draw(
+                        batch,
+                        "You lost!\r\n"
+                            + "Mike has gotten the better of you (he was going easy as well) and"
+                            + " you now have plenty of time to reflect\r\n",
+                        100,
+                        100);
+                this.batch.end();
+                this.winStage.draw();
+                Gdx.input.setInputProcessor(this.winStage);
         }
 
         //        this.batch.end();
