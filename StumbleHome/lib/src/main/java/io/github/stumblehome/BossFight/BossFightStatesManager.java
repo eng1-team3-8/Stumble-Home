@@ -44,6 +44,13 @@ public class BossFightStatesManager {
             case ATTACK:
                 this.currentState = BossFightStates.OPTIONS;
                 break;
+            case FINALATTACK:
+                if (move == 1) {
+                    this.currentState = BossFightStates.WIN;
+                } else {
+                    this.currentState = BossFightStates.OPTIONS;
+                }
+                break;
         }
     }
 }

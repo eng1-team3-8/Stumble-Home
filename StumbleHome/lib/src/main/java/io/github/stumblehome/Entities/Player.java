@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -16,21 +15,15 @@ import java.util.Map;
  * Handles the player character's movement, animations, and interactions with the game world.
  * Supports both normal and reversed controls depending on the player's state.
  */
-public class Player extends Sprite {
-    // Size of the player's collision box and sprite.
-    public final float playerSize = 0.8f;
+public class Player extends Entity {
+    public static final String ASSET = "character.png";
+
     // Delta time value for consistent movement speed.
     private float delta = Gdx.graphics.getDeltaTime();
     // Width of the game map in tiles.
     private final float mapWidth;
     // Height of the game map in tiles.
     private final float mapHeight;
-    // Spritesheet containing all player animation frames.
-    public Texture characterSheet;
-    // Current x position of the player on the map.
-    public float playerX;
-    // Current y position of the player on the map.
-    public float playerY;
     // Controls whether the player has reversed controls (1 = drunk, 0 = sober).
     public boolean isDrunk = true;
     // Speed of the player
@@ -41,27 +34,17 @@ public class Player extends Sprite {
     TiledMapTileLayer collisionLayer;
     // Map of all animations with key of animation name
     private Map<Animation_enum, Animation<TextureRegion>> animations;
-    // Currently active animation being played.
-    private Animation<TextureRegion> currentAnimation;
-    // Previous animation, used to reset timing when animation changes.
-    private Animation<TextureRegion> previousAnimation;
-    // Time elapsed in the current animation.
-    private float stateTime;
     // The direction the player was last moving or facing.
     private Animation_enum lastDirection = Animation_enum.DOWN;
 
-    /**
-     * Constructs a new player with the given sprite, map boundaries and layer which contains
-     * hedges in the map. Also calls method to initialize animations.
-     *
-     * @param sprite the sprite containing the player texture
-     * @param mapWidth width of the game map
-     * @param mapHeight height of the game map
-     * @param collisionLayer the tile layer used for collision detection
-     */
     public Player(
-            Sprite sprite, float mapWidth, float mapHeight, TiledMapTileLayer collisionLayer) {
-        super(sprite);
+            Texture texture,
+            float size,
+            float[] position,
+            float mapWidth,
+            float mapHeight,
+            TiledMapTileLayer collisionLayer) {
+        super(texture, size, position);
 
         // Initialize player animations
         initializeAnimations();
@@ -75,6 +58,7 @@ public class Player extends Sprite {
         SwapControls();
 
         this.collisionLayer = collisionLayer;
+        System.out.println(this.canMoveTo(2f, 2f));
     }
 
     /**
@@ -94,7 +78,7 @@ public class Player extends Sprite {
 
         animations = new HashMap<Animation_enum, Animation<TextureRegion>>();
 
-        characterSheet = this.getTexture();
+        Texture characterSheet = this.getTexture();
         TextureRegion[] walk_frames = new TextureRegion[NUM_WALK_FRAMES];
         TextureRegion[] stand_frames = new TextureRegion[NUM_STAND_FRAMES];
 
@@ -142,7 +126,7 @@ public class Player extends Sprite {
         walk_frames[3] = new TextureRegion(characterSheet, 152, 122, FRAME_WIDTH, FRAME_HEIGHT);
         animations.put(Animation_enum.WALK_UP, new Animation<>(0.1f, walk_frames));
 
-        stateTime = 0f;
+        state_time = 0f;
     }
 
     /**
@@ -183,41 +167,41 @@ public class Player extends Sprite {
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             // RIGHT key -> move LEFT
             moveX = player_speed * delta;
-            currentAnimation = animations.get(Animation_enum.WALK_RIGHT);
+            current_animation = animations.get(Animation_enum.WALK_RIGHT);
             lastDirection = Animation_enum.LEFT;
             moving = true;
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
                 || Gdx.input.isKeyPressed(Input.Keys.A)) {
             // LEFT key -> move RIGHT
             moveX = -player_speed * delta;
-            currentAnimation = animations.get(Animation_enum.WALK_LEFT);
+            current_animation = animations.get(Animation_enum.WALK_LEFT);
             lastDirection = Animation_enum.RIGHT;
             moving = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             // UP key -> move DOWN
             moveY = player_speed * delta;
-            currentAnimation = animations.get(Animation_enum.WALK_UP);
+            current_animation = animations.get(Animation_enum.WALK_UP);
             lastDirection = Animation_enum.DOWN;
             moving = true;
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)
                 || Gdx.input.isKeyPressed(Input.Keys.S)) {
             // DOWN key -> move UP
             moveY = -player_speed * delta;
-            currentAnimation = animations.get(Animation_enum.WALK_DOWN);
+            current_animation = animations.get(Animation_enum.WALK_DOWN);
             lastDirection = Animation_enum.UP;
             moving = true;
         }
 
-        if (moveX != 0 && canMoveTo(playerX + moveX, playerY)) {
-            playerX += moveX;
+        if (moveX != 0 && canMoveTo(this.getX() + moveX, this.getY())) {
+            this.setX(this.getX() + moveX);
         }
-        if (moveY != 0 && canMoveTo(playerX, playerY + moveY)) {
-            playerY += moveY;
+        if (moveY != 0 && canMoveTo(this.getX(), this.getY() + moveY)) {
+            this.setY(this.getY() + moveY);
         }
 
         if (!moving) {
-            currentAnimation = animations.get(lastDirection);
+            current_animation = animations.get(lastDirection);
         }
         clampPlayerPosition();
     }
@@ -226,8 +210,8 @@ public class Player extends Sprite {
      * Keeps the player within map boundaries by constraining position values.
      */
     private void clampPlayerPosition() {
-        playerX = MathUtils.clamp(playerX, 0, mapWidth - playerSize);
-        playerY = MathUtils.clamp(playerY, 0, mapHeight - playerSize);
+        this.setX(MathUtils.clamp(this.getX(), 0, mapWidth - frame_size));
+        this.setY(MathUtils.clamp(this.getY(), 0, mapHeight - frame_size));
     }
 
     /**
@@ -240,9 +224,9 @@ public class Player extends Sprite {
      */
     public boolean canMoveTo(float x, float y) {
         return isTileBlocked(x, y)
-                && isTileBlocked(x + playerSize, y)
-                && isTileBlocked(x, y + playerSize)
-                && isTileBlocked(x + playerSize, y + playerSize);
+                && isTileBlocked(x + frame_size, y)
+                && isTileBlocked(x, y + frame_size)
+                && isTileBlocked(x + frame_size, y + frame_size);
     }
 
     /**
@@ -284,13 +268,13 @@ public class Player extends Sprite {
      */
     public void logic() {
         // Reset animation time if animation changed
-        if (currentAnimation != previousAnimation) {
-            stateTime = 0f;
-            previousAnimation = currentAnimation;
+        if (current_animation != previous_animation) {
+            state_time = 0f;
+            previous_animation = current_animation;
         }
 
         // Update animation time
-        stateTime += Gdx.graphics.getDeltaTime();
+        state_time += Gdx.graphics.getDeltaTime();
     }
 
     /**
@@ -301,13 +285,13 @@ public class Player extends Sprite {
     public void draw(SpriteBatch batch) {
         // Determine which frame to draw
         TextureRegion frameToDraw;
-        frameToDraw = currentAnimation.getKeyFrame(stateTime, true);
+        frameToDraw = current_animation.getKeyFrame(state_time, true);
 
         // Draw the character with proper aspect ratio
         // Frames are 25x49 pixels (width x height), aspect ratio = 49/25 = 1.96
         float aspectRatio = 49f / 25f;
-        float drawHeight = playerSize * aspectRatio;
-        batch.draw(frameToDraw, playerX, playerY, playerSize, drawHeight);
+        float drawHeight = frame_size * aspectRatio;
+        batch.draw(frameToDraw, this.getX(), this.getY(), frame_size, drawHeight);
     }
 
     public void slowDownPlayer(float amount) {

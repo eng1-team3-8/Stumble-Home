@@ -3,7 +3,6 @@ package io.github.stumblehome.Entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
@@ -16,8 +15,6 @@ public abstract class Entity extends Sprite {
 
     // Size of the entity frames when rendered
     public final float frame_size;
-    // The sprite batch
-    public SpriteBatch batch;
     // Currently active animation being played.
     protected Animation<TextureRegion> current_animation;
     // Previous animation, used to reset timing when animation changes.
