@@ -94,12 +94,6 @@ public class BossScreen implements Screen {
     final boolean musicToggle;
     private float volume;
 
-    public BossScreen(
-            final StumbleHome game,
-            final String playerName,
-            final GameScreen gameScreen,
-            final boolean musicToggle,
-            float volume) {
   /**
    * This is the constructor for the bossfight.
    *
@@ -107,7 +101,7 @@ public class BossScreen implements Screen {
    * @param gameScreen GameScreen: The gamescreen it has just come from, so it can return to it after the fight
    */
     public BossScreen(
-            final StumbleHome game, final GameScreen gameScreen) {
+            final StumbleHome game, final GameScreen gameScreen, final boolean musicToggle, float volume) {
         this.game = game;
         this.gameScreen = gameScreen;
         this.musicToggle = musicToggle;
