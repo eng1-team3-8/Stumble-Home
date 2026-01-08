@@ -132,7 +132,7 @@ public class BossScreen implements Screen {
                         new Texture("Sprites/BossFight/Cable.png"), 150f, new float[] {463, 0});
 
         // Assign the textures
-        this.MenuBackground = new Texture("Sprites/BossFight/Menu-Background.png");
+        this.MenuBackground = new Texture("Sprites/BossFight/MenuBackground.png");
         this.Switch = new Texture("Sprites/BossFight/Switch.png");
         this.BrokenCable = new Texture("Sprites/BossFight/Cable-Cut.png");
         this.PacketUDP = new Texture("Sprites/BossFight/UDP-Packet.png");
