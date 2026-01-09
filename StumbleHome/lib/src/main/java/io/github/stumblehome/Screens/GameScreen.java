@@ -355,11 +355,10 @@ public class GameScreen implements Screen {
         // Check collision between player and water bottle
         if (bottle.checkColliding(playerCentreX, playerCentreY)) {
             // Player collected the water bottle - becomes sober
-            if (player.isDrunk) {
-                player.SwapControls();
+            if (player.isPlayerDrunk()) {
                 msg.set_time(Messages.REMEMBERKEYCARD, 3f);
             }
-            player.isDrunk = false;
+            player.setSober();
             helpfulEventCounter++;
 
             setAchievementText("Glad that wasn't Vodka!");
@@ -391,7 +390,7 @@ public class GameScreen implements Screen {
             // player attempts to use chainsaw
             chainsaw.UseChainsaw(player, collisionLayer);
         }
-
+        //System.out.println(player.isPlayerDrunk());
         // Check if collision with beer
         if (beer.checkColliding(playerCentreX, playerCentreY)) {
             hinderingEventCounter++;
@@ -411,7 +410,7 @@ public class GameScreen implements Screen {
         // Check if collision with chicken
         if (chicken.checkColliding(playerCentreX, playerCentreY)) {
             helpfulEventCounter++;
-            if (player.isDrunk) {
+            if (player.isPlayerDrunk()) {
                 msg.set_time(Messages.REMEMBERKEYCARD, 3f);
             }
             chicken.eatFood(player);

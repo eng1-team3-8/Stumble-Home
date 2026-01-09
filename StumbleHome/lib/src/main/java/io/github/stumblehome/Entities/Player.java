@@ -25,7 +25,7 @@ public class Player extends Entity {
     // Height of the game map in tiles.
     private final float mapHeight;
     // Controls whether the player has reversed controls (1 = drunk, 0 = sober).
-    public boolean isDrunk = true;
+    private boolean is_drunk = true;
     // Speed of the player
     public float player_speed;
     // Boolean to see if the player can get drunk (default true, only false after a meal)
@@ -52,7 +52,7 @@ public class Player extends Entity {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
         this.player_speed = 5f;
-        this.isDrunk = false;
+        this.is_drunk = false;
 
         // Intialises as normal for understandability and then gets player drunk
         SwapControls();
@@ -146,16 +146,16 @@ public class Player extends Entity {
         animations.put(Animation_enum.RIGHT, swap_placeholder);
 
         player_speed = -player_speed;
-        if (isDrunk) {
-            isDrunk = false;
+        if (is_drunk) {
+            is_drunk = false;
         } else {
-            isDrunk = true;
+            is_drunk = true;
         }
     }
 
     /**
      * Processes keyboard input and updates player position based on movement controls.
-     * Handles both normal and reversed controls depending on the isDrunk state.
+     * Handles both normal and reversed controls depending on the is_drunk state.
      * Also checks for collisions before allowing movement.
      */
     public void input() {
@@ -294,21 +294,21 @@ public class Player extends Entity {
     }
 
     public void slowDownPlayer(float amount) {
-        if (isDrunk) {
+        if (is_drunk) {
             amount *= -1;
         }
         this.player_speed -= amount;
     }
 
     public void speedUpPlayer(float amount) {
-        if (isDrunk) {
+        if (is_drunk) {
             amount *= -1;
         }
         this.player_speed += amount;
     }
 
     public EntityDirection getDirection() {
-        if (isDrunk) {
+        if (is_drunk) {
             if (lastDirection == Animation_enum.DOWN || lastDirection == Animation_enum.WALK_DOWN) {
                 return EntityDirection.DOWN;
             }
@@ -349,5 +349,27 @@ public class Player extends Entity {
         WALK_LEFT,
         WALK_RIGHT,
         WALK_UP
+    }
+
+    public boolean setDrunk() {
+        if (canGetDrunk && !is_drunk) {
+            SwapControls();
+        }
+        else if (is_drunk) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean setSober() {
+        if (is_drunk) {
+            SwapControls();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isPlayerDrunk() {
+        return is_drunk;
     }
 }

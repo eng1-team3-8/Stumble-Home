@@ -24,10 +24,7 @@ public class Food extends CollectableEntity {
 
     public void eatFood(Player player) {
         player.canGetDrunk = false;
-        if (player.isDrunk) {
-            player.SwapControls();
-        }
-        player.isDrunk = false;
+        player.setSober();
     }
 
     public void logic() {}

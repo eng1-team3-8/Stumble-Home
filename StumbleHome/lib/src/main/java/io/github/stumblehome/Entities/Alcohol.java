@@ -24,10 +24,7 @@ public class Alcohol extends CollectableEntity {
     }
 
     public void makeDrunk(Player player) {
-        player.isDrunk = true;
-        if (!player.canGetDrunk) {
-            player.SwapControls();
-        }
+        player.setDrunk();
     }
 
     public void logic() {}
