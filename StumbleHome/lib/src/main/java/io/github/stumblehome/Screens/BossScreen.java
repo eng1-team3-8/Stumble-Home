@@ -90,16 +90,25 @@ public class BossScreen implements Screen {
     // The game screen
     private final GameScreen gameScreen;
 
-  /**
-   * This is the constructor for the bossfight.
-   *
-   * @param game StumbleHome: The game instance
-   * @param gameScreen GameScreen: The gamescreen it has just come from, so it can return to it after the fight
-   */
+    // Music control
+    final boolean musicToggle;
+    private float volume;
+
+    /**
+     * This is the constructor for the bossfight.
+     *
+     * @param game StumbleHome: The game instance
+     * @param gameScreen GameScreen: The gamescreen it has just come from, so it can return to it after the fight
+     */
     public BossScreen(
-            final StumbleHome game, final GameScreen gameScreen) {
+            final StumbleHome game,
+            final GameScreen gameScreen,
+            final boolean musicToggle,
+            float volume) {
         this.game = game;
         this.gameScreen = gameScreen;
+        this.musicToggle = musicToggle;
+        this.volume = volume;
 
         this.batch = new SpriteBatch();
 
@@ -162,10 +171,14 @@ public class BossScreen implements Screen {
         this.BrokenCable = new Texture("Sprites/BossFight/Cable-Cut.png");
         this.PacketUDP = new Texture("Sprites/BossFight/UDP-Packet.png");
 
-        // Music
-        this.BossMusic = Gdx.audio.newMusic(Gdx.files.internal("Sprites/BossFight/Boss-Music.mp3"));
-        this.BossMusic.setLooping(true);
-        this.BossMusic.play(); // Uncomment when you want music
+        // Plays music if enabled
+        if (musicToggle) {
+            this.BossMusic =
+                    Gdx.audio.newMusic(Gdx.files.internal("Sprites/BossFight/Boss-Music.mp3"));
+            this.BossMusic.setLooping(true);
+            this.BossMusic.setVolume(volume);
+            this.BossMusic.play();
+        }
 
         // Create the logic handler
         this.logicHandler = new BossFightLogic(this.BrokenCable, this.statesFSA, this.viewport);
@@ -180,12 +193,12 @@ public class BossScreen implements Screen {
         this.mikeX = (viewport.getWorldWidth() / 2) - (this.viewport.getWorldWidth() / 80) * 9;
     }
 
-  /**
-   * This show method is where the various different stages are constructed.
-   * The different stages correspond to the different states, with the only shared
-   * stage being the win/loss stage.
-   */
-  @Override
+    /**
+     * This show method is where the various different stages are constructed.
+     * The different stages correspond to the different states, with the only shared
+     * stage being the win/loss stage.
+     */
+    @Override
     public void show() {
 
         Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
@@ -256,7 +269,8 @@ public class BossScreen implements Screen {
 
         // Create the final attack stage
 
-        TextButton attackBossButton = new TextButton("ATTACK", skin);
+        TextButton attackBossButton = new TextButton("FIRE RST PACKET", skin);
+        attackBossButton.setColor(Color.RED);
 
         X = (viewport.getWorldWidth() / 2);
         Y = viewport.getWorldHeight() / 5;
@@ -272,7 +286,6 @@ public class BossScreen implements Screen {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         logicHandler.attackMike();
-                        System.out.println(logicHandler.getMikeHealth() + " " + mikeWidth);
                         statesFSA.moveStates(-1);
                         logicHandler.mikeAttacks();
                     }
@@ -295,25 +308,26 @@ public class BossScreen implements Screen {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        BossMusic.stop();
+                        if (musicToggle) {
+                            BossMusic.stop();
+                        }
                         game.setScreen(gameScreen);
+                        gameScreen.resumeMusic();
                     }
                 });
     }
 
-  /**
-   * This is where the different components get drawn depending on the
-   * current state.
-   * If there is any logic, external methods are called.
-   *
-   * @param delta The time in seconds since the last render.
-   */
-  @Override
+    /**
+     * This is where the different components get drawn depending on the
+     * current state.
+     * If there is any logic, external methods are called.
+     *
+     * @param delta The time in seconds since the last render.
+     */
+    @Override
     public void render(float delta) {
         // Make the Screen grey
         ScreenUtils.clear(Color.GRAY);
-
-        System.out.println(viewport.getWorldWidth() + " " + viewport.getWorldHeight());
 
         this.mikeWidth = ((float) this.logicHandler.getMikeHealth() / 100) * 400;
         this.playerWidth = ((float) this.logicHandler.getPlayerHealth() / 100) * 100;
@@ -463,9 +477,9 @@ public class BossScreen implements Screen {
     @Override
     public void hide() {}
 
-  /**
-   * Disposing all the components after the boss fight
-   */
+    /**
+     * Disposing all the components after the boss fight
+     */
     @Override
     public void dispose() {
         // Dispose the entities first
@@ -494,6 +508,8 @@ public class BossScreen implements Screen {
         this.winStage.dispose();
 
         // Dispose the music
-        this.BossMusic.dispose();
+        if (musicToggle) {
+            this.BossMusic.dispose();
+        }
     }
 }

@@ -2,7 +2,6 @@ package io.github.stumblehome.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -11,14 +10,32 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.stumblehome.StumbleHome;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
-public class Leaderboard extends MenuScreen {
+public class Achievements extends MenuScreen {
     private ScrollPane scrollPane;
 
-    public Leaderboard(StumbleHome game) {
+    // Map containing achievements completed
+    private Map<String, Boolean> achievementData;
+
+    // Contains all achievements in the game
+    private String[] achievements;
+    // Used to select mode (last player's achievement status or list)
+    private boolean playerAchievements;
+
+    // Used to display player achievement status
+    // Used on win screen
+    public Achievements(StumbleHome game, Map<String, Boolean> achievementData) {
         super(game);
+        this.achievementData = achievementData;
+        playerAchievements = true;
+    }
+
+    // Used to instantiate list of achievements
+    // Used on main menu
+    public Achievements(StumbleHome game) {
+        super(game);
+        playerAchievements = false;
     }
 
     @Override
@@ -26,9 +43,8 @@ public class Leaderboard extends MenuScreen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        // Draws leaderboard screen
-        String boardData = readLeaderBoard();
-        Table leaderboard = leaderboardSetup(boardData);
+        // Draws achievement screen screen
+        Table leaderboard = achievementSetup();
 
         this.scrollPane = new ScrollPane(leaderboard, skin);
         scrollPane.setFillParent(true);
@@ -82,82 +98,57 @@ public class Leaderboard extends MenuScreen {
         scrollPane.clear();
     }
 
-    public Table leaderboardSetup(String boardData) {
+    public Table achievementSetup() {
+        // Adds all achievements
+        achievements =
+                new String[] {
+                    "Glad that wasn't Vodka!",
+                    "Swipe the card!",
+                    "Broken Ankle",
+                    "Here's Johnny!",
+                    "BEER ME!",
+                    "Down the vodka",
+                    "Lava Chicken... TASTY AS HELL",
+                    "War of the Roses...",
+                    "Traitor!!!",
+                    "Switched sides have you??",
+                    "Someone didn't like SYS1...",
+                    "Raised from the dead... RUN!"
+                };
+
         // Adds title to leaderboard
         Table leaderboard = new Table();
-        Label tempRow = new Label("Leaderboard (Top 5):", skin);
+        Label tempRow = new Label("Achievements:", skin);
         tempRow.setFontScale(5f);
         leaderboard.add(tempRow).pad(15);
         leaderboard.row();
 
         tempRow = new Label("Press ESC to exit", skin);
-        leaderboard.add(tempRow).pad(15);
+        tempRow.setFontScale(1f);
+        leaderboard.add(tempRow).pad(5);
         leaderboard.row();
 
-        // Adds error message if leaderboard doesn't exist
-        if (boardData.equals("Complete Game To Set Score")) {
-            tempRow = new Label(boardData, skin);
-            tempRow.setFontScale(3f);
-            leaderboard.add(tempRow).pad(5);
-            leaderboard.row();
-        }
+        // Displays correct type of achievement board
+        if (playerAchievements) {
+            for (String achievement : achievements) {
+                if (achievementData.containsKey(achievement)) {
+                    tempRow = new Label((achievement + ": Achieved"), skin);
+                } else {
+                    tempRow = new Label((achievement + ": X"), skin);
+                }
 
-        // Otherwise read player scores into leaderboard
-        else {
-            // Reads in csv line by line
-            String[] splitBoard = boardData.split("\n");
-            List<String[]> ordered = orderValues(splitBoard);
-            // Inserts each score into the leaderboard
-
-            // Displays top 5 scores
-            int i = 0;
-            while (i < 5 && i < ordered.size()) {
-                String[] s = ordered.get(i);
-                tempRow = new Label(s[0] + ": " + s[1], skin);
                 tempRow.setFontScale(3f);
-                leaderboard.add(tempRow).pad(10);
+                leaderboard.add(tempRow).pad(15);
                 leaderboard.row();
-                i++;
+            }
+        } else {
+            for (String achievement : achievements) {
+                tempRow = new Label(achievement, skin);
+                tempRow.setFontScale(3f);
+                leaderboard.add(tempRow).pad(15);
+                leaderboard.row();
             }
         }
         return leaderboard;
-    }
-
-    public List<String[]> orderValues(String[] splitBoard) {
-        List<String[]> ordered = new ArrayList<>();
-
-        // Orders csv table rows based on score
-        // Uses insertion sort
-        for (String s : splitBoard) {
-            // Splits rows into values
-            String[] tempData = s.split(",");
-
-            if (tempData.length >= 2) {
-                if (ordered.size() > 0) {
-                    int pos = 0;
-
-                    while (pos != ordered.size()
-                            && Integer.valueOf(ordered.get(pos)[1])
-                                    > Integer.valueOf(tempData[1])) {
-                        pos += 1;
-                    }
-                    ordered.add(pos, tempData);
-                } else {
-                    ordered.add(tempData);
-                }
-            }
-        }
-        return ordered;
-    }
-
-    private String readLeaderBoard() {
-        boolean file_exists = Gdx.files.local("leaderBoard.csv").exists();
-
-        if (file_exists == false) {
-            return "Complete Game To Set Score";
-        } else {
-            FileHandle file = Gdx.files.local("leaderBoard.csv");
-            return file.readString();
-        }
     }
 }

@@ -6,6 +6,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -28,6 +30,8 @@ public class MainMenuScreen extends MenuScreen {
     private Texture tutorialImage;
     // Flag that determines whether the tutorial image is currently displayed.
     private boolean showTutorial = false;
+    private boolean musicToggle = true;
+    private float volume = 0.1f;
 
     public MainMenuScreen(final StumbleHome game) {
         super(game, "MainMenu.png");
@@ -48,7 +52,16 @@ public class MainMenuScreen extends MenuScreen {
         TextButton playButton = new TextButton("Play", skin);
         TextButton tutorialButton = new TextButton("Tutorial", skin);
         TextButton leaderBoardButton = new TextButton("Leaderboard", skin);
+        TextButton achievementsButton = new TextButton("Achievements", skin);
         TextButton exitButton = new TextButton("Exit", skin);
+
+        // Music Button
+        CheckBox musicButton = new CheckBox("Music", skin);
+        musicButton.setChecked(musicToggle);
+
+        //  Volume control
+        Slider volumeSlider = new Slider(0, 1, 0.01f, false, skin);
+        volumeSlider.setValue(volume);
 
         // set button positions
         float centerX = Gdx.graphics.getWidth() / 2f - 100;
@@ -62,14 +75,20 @@ public class MainMenuScreen extends MenuScreen {
 
         playButton.setBounds(centerX, startY, 200, 50);
         tutorialButton.setBounds(centerX, startY - 60, 200, 50);
-        leaderBoardButton.setBounds(centerX, startY - 120, 200, 50);
+        leaderBoardButton.setBounds(centerX - 105, startY - 120, 200, 50);
+        achievementsButton.setBounds(centerX + 105, startY - 120, 200, 50);
         exitButton.setBounds(centerX, startY - 180, 200, 50);
+        musicButton.setBounds(centerX - 100, startY - 255, 200, 50);
+        volumeSlider.setBounds(centerX + 100, startY - 255, 200, 50);
 
         // adds buttons to stage
         stage.addActor(playButton);
         stage.addActor(tutorialButton);
         stage.addActor(leaderBoardButton);
+        stage.addActor(achievementsButton);
         stage.addActor(exitButton);
+        stage.addActor(musicButton);
+        stage.addActor(volumeSlider);
 
         //  Play button click
         playButton.addListener(
@@ -79,7 +98,10 @@ public class MainMenuScreen extends MenuScreen {
                         if (playerNameInput.getText().equals("")) {
                             // Display warning to enter username
                         } else {
-                            game.setScreen(new GameScreen(game, playerNameInput.getText()));
+                            volume = volumeSlider.getValue();
+                            game.setScreen(
+                                    new GameScreen(
+                                            game, playerNameInput.getText(), musicToggle, volume));
                         }
                     }
                 });
@@ -93,12 +115,21 @@ public class MainMenuScreen extends MenuScreen {
                     }
                 });
 
-        // Tutorial button click
+        // Leaderboard button click
         leaderBoardButton.addListener(
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         game.setScreen(new Leaderboard(game));
+                    }
+                });
+
+        // Achievements button click
+        achievementsButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        game.setScreen(new Achievements(game));
                     }
                 });
 
@@ -108,6 +139,15 @@ public class MainMenuScreen extends MenuScreen {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         Gdx.app.exit();
+                    }
+                });
+
+        // Music button click
+        musicButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        musicToggle = !musicToggle;
                     }
                 });
         Gdx.input.setInputProcessor(stage);

@@ -3,6 +3,7 @@ package io.github.stumblehome.Screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.backends.lwjgl3.audio.Mp3.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,6 +31,7 @@ import io.github.stumblehome.Entities.Rose;
 import io.github.stumblehome.Entities.Twig;
 import io.github.stumblehome.Messages.MessageHandler;
 import io.github.stumblehome.Messages.Messages;
+import java.util.HashMap;
 
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
@@ -114,18 +116,32 @@ public class GameScreen implements Screen {
     // Achievements Popup
     private Stage stage;
     private Dialog achievementBox;
-    private boolean eventTriggered = true;
+    private boolean eventTriggered = false;
     private float oldWidth = 0;
     private float dialogScaleFactor = 0;
+
+    // Achievement Tracker
+    HashMap<String, Boolean> achievementData = new HashMap<>();
+
+    // Music setting tracker
+    final boolean musicToggle;
+    Music music;
+    float volume;
 
     /**
      * Constructs the {@code GameScreen} and initializes the map, player, camera, and in-game events.
      *
      * @param game the main {@link StumbleHome} game instance.
      */
-    public GameScreen(final StumbleHome game, final String playerName) {
+    public GameScreen(
+            final StumbleHome game,
+            final String playerName,
+            final boolean musicToggle,
+            float volume) {
         this.game = game;
         this.playerName = playerName;
+        this.musicToggle = musicToggle;
+        this.volume = volume;
 
         map = new TmxMapLoader().load("map2.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, 1 / 16f);
@@ -242,6 +258,14 @@ public class GameScreen implements Screen {
         achievementBox.scaleBy(0.25f);
 
         oldWidth = Gdx.graphics.getWidth();
+
+        // Plays music if enabled
+        if (musicToggle) {
+            music = (Music) Gdx.audio.newMusic(Gdx.files.internal("music.mp3"));
+            music.setLooping(true);
+            music.setVolume(volume);
+            music.play();
+        }
     }
 
     @Override
@@ -420,7 +444,11 @@ public class GameScreen implements Screen {
         // Check if Bob has been squished
         if (bob.checkColliding(playerCentreX, playerCentreY)) {
             hiddenEventCounter++;
-            game.setScreen(new BossScreen(game, this));
+
+            if (musicToggle) {
+                music.pause();
+            }
+            game.setScreen(new BossScreen(game, this, musicToggle, volume));
 
             setAchievementText("Someone didn't like SYS1...");
         }
@@ -479,7 +507,7 @@ public class GameScreen implements Screen {
             saveLeaderBoardScore(score);
 
             reachedFinish = true;
-            game.setScreen(new WinScreen(game, remainingTime, score));
+            game.setScreen(new WinScreen(game, remainingTime, score, achievementData));
             dispose();
         }
 
@@ -627,6 +655,10 @@ public class GameScreen implements Screen {
         stage.dispose();
         achievementBox.getContentTable().clearChildren();
         achievementBox.remove();
+
+        if (musicToggle) {
+            music.dispose();
+        }
     }
 
     private void saveLeaderBoardScore(int score) {
@@ -638,5 +670,13 @@ public class GameScreen implements Screen {
         eventTriggered = true;
         achievementBox.getContentTable().clearChildren();
         achievementBox.text(text);
+
+        achievementData.put(text, true);
+    }
+
+    public void resumeMusic() {
+        if (musicToggle && !music.isPlaying()) {
+            music.play();
+        }
     }
 }
