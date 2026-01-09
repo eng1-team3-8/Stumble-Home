@@ -68,9 +68,9 @@ public class BossFightLogic {
             isStopped = true;
             this.checkOverlap(cables, scissors);
             this.isStopped = false;
+            this.mikeAttacks();
             this.statesFSA.moveStates(1);
             scissors.setX(105f);
-            this.mikeAttacks();
         }
 
         // Below is code for testing
