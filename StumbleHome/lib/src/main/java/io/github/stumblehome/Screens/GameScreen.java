@@ -312,6 +312,11 @@ public class GameScreen implements Screen {
 
         if (timeUp && !reachedFinish) {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
+
+            if (musicToggle) {
+                music.stop();
+            }
+            
             game.setScreen(new LoseScreen(game, remainingTime, score));
         }
         ;
