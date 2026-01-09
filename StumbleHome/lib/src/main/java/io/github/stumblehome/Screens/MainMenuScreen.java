@@ -63,23 +63,32 @@ public class MainMenuScreen extends MenuScreen {
         Slider volumeSlider = new Slider(0, 1, 0.01f, false, skin);
         volumeSlider.setValue(volume);
 
-        // set button positions
-        float centerX = Gdx.graphics.getWidth() / 2f - 100;
-        float startY = Gdx.graphics.getHeight() / 2f + 50;
+        // Set button size
+        float buttonWidth = Gdx.graphics.getWidth() * 0.25f;
+        float buttonHeight = Gdx.graphics.getHeight() * 0.1f;
+        float centerX = Gdx.graphics.getWidth() / 2f - (buttonWidth / 2f);
+        float startY = Gdx.graphics.getHeight() / 2f + (buttonHeight);
 
+        // Set button positions
         playerNameInput = new TextField("", skin);
-        playerNameInput.setBounds(centerX, startY + 60, 200, 50);
+        playerNameInput.setBounds(centerX, startY + (buttonHeight + 10), buttonWidth, buttonHeight);
         playerNameInput.setAlignment(1);
         playerNameInput.setMessageText("Enter Player Name");
         stage.addActor(playerNameInput);
 
-        playButton.setBounds(centerX, startY, 200, 50);
-        tutorialButton.setBounds(centerX, startY - 60, 200, 50);
-        leaderBoardButton.setBounds(centerX - 105, startY - 120, 200, 50);
-        achievementsButton.setBounds(centerX + 105, startY - 120, 200, 50);
-        exitButton.setBounds(centerX, startY - 180, 200, 50);
-        musicButton.setBounds(centerX - 100, startY - 255, 200, 50);
-        volumeSlider.setBounds(centerX + 100, startY - 255, 200, 50);
+        float widthOffset = (buttonWidth / 2f + 10);
+
+        playButton.setBounds(centerX, startY, buttonWidth, buttonHeight);
+        tutorialButton.setBounds(centerX, startY - (buttonHeight + 10), buttonWidth, buttonHeight);
+        leaderBoardButton.setBounds(
+                centerX - widthOffset, startY - (buttonHeight * 2 + 20), buttonWidth, buttonHeight);
+        achievementsButton.setBounds(
+                centerX + widthOffset, startY - (buttonHeight * 2 + 20), buttonWidth, buttonHeight);
+        exitButton.setBounds(centerX, startY - (buttonHeight * 3 + 30), buttonWidth, buttonHeight);
+        musicButton.setBounds(
+                centerX - widthOffset, startY - (buttonHeight * 4 + 40), buttonWidth, buttonHeight);
+        volumeSlider.setBounds(
+                centerX + widthOffset, startY - (buttonHeight * 4 + 40), buttonWidth, buttonHeight);
 
         // adds buttons to stage
         stage.addActor(playButton);
