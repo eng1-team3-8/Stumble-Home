@@ -396,7 +396,9 @@ public class GameScreen implements Screen {
         // System.out.println(player.isPlayerDrunk());
         // Check if collision with beer
         if (beer.checkColliding(playerCentreX, playerCentreY)) {
-            hinderingEventCounter++;
+            if (!achievementData.containsKey("Down the vodka")) {
+                hinderingEventCounter++;
+            }
             beer.makeDrunk(player);
 
             setAchievementText("BEER ME!");
@@ -404,7 +406,9 @@ public class GameScreen implements Screen {
 
         // Check if collision with vodka
         if (vodka.checkColliding(playerCentreX, playerCentreY)) {
-            hinderingEventCounter++;
+            if (!achievementData.containsKey("BEER ME!")) {
+                hinderingEventCounter++;
+            }
             vodka.makeDrunk(player);
 
             setAchievementText("Down the vodka");
