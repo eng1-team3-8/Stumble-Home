@@ -1,18 +1,13 @@
 package io.github.stumblehome.Screens;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.backends.lwjgl3.audio.Mp3.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -21,13 +16,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
-import io.github.stumblehome.StumbleHome;
 import io.github.stumblehome.Entities.Alcohol;
+import io.github.stumblehome.Entities.BirdSeed;
 import io.github.stumblehome.Entities.Bob;
 import io.github.stumblehome.Entities.BottleEvent;
 import io.github.stumblehome.Entities.Chainsaw;
@@ -39,6 +32,8 @@ import io.github.stumblehome.Entities.Rose;
 import io.github.stumblehome.Entities.Twig;
 import io.github.stumblehome.Messages.MessageHandler;
 import io.github.stumblehome.Messages.Messages;
+import io.github.stumblehome.StumbleHome;
+import java.util.HashMap;
 
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
@@ -98,6 +93,8 @@ public class GameScreen implements Screen {
     private final Chainsaw chainsaw;
     // Bob
     private final Bob bob;
+    // BirdSeed
+    private final BirdSeed birdSeed;
     private final String playerName;
     // The current map being rendered.
     TiledMap map;
@@ -107,7 +104,7 @@ public class GameScreen implements Screen {
     TiledMapTileLayer collisionLayer;
     // Indicates whether the game is currently paused.
     private boolean paused = false;
-    // Indicate when a blackout is occuring 
+    // Indicate when a blackout is occuring
     private boolean blackout = false;
     // Remaining time for the player to complete the game (in seconds).
     private float remainingTime = 300f;
@@ -210,7 +207,7 @@ public class GameScreen implements Screen {
         twig = new Twig(new Texture(Twig.ASSET), 1f, new float[] {51f, 19f});
 
         // Alcohol bottles
-        beer = new Alcohol(new Texture(Alcohol.ASSET_TSING), 1f, new float[] {62f, 5f});
+        beer = new Alcohol(new Texture(Alcohol.ASSET_TSING), 1.5f, new float[] {62f, 5f});
         vodka = new Alcohol(new Texture(Alcohol.ASSET_SMIRN), 1f, new float[] {35f, 2f});
 
         // Chicken
@@ -225,6 +222,9 @@ public class GameScreen implements Screen {
 
         // Bob
         bob = new Bob(new Texture(Bob.ASSET), 1f, new float[] {17f, 20f});
+
+        // Bird seed
+        birdSeed = new BirdSeed(new Texture(BirdSeed.ASSET), 1f, new float[] {48f, 20f});
 
         // message handler
         msg = new MessageHandler(game);
@@ -258,7 +258,12 @@ public class GameScreen implements Screen {
                 "You've obtained a chainsaw. press e to cut a line of hedges! (Single use)",
                 Color.RED,
                 2f);
-        
+        msg.addMessage(
+                Messages.BIRDSEED,
+                "LongBoi is really hungry, look how fast he is!",
+                Color.BLACK,
+                2f);
+
         // Achievements Popup
         stage = new Stage(new ScreenViewport());
         Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
@@ -277,7 +282,6 @@ public class GameScreen implements Screen {
             music.setVolume(volume);
             music.play();
         }
-
     }
 
     @Override
@@ -321,7 +325,7 @@ public class GameScreen implements Screen {
         if (blackout) {
             this.remainingTime -= 60;
             blackout = false;
-            game.setScreen(new BlackoutScreen(this.game, 3f, this));   
+            game.setScreen(new BlackoutScreen(this.game, 3f, this));
         }
         draw();
 
@@ -337,16 +341,8 @@ public class GameScreen implements Screen {
 
             game.setScreen(new LoseScreen(game, remainingTime, score));
         }
-        ;
-        if (dialogScaleFactor < 0) {
-            dialogScaleFactor = dialogScaleFactor * -1;
-        }
-        // Sets achievement box to bottom right
-        float w = Gdx.graphics.getWidth() / 2;
-        achievementBox.setPosition(w, 0);
-        // Pads text to avoid truncation
-        achievementBox.getContentTable().padLeft(4f);
-        achievementBox.getContentTable().padRight(4f);
+
+        positionDialogueBox();
 
         // Applies correct viewport for screen size
         stage.getViewport().apply();
@@ -394,7 +390,7 @@ public class GameScreen implements Screen {
         // Check collision with twig
         if (twig.checkColliding(playerCentreX, playerCentreY)) {
             hinderingEventCounter++;
-            player.slowDownPlayer(.5f);
+            player.slowDownPlayer(1f);
 
             setAchievementText("Broken Ankle");
         }
@@ -408,10 +404,12 @@ public class GameScreen implements Screen {
             // player attempts to use chainsaw
             chainsaw.UseChainsaw(player, collisionLayer);
         }
-        //System.out.println(player.isPlayerDrunk());
+        // System.out.println(player.isPlayerDrunk());
         // Check if collision with beer
         if (beer.checkColliding(playerCentreX, playerCentreY)) {
-            hinderingEventCounter++;            
+            if (!achievementData.containsKey("Down the vodka")) {
+                hinderingEventCounter++;
+            }
             if (vodka.is_collected && player.isPlayerDrunk()) {
                 blackout = true;
             }
@@ -422,12 +420,14 @@ public class GameScreen implements Screen {
 
         // Check if collision with vodka
         if (vodka.checkColliding(playerCentreX, playerCentreY)) {
-            hinderingEventCounter++;
+            if (!achievementData.containsKey("BEER ME!")) {
+                hinderingEventCounter++;
+            }
             if (beer.is_collected && player.isPlayerDrunk()) {
                 blackout = true;
             }
             vodka.makeDrunk(player);
-            
+
             setAchievementText("Down the vodka");
         }
 
@@ -444,7 +444,9 @@ public class GameScreen implements Screen {
 
         // Check if the Yorks rose has been stepped on
         if (York.checkColliding(playerCentreX, playerCentreY)) {
-            hiddenEventCounter++;
+            if (!Lancaster.isSquished) {
+                hiddenEventCounter++;
+            }
             msg.set_time(Messages.YORKSQUISHED, 3f);
             York.isSquished = true;
 
@@ -453,7 +455,9 @@ public class GameScreen implements Screen {
 
         // Check if the Lancaster rose has been stepped on
         if (Lancaster.checkColliding(playerCentreX, playerCentreY)) {
-            hiddenEventCounter++;
+            if (!York.isSquished) {
+                hiddenEventCounter++;
+            }
             msg.set_time(Messages.LANCASTERSQUISHED, 3f);
             Lancaster.isSquished = true;
 
@@ -479,6 +483,16 @@ public class GameScreen implements Screen {
             game.setScreen(new BossScreen(game, this, musicToggle, volume));
 
             setAchievementText("Someone didn't like SYS1...");
+        }
+
+        // Check if birdSeed has been collided with
+        if (birdSeed.checkColliding(playerCentreX, playerCentreY)) {
+            hinderingEventCounter++;
+            msg.set_time(Messages.BIRDSEED, 3f);
+
+            longBoi.setSpeed(5f);
+
+            setAchievementText("Feed the Bird");
         }
 
         // if long boi walk not completed, run logic
@@ -605,6 +619,7 @@ public class GameScreen implements Screen {
         Lancaster.draw(game.batch);
         chainsaw.draw(game.batch);
         bob.draw(game.batch);
+        birdSeed.draw(game.batch);
 
         game.batch.end();
 
@@ -683,6 +698,8 @@ public class GameScreen implements Screen {
         chicken.dispose();
         York.dispose();
         Lancaster.dispose();
+        bob.dispose();
+        birdSeed.dispose();
         stage.dispose();
         achievementBox.getContentTable().clearChildren();
         achievementBox.remove();
@@ -703,6 +720,18 @@ public class GameScreen implements Screen {
         achievementBox.text(text);
 
         achievementData.put(text, true);
+    }
+
+    private void positionDialogueBox() {
+        if (dialogScaleFactor < 0) {
+            dialogScaleFactor = dialogScaleFactor * -1;
+        }
+        // Sets achievement box to bottom right
+        float w = Gdx.graphics.getWidth() / 2;
+        achievementBox.setPosition(w, 0);
+        // Pads text to avoid truncation
+        achievementBox.getContentTable().padLeft(4f);
+        achievementBox.getContentTable().padRight(4f);
     }
 
     // Toggles music status between paused and play

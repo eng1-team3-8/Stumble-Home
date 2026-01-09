@@ -3,10 +3,9 @@ package io.github.stumblehome.Screens;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ScreenUtils;
-
 import io.github.stumblehome.StumbleHome;
 
-public class BlackoutScreen implements Screen{
+public class BlackoutScreen implements Screen {
     private float time_remaining;
     private StumbleHome game;
     private GameScreen game_screen;
@@ -37,7 +36,7 @@ public class BlackoutScreen implements Screen{
 
     @Override
     public void pause() {}
-     
+
     @Override
     public void resume() {}
 
@@ -46,5 +45,4 @@ public class BlackoutScreen implements Screen{
 
     @Override
     public void hide() {}
-
 }
