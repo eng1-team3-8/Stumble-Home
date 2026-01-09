@@ -1,5 +1,6 @@
-package io.github.stumblehome.headless;
+package io.github.stumblehome.headless.EventTests;
 
+import io.github.stumblehome.headless.AbstractHeadlessGdxTest;
 import org.junit.jupiter.api.Test;
 
 public class LeaderboardTests extends AbstractHeadlessGdxTest {

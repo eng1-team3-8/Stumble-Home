@@ -112,7 +112,7 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
     public void testMultipleEntitiesIndependentState() {
         Food food = new Food(texture, testSize, testPosition);
         Texture twigTexture = new Texture(Gdx.files.internal("Sprites/Stick.png"));
-        Twig twig = new Twig(twigTexture, testSize, new float[]{50f, 60f});
+        Twig twig = new Twig(twigTexture, testSize, new float[] {50f, 60f});
 
         assertFalse(food.isCollected);
         assertFalse(twig.isCollected);

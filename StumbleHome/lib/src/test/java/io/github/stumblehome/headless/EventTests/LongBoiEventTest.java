@@ -1,13 +1,13 @@
-package io.github.stumblehome.headless;
+package io.github.stumblehome.headless.EventTests;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import io.github.stumblehome.LongBoiEvent;
+import io.github.stumblehome.Entities.LongBoiEvent;
+import io.github.stumblehome.headless.AbstractHeadlessGdxTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,35 +19,37 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
     public void setUp() {
         TiledMap map = new TmxMapLoader().load("map.tmx");
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("hedge");
-        longBoi = new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
+        longBoi =
+                new LongBoiEvent(
+                        new Texture("character.png"), 1f, new float[] {1f, 1f}, collisionLayer);
     }
 
     @Test
     public void testConstructor() {
         assertNotNull(longBoi);
-        assertEquals(2f, longBoi.longSize);
+        assertEquals(2f, longBoi.frame_size);
     }
 
     @Test
     public void testFlagsInitialized() {
         assertFalse(longBoi.getNear());
         assertFalse(longBoi.collided);
-        assertFalse(longBoi.doneWalk);
+        assertFalse(longBoi.done_walk);
     }
 
     @Test
     public void testLongBoiPositionInitialized() {
-        longBoi.longX = 10.0f;
-        longBoi.longY = 15.0f;
+        longBoi.setX(10.0f);
+        longBoi.setY(15.0f);
 
-        assertEquals(10.0f, longBoi.longX);
-        assertEquals(15.0f, longBoi.longY);
+        assertEquals(10.0f, longBoi.getX());
+        assertEquals(15.0f, longBoi.getY());
     }
 
     @Test
     public void testCheckNearWhenClose() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
 
         boolean result = longBoi.checkNear(6.0f, 6.0f);
 
@@ -56,8 +58,8 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testCheckNearWhenFar() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
 
         boolean result = longBoi.checkNear(15.0f, 15.0f);
 
@@ -66,8 +68,8 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testCheckNearPersists() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
 
         longBoi.checkNear(6.0f, 6.0f);
         boolean nearAfterClose = longBoi.getNear();
@@ -80,31 +82,31 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testCheckCollisionWhenClose() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
 
-        boolean result = longBoi.checkCollision(6.0f, 6.0f);
+        boolean result = longBoi.checkColliding(6.0f, 6.0f);
 
         assertTrue(result);
     }
 
     @Test
     public void testCheckCollisionWhenFar() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
 
-        boolean result = longBoi.checkCollision(10.0f, 10.0f);
+        boolean result = longBoi.checkColliding(10.0f, 10.0f);
 
         assertFalse(result);
     }
 
     @Test
     public void testCheckCollisionSetsCollided() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
 
-        boolean firstCollision = longBoi.checkCollision(6.0f, 6.0f);
-        boolean secondCheck = longBoi.checkCollision(10.0f, 10.0f);
+        boolean firstCollision = longBoi.checkColliding(6.0f, 6.0f);
+        boolean secondCheck = longBoi.checkColliding(10.0f, 10.0f);
 
         assertTrue(firstCollision);
         assertTrue(secondCheck);
@@ -119,8 +121,8 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testLogicWhenNear() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
         longBoi.checkNear(6.0f, 6.0f);
 
         longBoi.logic();
@@ -130,8 +132,8 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testWalkPathWorks() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
         longBoi.checkNear(6.0f, 6.0f);
 
         longBoi.walkPath();
@@ -150,37 +152,35 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testDoneWalkProperty() {
-        assertFalse(longBoi.doneWalk);
+        assertFalse(longBoi.done_walk);
 
-        longBoi.doneWalk = true;
+        longBoi.done_walk = true;
 
-        assertTrue(longBoi.doneWalk);
+        assertTrue(longBoi.done_walk);
     }
 
     @Test
     public void testCollidedProperty() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
-        longBoi.checkCollision(6.0f, 6.0f);
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
+        longBoi.checkColliding(6.0f, 6.0f);
 
         assertTrue(longBoi.collided);
     }
 
     @Test
     public void testLongBoiTextureInitialized() {
-        assertNotNull(longBoi.longSheet);
+        assertNotNull(longBoi.getTexture());
     }
 
     @Test
     public void testMultipleLongBoisIndependent() {
         LongBoiEvent l1 =
-                new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
+                new LongBoiEvent(
+                        new Texture("character.png"), 1f, new float[] {0f, 0f}, collisionLayer);
         LongBoiEvent l2 =
-                new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
-        l1.longX = 0.0f;
-        l1.longY = 0.0f;
-        l2.longX = 20.0f;
-        l2.longY = 20.0f;
+                new LongBoiEvent(
+                        new Texture("character.png"), 1f, new float[] {20f, 20f}, collisionLayer);
 
         l1.checkNear(1.0f, 1.0f);
         boolean l1Near = l1.getNear();
@@ -192,8 +192,8 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testNegativeCoordinates() {
-        longBoi.longX = -5.0f;
-        longBoi.longY = -5.0f;
+        longBoi.setX(-5.0f);
+        longBoi.setY(-5.0f);
 
         longBoi.logic();
 
@@ -202,8 +202,8 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testLargeCoordinates() {
-        longBoi.longX = 1000.0f;
-        longBoi.longY = 2000.0f;
+        longBoi.setX(1000.0f);
+        longBoi.setY(2000.0f);
 
         longBoi.logic();
 
@@ -212,8 +212,8 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testGameScenarioLongBoiEncounter() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
 
         longBoi.logic();
         assertFalse(longBoi.getNear());
@@ -225,9 +225,9 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
         longBoi.logic();
         longBoi.walkPath();
-        assertFalse(longBoi.checkCollision(10.0f, 10.0f));
+        assertFalse(longBoi.checkColliding(10.0f, 10.0f));
 
-        boolean collision = longBoi.checkCollision(6.0f, 6.0f);
+        boolean collision = longBoi.checkColliding(6.0f, 6.0f);
         assertTrue(collision);
         assertTrue(longBoi.collided);
     }
@@ -235,20 +235,18 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
     @Test
     public void testMultipleLongBoisGameplay() {
         LongBoiEvent l1 =
-                new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
+                new LongBoiEvent(
+                        new Texture("character.png"), 1f, new float[] {0f, 0f}, collisionLayer);
         LongBoiEvent l2 =
-                new LongBoiEvent(new Sprite(new Texture("character.png")), collisionLayer);
-        l1.longX = 0.0f;
-        l1.longY = 0.0f;
-        l2.longX = 10.0f;
-        l2.longY = 10.0f;
+                new LongBoiEvent(
+                        new Texture("character.png"), 1f, new float[] {10f, 10f}, collisionLayer);
 
         l1.logic();
         boolean l1Near = l1.checkNear(1.0f, 1.0f);
         l2.logic();
         boolean l2Near = l2.checkNear(11.0f, 11.0f);
-        boolean l1Collision = l1.checkCollision(1.0f, 1.0f);
-        boolean l2Collision = l2.checkCollision(11.0f, 11.0f);
+        boolean l1Collision = l1.checkColliding(1.0f, 1.0f);
+        boolean l2Collision = l2.checkColliding(11.0f, 11.0f);
 
         assertTrue(l1Near);
         assertTrue(l2Near);
@@ -258,13 +256,13 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testLongBoiMovementAndLogic() {
-        longBoi.longX = 0.0f;
-        longBoi.longY = 0.0f;
+        longBoi.setX(0f);
+        longBoi.setY(0f);
 
         longBoi.logic();
         boolean nearAfterFirstLogic = longBoi.getNear();
-        longBoi.longX = 10.0f;
-        longBoi.longY = 10.0f;
+        longBoi.setX(10.0f);
+        longBoi.setY(10.0f);
         longBoi.logic();
 
         assertFalse(nearAfterFirstLogic);
@@ -273,8 +271,8 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testAnimationAndNearTiming() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
 
         for (int i = 0; i < 5; i++) {
             longBoi.logic();
@@ -293,23 +291,23 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testLongBoiWithDoneWalk() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
         longBoi.checkNear(6.0f, 6.0f);
 
         longBoi.logic();
         longBoi.walkPath();
-        longBoi.doneWalk = true;
+        longBoi.done_walk = true;
 
-        assertTrue(longBoi.doneWalk);
+        assertTrue(longBoi.done_walk);
         longBoi.logic();
         assertNotNull(longBoi);
     }
 
     @Test
     public void testComplexLongBoiInteraction() {
-        longBoi.longX = 5.0f;
-        longBoi.longY = 5.0f;
+        longBoi.setX(5.0f);
+        longBoi.setY(5.0f);
 
         longBoi.logic();
         boolean near = longBoi.checkNear(6.0f, 6.0f);
@@ -319,8 +317,8 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
         longBoi.walkPath();
         assertTrue(longBoi.getNear());
 
-        longBoi.doneWalk = true;
-        assertTrue(longBoi.doneWalk);
+        longBoi.done_walk = true;
+        assertTrue(longBoi.done_walk);
 
         longBoi.logic();
         assertTrue(longBoi.getNear());
