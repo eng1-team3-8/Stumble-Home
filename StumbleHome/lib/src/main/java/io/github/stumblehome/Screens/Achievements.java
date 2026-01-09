@@ -19,7 +19,7 @@ public class Achievements extends MenuScreen {
     private Map<String, Boolean> achievementData;
 
     // Contains all achievements in the game
-    private String[] achievements;
+    private String[][] achievements;
     // Used to select mode (last player's achievement status or list)
     private boolean playerAchievements;
 
@@ -99,21 +99,21 @@ public class Achievements extends MenuScreen {
     }
 
     public Table achievementSetup() {
-        // Adds all achievements
+        // Adds all achievements & Hints
         achievements =
-                new String[] {
-                    "Glad that wasn't Vodka!",
-                    "Swipe the card!",
-                    "Broken Ankle",
-                    "Here's Johnny!",
-                    "BEER ME!",
-                    "Down the vodka",
-                    "Lava Chicken... TASTY AS HELL",
-                    "War of the Roses...",
-                    "Traitor!!!",
-                    "Switched sides have you??",
-                    "Someone didn't like SYS1...",
-                    "Raised from the dead... RUN!"
+                new String[][] {
+                    {"Glad that wasn't Vodka!", "(AKA: Collect Water Bottle)"},
+                    {"Swipe the card!", "(AKA: Collect Keycard)"},
+                    {"Broken Ankle", "(AKA: Trip On The Stick)"},
+                    {"Here's Johnny!", "(AKA: Collect Chainsaw)"},
+                    {"BEER ME!", "(AKA: Collect Beer)"},
+                    {"Down the vodka", "(AKA: Collect Vodka)"},
+                    {"Lava Chicken... TASTY AS HELL", "(AKA: Collect Chicken)"},
+                    {"War of the Roses...", "(AKA: Crush Red Rose)"},
+                    {"Traitor!!!", "(AKA: Crush White Rose)"},
+                    {"Switched sides have you??", "(AKA: Crush Both Roses)"},
+                    {"Someone didn't like SYS1...", "(AKA: Collect Bob)"},
+                    {"Raised from the dead... RUN!", "(AKA: Encounter LongBoi)"}
                 };
 
         // Adds title to leaderboard
@@ -122,7 +122,8 @@ public class Achievements extends MenuScreen {
         tempRow.setFontScale(5f);
         leaderboard.add(tempRow).pad(15);
         leaderboard.row();
-
+        
+        // Adds ESC Hint
         tempRow = new Label("Press ESC to exit", skin);
         tempRow.setFontScale(1f);
         leaderboard.add(tempRow).pad(5);
@@ -130,22 +131,42 @@ public class Achievements extends MenuScreen {
 
         // Displays correct type of achievement board
         if (playerAchievements) {
-            for (String achievement : achievements) {
-                if (achievementData.containsKey(achievement)) {
-                    tempRow = new Label((achievement + ": Achieved"), skin);
+            // Adds achievement & collected status
+            for (String[] achievement : achievements) {
+                if (achievementData.containsKey(achievement[0])) {
+                    tempRow = new Label((achievement[0] + ": Achieved"), skin);
                 } else {
-                    tempRow = new Label((achievement + ": X"), skin);
+                    tempRow = new Label((achievement[0] + ": X"), skin);
                 }
 
                 tempRow.setFontScale(3f);
-                leaderboard.add(tempRow).pad(15);
+                leaderboard.add(tempRow).padTop(15);
+                leaderboard.row();
+
+                // Adds points gained
+                if (achievementData.containsKey(achievement[0])) {
+                    tempRow = new Label(achievement[1] + " +50 points", skin);
+                }
+                // Adds points available
+                else {
+                    tempRow = new Label(achievement[1] + " Collect For 50 points", skin);
+                }
+                tempRow.setFontScale(1f);
+                leaderboard.add(tempRow).pad(5);
                 leaderboard.row();
             }
         } else {
-            for (String achievement : achievements) {
-                tempRow = new Label(achievement, skin);
+            // Adds all achievements
+            for (String[] achievement : achievements) {
+                tempRow = new Label(achievement[0], skin);
                 tempRow.setFontScale(3f);
-                leaderboard.add(tempRow).pad(15);
+                leaderboard.add(tempRow).padTop(15);
+                leaderboard.row();
+
+                // Adds points available
+                tempRow = new Label(achievement[1] + " Collect For 50 points", skin);
+                tempRow.setFontScale(1f);
+                leaderboard.add(tempRow).pad(5);
                 leaderboard.row();
             }
         }

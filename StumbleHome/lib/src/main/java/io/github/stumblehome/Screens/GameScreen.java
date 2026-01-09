@@ -418,7 +418,7 @@ public class GameScreen implements Screen {
             msg.set_time(Messages.YORKSQUISHED, 3f);
             York.isSquished = true;
 
-            setAchievementText("War of the Roses...");
+            setAchievementText("Traitor!!!");
         }
 
         // Check if the Lancaster rose has been stepped on
@@ -427,7 +427,7 @@ public class GameScreen implements Screen {
             msg.set_time(Messages.LANCASTERSQUISHED, 3f);
             Lancaster.isSquished = true;
 
-            setAchievementText("Traitor!!!");
+            setAchievementText("War of the Roses...");
         }
 
         // CHeck if both roses have been squished.
