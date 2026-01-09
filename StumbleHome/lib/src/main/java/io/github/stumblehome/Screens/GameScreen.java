@@ -182,7 +182,7 @@ public class GameScreen implements Screen {
 
         // events
         // Bottle event (not reimplemented yet)
-        bottle = new BottleEvent(new Texture(BottleEvent.ASSET), 1f, new float[] {58f, 42f});
+        bottle = new BottleEvent(new Texture(BottleEvent.ASSET), 1f, new float[] {67f, 29f});
 
         // LongBoi event
         longBoi =
@@ -193,7 +193,7 @@ public class GameScreen implements Screen {
                         collisionLayer);
 
         // Keycard event (not reimplemented yet)
-        keycard = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {56f, 42f});
+        keycard = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {15f, 46f});
 
         // Twig event
         twig = new Twig(new Texture(Twig.ASSET), 1f, new float[] {51f, 19f});
@@ -203,17 +203,17 @@ public class GameScreen implements Screen {
         vodka = new Alcohol(new Texture(Alcohol.ASSET_SMIRN), 1f, new float[] {35f, 2f});
 
         // Chicken
-        chicken = new Food(new Texture(Food.ASSET), 1f, new float[] {54f, 42f});
+        chicken = new Food(new Texture(Food.ASSET), 1f, new float[] {46.5f, 33f});
 
         // The roses
         York = new Rose(new Texture(Rose.ASSET_YORK), 1f, new float[] {2f, 25f});
         Lancaster = new Rose(new Texture(Rose.ASSET_LANC), 1f, new float[] {5f, 25f});
 
         // Chainsaw
-        chainsaw = new Chainsaw(new Texture(Chainsaw.ASSET), 1f, new float[] {54f, 41f});
+        chainsaw = new Chainsaw(new Texture(Chainsaw.ASSET), 1f, new float[] {50f, 13f});
 
         // Bob
-        bob = new Bob(new Texture(Bob.ASSET), 1f, new float[] {56f, 41f});
+        bob = new Bob(new Texture(Bob.ASSET), 1f, new float[] {17f, 20f});
 
         // message handler
         msg = new MessageHandler(game);
@@ -285,6 +285,8 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
                 || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             paused = !paused; // flip pause state
+
+            toggleMusic();
         }
 
         if (eventTriggered) {
@@ -310,6 +312,11 @@ public class GameScreen implements Screen {
 
         if (timeUp && !reachedFinish) {
             int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
+
+            if (musicToggle) {
+                music.stop();
+            }
+            
             game.setScreen(new LoseScreen(game, remainingTime, score));
         }
         ;
@@ -418,7 +425,7 @@ public class GameScreen implements Screen {
             msg.set_time(Messages.YORKSQUISHED, 3f);
             York.isSquished = true;
 
-            setAchievementText("War of the Roses...");
+            setAchievementText("Traitor!!!");
         }
 
         // Check if the Lancaster rose has been stepped on
@@ -427,7 +434,7 @@ public class GameScreen implements Screen {
             msg.set_time(Messages.LANCASTERSQUISHED, 3f);
             Lancaster.isSquished = true;
 
-            setAchievementText("Traitor!!!");
+            setAchievementText("War of the Roses...");
         }
 
         // CHeck if both roses have been squished.
@@ -445,9 +452,7 @@ public class GameScreen implements Screen {
         if (bob.checkColliding(playerCentreX, playerCentreY)) {
             hiddenEventCounter++;
 
-            if (musicToggle) {
-                music.pause();
-            }
+            toggleMusic();
             game.setScreen(new BossScreen(game, this, musicToggle, volume));
 
             setAchievementText("Someone didn't like SYS1...");
@@ -472,6 +477,11 @@ public class GameScreen implements Screen {
             // check if player collided with longBoi
             if (longBoi.checkColliding(playerCentreX, playerCentreY)) {
                 int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
+
+                if (musicToggle) {
+                    music.stop();
+                }
+
                 game.setScreen(new LoseScreen(game, remainingTime, score));
             }
         }
@@ -674,9 +684,13 @@ public class GameScreen implements Screen {
         achievementData.put(text, true);
     }
 
-    public void resumeMusic() {
+    // Toggles music status between paused and play
+    // If music is enabled
+    public void toggleMusic() {
         if (musicToggle && !music.isPlaying()) {
             music.play();
+        } else if (musicToggle) {
+            music.pause();
         }
     }
 }
