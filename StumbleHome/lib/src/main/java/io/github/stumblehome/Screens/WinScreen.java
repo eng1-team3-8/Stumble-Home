@@ -103,12 +103,15 @@ public class WinScreen extends GameFinishScreen {
         table.setFillParent(true);
         table.center();
 
+        float buttonWidth = Gdx.graphics.getWidth() * 0.25f;
+        float buttonHeight = Gdx.graphics.getHeight() * 0.1f;
+
         table.add(winLabel).padBottom(40).row();
         table.add(timeLabel).padBottom(20).row();
         table.add(scoreLabel).padBottom(40).row();
-        table.add(restartButton).padBottom(40).width(200).height(60).row();
-        table.add(leaderBoardButton).padBottom(40).width(200).height(60).row();
-        table.add(achievementsButton).padBottom(40).width(200).height(60).row();
+        table.add(restartButton).padBottom(40).width(buttonWidth).height(buttonHeight).row();
+        table.add(leaderBoardButton).padBottom(40).width(buttonWidth).height(buttonHeight).row();
+        table.add(achievementsButton).padBottom(40).width(buttonWidth).height(buttonHeight).row();
 
         stage.addActor(table);
     }
