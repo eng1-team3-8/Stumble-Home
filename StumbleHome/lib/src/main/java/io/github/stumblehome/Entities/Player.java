@@ -354,8 +354,7 @@ public class Player extends Entity {
     public boolean setDrunk() {
         if (canGetDrunk && !is_drunk) {
             SwapControls();
-        }
-        else if (is_drunk) {
+        } else if (is_drunk) {
             return true;
         }
         return false;

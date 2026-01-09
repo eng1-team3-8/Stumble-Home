@@ -401,7 +401,7 @@ public class GameScreen implements Screen {
             // player attempts to use chainsaw
             chainsaw.UseChainsaw(player, collisionLayer);
         }
-        //System.out.println(player.isPlayerDrunk());
+        // System.out.println(player.isPlayerDrunk());
         // Check if collision with beer
         if (beer.checkColliding(playerCentreX, playerCentreY)) {
             hinderingEventCounter++;
