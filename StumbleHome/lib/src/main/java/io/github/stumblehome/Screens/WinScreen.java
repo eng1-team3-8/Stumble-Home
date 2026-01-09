@@ -25,7 +25,7 @@ import java.util.Map;
  * a game.
  */
 public class WinScreen extends GameFinishScreen {
-    private Map<String, Boolean> achievementData;
+    private Map<String, Integer> achievementData;
 
     /**
      * Constructs a new {@code WinScreen} instance.
@@ -38,7 +38,7 @@ public class WinScreen extends GameFinishScreen {
             StumbleHome game,
             float remainingTime,
             int score,
-            Map<String, Boolean> achievementData) {
+            Map<String, Integer> achievementData) {
         super(game, remainingTime, score, "MainMenu.png");
         this.achievementData = achievementData;
     }

@@ -127,7 +127,10 @@ public class GameScreen implements Screen {
     private float dialogScaleFactor = 0;
 
     // Achievement Tracker
-    HashMap<String, Boolean> achievementData = new HashMap<>();
+    HashMap<String, Integer> achievementData = new HashMap<>();
+
+    // Counts bonus events
+    int bonusEventCounter = 0;
 
     // Music setting tracker
     final boolean musicToggle;
@@ -331,7 +334,8 @@ public class GameScreen implements Screen {
         msg.updateMessage(paused, Messages.PAUSED);
 
         if (timeUp && !reachedFinish) {
-            int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
+            int score = calculateScore(false);
+            saveLeaderBoardScore(score);
 
             if (musicToggle) {
                 music.stop();
@@ -373,7 +377,7 @@ public class GameScreen implements Screen {
             player.setSober();
             helpfulEventCounter++;
 
-            setAchievementText("Glad that wasn't Vodka!");
+            setAchievementText("Glad that wasn't Vodka!", 50);
         }
 
         // check collision with keycard
@@ -382,7 +386,7 @@ public class GameScreen implements Screen {
             hinderingEventCounter++;
             msg.set_time(Messages.PICKUPKEYCARD, 3f);
 
-            setAchievementText("Swipe the card!");
+            setAchievementText("Swipe the card!", 50);
         }
 
         // Check collision with twig
@@ -390,30 +394,31 @@ public class GameScreen implements Screen {
             hinderingEventCounter++;
             player.slowDownPlayer(1f);
 
-            setAchievementText("Broken Ankle");
+            setAchievementText("Broken Ankle", 50);
         }
 
         if (chainsaw.checkColliding(playerCentreX, playerCentreY)) {
             helpfulEventCounter++;
             msg.set_time(Messages.CHAINSAWPICKEDUP, 3f);
-            setAchievementText("Here's Johnny!");
+            setAchievementText("Here's Johnny!", 50);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             // player attempts to use chainsaw
             chainsaw.UseChainsaw(player, collisionLayer);
         }
-        // System.out.println(player.isPlayerDrunk());
+
         // Check if collision with beer
         if (beer.checkColliding(playerCentreX, playerCentreY)) {
             if (!achievementData.containsKey("Down the vodka")) {
                 hinderingEventCounter++;
             }
             if (vodka.is_collected && player.isPlayerDrunk()) {
+                setAchievementText("Mix & Blackout", 50);
                 blackout = true;
             }
             beer.makeDrunk(player);
 
-            setAchievementText("BEER ME!");
+            setAchievementText("BEER ME!", 50);
         }
 
         // Check if collision with vodka
@@ -422,11 +427,12 @@ public class GameScreen implements Screen {
                 hinderingEventCounter++;
             }
             if (beer.is_collected && player.isPlayerDrunk()) {
+                setAchievementText("Mix & Blackout", 50);
                 blackout = true;
             }
             vodka.makeDrunk(player);
 
-            setAchievementText("Down the vodka");
+            setAchievementText("Down the vodka", 50);
         }
 
         // Check if collision with chicken
@@ -437,7 +443,7 @@ public class GameScreen implements Screen {
             }
             chicken.eatFood(player);
 
-            setAchievementText("Lava Chicken... TASTY AS HELL");
+            setAchievementText("Lava Chicken... TASTY AS HELL", 50);
         }
 
         // Check if the Yorks rose has been stepped on
@@ -448,7 +454,7 @@ public class GameScreen implements Screen {
             msg.set_time(Messages.YORKSQUISHED, 3f);
             York.isSquished = true;
 
-            setAchievementText("Traitor!!!");
+            setAchievementText("Traitor!!!", 50);
         }
 
         // Check if the Lancaster rose has been stepped on
@@ -459,7 +465,7 @@ public class GameScreen implements Screen {
             msg.set_time(Messages.LANCASTERSQUISHED, 3f);
             Lancaster.isSquished = true;
 
-            setAchievementText("War of the Roses...");
+            setAchievementText("War of the Roses...", 50);
         }
 
         // CHeck if both roses have been squished.
@@ -470,7 +476,7 @@ public class GameScreen implements Screen {
             York.isSquished = false;
             Lancaster.isSquished = false;
 
-            setAchievementText("Switched sides have you??");
+            setAchievementText("Switched sides have you??", 50);
         }
 
         // Check if Bob has been squished
@@ -480,7 +486,7 @@ public class GameScreen implements Screen {
             toggleMusic();
             game.setScreen(new BossScreen(game, this, musicToggle, volume));
 
-            setAchievementText("Someone didn't like SYS1...");
+            setAchievementText("Someone didn't like SYS1...", 50);
         }
 
         // Check if birdSeed has been collided with
@@ -490,7 +496,7 @@ public class GameScreen implements Screen {
 
             longBoi.setSpeed(5f);
 
-            setAchievementText("Feed the Bird");
+            setAchievementText("Feed the Bird", 50);
         }
 
         // if long boi walk not completed, run logic
@@ -501,7 +507,7 @@ public class GameScreen implements Screen {
                 msg.set_time(Messages.LONGBOIAPPEAR, 2f);
                 hiddenEventCounter++;
 
-                setAchievementText("Raised from the dead... RUN!");
+                setAchievementText("Raised from the dead... RUN!", 50);
             }
 
             // walk long boi as long as 'near' variable set to true
@@ -511,7 +517,8 @@ public class GameScreen implements Screen {
 
             // check if player collided with longBoi
             if (longBoi.checkColliding(playerCentreX, playerCentreY)) {
-                int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
+                int score = calculateScore(false);
+                saveLeaderBoardScore(score);
 
                 if (musicToggle) {
                     music.stop();
@@ -545,10 +552,7 @@ public class GameScreen implements Screen {
             timeUp = true;
             paused = true;
 
-            int score =
-                    (int) (remainingTime * 10)
-                            + (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter)
-                                    * 50;
+            int score = calculateScore(true);
             saveLeaderBoardScore(score);
 
             reachedFinish = true;
@@ -712,12 +716,12 @@ public class GameScreen implements Screen {
         writeFile.writeString(playerName + "," + Integer.toString(score) + "\n", true);
     }
 
-    private void setAchievementText(String text) {
+    private void setAchievementText(String text, Integer points) {
         eventTriggered = true;
         achievementBox.getContentTable().clearChildren();
         achievementBox.text(text);
 
-        achievementData.put(text, true);
+        achievementData.put(text, points);
     }
 
     private void positionDialogueBox() {
@@ -740,5 +744,20 @@ public class GameScreen implements Screen {
         } else if (musicToggle) {
             music.pause();
         }
+    }
+
+    private int calculateScore(boolean includeTime) {
+        int score;
+        if (includeTime) {
+            score = (int) (remainingTime * 10);
+        } else {
+            score = 0;
+        }
+
+        for (String key : achievementData.keySet()) {
+            score += achievementData.get(key);
+        }
+
+        return score;
     }
 }

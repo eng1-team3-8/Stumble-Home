@@ -95,7 +95,7 @@ public class Leaderboard extends MenuScreen {
         leaderboard.row();
 
         // Adds error message if leaderboard doesn't exist
-        if (boardData.equals("Complete Game To Set Score")) {
+        if (boardData.equals("Play Game To Set Score")) {
             tempRow = new Label(boardData, skin);
             tempRow.setFontScale(3f);
             leaderboard.add(tempRow).pad(5);
@@ -154,7 +154,7 @@ public class Leaderboard extends MenuScreen {
         boolean file_exists = Gdx.files.local("leaderBoard.csv").exists();
 
         if (file_exists == false) {
-            return "Complete Game To Set Score";
+            return "Play Game To Set Score";
         } else {
             FileHandle file = Gdx.files.local("leaderBoard.csv");
             return file.readString();

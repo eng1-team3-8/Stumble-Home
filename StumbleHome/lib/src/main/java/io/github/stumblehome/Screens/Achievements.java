@@ -16,7 +16,7 @@ public class Achievements extends MenuScreen {
     private ScrollPane scrollPane;
 
     // Map containing achievements completed
-    private Map<String, Boolean> achievementData;
+    private Map<String, Integer> achievementData;
 
     // Contains all achievements in the game
     private String[][] achievements;
@@ -25,7 +25,7 @@ public class Achievements extends MenuScreen {
 
     // Used to display player achievement status
     // Used on win screen
-    public Achievements(StumbleHome game, Map<String, Boolean> achievementData) {
+    public Achievements(StumbleHome game, Map<String, Integer> achievementData) {
         super(game);
         this.achievementData = achievementData;
         playerAchievements = true;
@@ -114,7 +114,8 @@ public class Achievements extends MenuScreen {
                     {"Switched sides have you??", "(AKA: Crush Both Roses)"},
                     {"Someone didn't like SYS1...", "(AKA: Collect Bob)"},
                     {"Raised from the dead... RUN!", "(AKA: Encounter LongBoi)"},
-                    {"Feed the Bird", "(AKA: Collect Bird Food)"}
+                    {"Feed the Bird", "(AKA: Collect Bird Food)"},
+                    {"Mix & Blackout", "(AKA: Drink Beer & Vodka Consecutively)"}
                 };
 
         // Adds title to leaderboard
@@ -146,11 +147,17 @@ public class Achievements extends MenuScreen {
 
                 // Adds points gained
                 if (achievementData.containsKey(achievement[0])) {
-                    tempRow = new Label(achievement[1] + " +50 points", skin);
+                    tempRow =
+                            new Label(
+                                    achievement[1]
+                                            + " +"
+                                            + achievementData.get(achievement[0]).toString()
+                                            + " points",
+                                    skin);
                 }
                 // Adds points available
                 else {
-                    tempRow = new Label(achievement[1] + " Collect For 50 points", skin);
+                    tempRow = new Label(achievement[1] + " Collect For Points", skin);
                 }
                 tempRow.setFontScale(1f);
                 leaderboard.add(tempRow).pad(5);
@@ -165,7 +172,7 @@ public class Achievements extends MenuScreen {
                 leaderboard.row();
 
                 // Adds points available
-                tempRow = new Label(achievement[1] + " Collect For 50 points", skin);
+                tempRow = new Label(achievement[1] + " Collect For Points", skin);
                 tempRow.setFontScale(1f);
                 leaderboard.add(tempRow).pad(5);
                 leaderboard.row();
