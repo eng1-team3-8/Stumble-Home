@@ -494,6 +494,7 @@ public class GameScreen implements Screen {
             hinderingEventCounter++;
             msg.set_time(Messages.BIRDSEED, 3f);
 
+            // Increases speed based of interaction
             longBoi.setSpeed(5f);
 
             setAchievementText("Feed the Bird", 50);
@@ -711,11 +712,21 @@ public class GameScreen implements Screen {
         }
     }
 
+    /**
+     * Saves score to csv file in form PlayerName,Score
+     * @param score score to save
+     */
     private void saveLeaderBoardScore(int score) {
         FileHandle writeFile = Gdx.files.local("leaderBoard.csv");
         writeFile.writeString(playerName + "," + Integer.toString(score) + "\n", true);
     }
 
+    /**
+     * Sets achievement text and triggers achievement popup
+     * Also records the achievement (for score calc & achievement board)
+     * @param text message for popup
+     * @param points points for achievement
+     */
     private void setAchievementText(String text, Integer points) {
         eventTriggered = true;
         achievementBox.getContentTable().clearChildren();
@@ -724,6 +735,9 @@ public class GameScreen implements Screen {
         achievementData.put(text, points);
     }
 
+    /**
+     * Positions dialogue box for achievements
+     */
     private void positionDialogueBox() {
         if (dialogScaleFactor < 0) {
             dialogScaleFactor = dialogScaleFactor * -1;
@@ -736,8 +750,10 @@ public class GameScreen implements Screen {
         achievementBox.getContentTable().padRight(4f);
     }
 
-    // Toggles music status between paused and play
-    // If music is enabled
+    /**
+     * Toggles music status between paused and play
+     * If music is enabled
+     */
     public void toggleMusic() {
         if (musicToggle && !music.isPlaying()) {
             music.play();
@@ -746,14 +762,22 @@ public class GameScreen implements Screen {
         }
     }
 
+    /**
+     * Calculates player score
+     * @param includeTime add time bonus to score
+     * @return score value
+     */
     private int calculateScore(boolean includeTime) {
         int score;
+
+        // Calculates time bonus if won
         if (includeTime) {
             score = (int) (remainingTime * 10);
         } else {
             score = 0;
         }
 
+        // Adds each achievement's points to score
         for (String key : achievementData.keySet()) {
             score += achievementData.get(key);
         }

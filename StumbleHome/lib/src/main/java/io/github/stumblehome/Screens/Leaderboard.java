@@ -14,6 +14,9 @@ import io.github.stumblehome.StumbleHome;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to display leaderboard
+ */
 public class Leaderboard extends MenuScreen {
     private ScrollPane scrollPane;
 
@@ -82,6 +85,11 @@ public class Leaderboard extends MenuScreen {
         scrollPane.clear();
     }
 
+    /**
+     * Sets up leaderboard table for display
+     * @param boardData csv file data
+     * @return formatted table with top 5 players & scores
+     */
     public Table leaderboardSetup(String boardData) {
         // Adds title to leaderboard
         Table leaderboard = new Table();
@@ -123,6 +131,11 @@ public class Leaderboard extends MenuScreen {
         return leaderboard;
     }
 
+    /**
+     * Orders csv rows using insertion sort
+     * @param splitBoard csv file split by line
+     * @return ordered arrayList in form [player, score]
+     */
     public List<String[]> orderValues(String[] splitBoard) {
         List<String[]> ordered = new ArrayList<>();
 
@@ -150,6 +163,11 @@ public class Leaderboard extends MenuScreen {
         return ordered;
     }
 
+    /**
+     * Reads in leaderboard csv if it exists
+     * If it doesn't returns value to be displayed to user
+     * @return file data or empty file message
+     */
     private String readLeaderBoard() {
         boolean file_exists = Gdx.files.local("leaderBoard.csv").exists();
 

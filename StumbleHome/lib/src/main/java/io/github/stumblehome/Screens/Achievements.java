@@ -12,6 +12,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.stumblehome.StumbleHome;
 import java.util.Map;
 
+/**
+ * Class to display achievements
+ */
 public class Achievements extends MenuScreen {
     private ScrollPane scrollPane;
 
@@ -98,6 +101,11 @@ public class Achievements extends MenuScreen {
         scrollPane.clear();
     }
 
+    /**
+     * Sets up achievement table for display
+     * Can display player achievements if object instantiated with achievementData
+     * @return formatted table with achievements
+     */
     public Table achievementSetup() {
         // Adds all achievements & Hints
         achievements =
@@ -155,7 +163,7 @@ public class Achievements extends MenuScreen {
                                             + " points",
                                     skin);
                 }
-                // Adds points available
+                // Adds points available message
                 else {
                     tempRow = new Label(achievement[1] + " Collect For Points", skin);
                 }
@@ -171,7 +179,7 @@ public class Achievements extends MenuScreen {
                 leaderboard.add(tempRow).padTop(15);
                 leaderboard.row();
 
-                // Adds points available
+                // Adds points available message
                 tempRow = new Label(achievement[1] + " Collect For Points", skin);
                 tempRow.setFontScale(1f);
                 leaderboard.add(tempRow).pad(5);
