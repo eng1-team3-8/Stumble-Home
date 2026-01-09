@@ -270,6 +270,7 @@ public class BossScreen implements Screen {
         // Create the final attack stage
 
         TextButton attackBossButton = new TextButton("FIRE RST PACKET", skin);
+        attackBossButton.setColor(Color.RED);
 
         X = (viewport.getWorldWidth() / 2);
         Y = viewport.getWorldHeight() / 5;
