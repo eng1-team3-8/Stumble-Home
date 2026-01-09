@@ -297,7 +297,6 @@ public class GameScreen implements Screen {
      */
     @Override
     public void render(float delta) {
-        System.out.println("helo");
         // Toggle pause when SPACE is pressed
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
                 || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
