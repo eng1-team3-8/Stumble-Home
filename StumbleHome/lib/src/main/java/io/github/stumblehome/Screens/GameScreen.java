@@ -210,7 +210,7 @@ public class GameScreen implements Screen {
         Lancaster = new Rose(new Texture(Rose.ASSET_LANC), 1f, new float[] {5f, 25f});
 
         // Chainsaw
-        chainsaw = new Chainsaw(new Texture(Chainsaw.ASSET), 1f, new float[] {50f, 5f});
+        chainsaw = new Chainsaw(new Texture(Chainsaw.ASSET), 1f, new float[] {50f, 13f});
 
         // Bob
         bob = new Bob(new Texture(Bob.ASSET), 1f, new float[] {17f, 20f});
@@ -285,6 +285,8 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
                 || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             paused = !paused; // flip pause state
+
+            toggleMusic();
         }
 
         if (eventTriggered) {
@@ -445,9 +447,7 @@ public class GameScreen implements Screen {
         if (bob.checkColliding(playerCentreX, playerCentreY)) {
             hiddenEventCounter++;
 
-            if (musicToggle) {
-                music.pause();
-            }
+            toggleMusic();
             game.setScreen(new BossScreen(game, this, musicToggle, volume));
 
             setAchievementText("Someone didn't like SYS1...");
@@ -472,6 +472,11 @@ public class GameScreen implements Screen {
             // check if player collided with longBoi
             if (longBoi.checkColliding(playerCentreX, playerCentreY)) {
                 int score = (hiddenEventCounter + helpfulEventCounter + hinderingEventCounter) * 50;
+
+                if (musicToggle) {
+                    music.stop();
+                }
+
                 game.setScreen(new LoseScreen(game, remainingTime, score));
             }
         }
@@ -674,9 +679,13 @@ public class GameScreen implements Screen {
         achievementData.put(text, true);
     }
 
-    public void resumeMusic() {
+    // Toggles music status between paused and play
+    // If music is enabled
+    public void toggleMusic() {
         if (musicToggle && !music.isPlaying()) {
             music.play();
+        } else if (musicToggle) {
+            music.pause();
         }
     }
 }

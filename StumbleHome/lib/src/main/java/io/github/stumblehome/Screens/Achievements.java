@@ -122,7 +122,7 @@ public class Achievements extends MenuScreen {
         tempRow.setFontScale(5f);
         leaderboard.add(tempRow).pad(15);
         leaderboard.row();
-        
+
         // Adds ESC Hint
         tempRow = new Label("Press ESC to exit", skin);
         tempRow.setFontScale(1f);

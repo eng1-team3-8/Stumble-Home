@@ -310,7 +310,7 @@ public class BossScreen implements Screen {
                             BossMusic.stop();
                         }
                         game.setScreen(gameScreen);
-                        gameScreen.resumeMusic();
+                        gameScreen.toggleMusic();
                     }
                 });
     }
