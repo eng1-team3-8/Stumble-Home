@@ -92,7 +92,6 @@ public class BossScreen implements Screen {
 
     // Music control
     final boolean musicToggle;
-    private float volume;
 
     /**
      * This is the constructor for the bossfight.
@@ -108,7 +107,6 @@ public class BossScreen implements Screen {
         this.game = game;
         this.gameScreen = gameScreen;
         this.musicToggle = musicToggle;
-        this.volume = volume;
 
         this.batch = new SpriteBatch();
 
