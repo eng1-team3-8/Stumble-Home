@@ -7,7 +7,6 @@ import com.badlogic.gdx.backends.lwjgl3.audio.Mp3.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -82,8 +81,7 @@ public class GameScreen implements Screen {
     private final Alcohol beer;
     // Vodka for the negative event
     private final Alcohol vodka;
-    // Blackout for negative event
-    private ShapeRenderer blackout_box;
+    ;
     // Chicken for the positive event
     private final Food chicken;
     // Adding the Yorks and the Lancs roses
