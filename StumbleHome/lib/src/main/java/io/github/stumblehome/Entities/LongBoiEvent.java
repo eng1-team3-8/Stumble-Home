@@ -34,6 +34,7 @@ public class LongBoiEvent extends NonPlayerEntity {
 
     // Variable which is true when player is in radius of long boi.
     private boolean near = false;
+    private float speed = 2f;
 
     /**
      * Constructs a new longBoiEvent with given sprite and initialises animations.
@@ -150,7 +151,6 @@ public class LongBoiEvent extends NonPlayerEntity {
      */
     public void walkPath() {
         float delta = Gdx.graphics.getDeltaTime();
-        float speed = 3f;
 
         // New collision based movement algorithm
         // Moves long boi, uses previous move check to maintain direction switch on collision
@@ -228,5 +228,9 @@ public class LongBoiEvent extends NonPlayerEntity {
         }
 
         return false;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 }
