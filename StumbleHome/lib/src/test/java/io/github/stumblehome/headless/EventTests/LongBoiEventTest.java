@@ -21,7 +21,7 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("hedge");
         longBoi =
                 new LongBoiEvent(
-                        new Texture("character.png"), 1f, new float[] {1f, 1f}, collisionLayer);
+                        new Texture("character.png"), 2f, new float[] {1f, 1f}, collisionLayer);
     }
 
     @Test

@@ -1,20 +1,23 @@
 package io.github.stumblehome.headless.EventTests;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import com.badlogic.gdx.graphics.Texture;
+import io.github.stumblehome.Entities.KeycardEvent;
+import io.github.stumblehome.Messages.MessageHandler;
+import io.github.stumblehome.StumbleHome;
+import io.github.stumblehome.headless.AbstractHeadlessGdxTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.badlogic.gdx.graphics.Texture;
-
-import io.github.stumblehome.headless.AbstractHeadlessGdxTest;
-import io.github.stumblehome.Entities.KeycardEvent;
-
-
 public class KeycardEventTest extends AbstractHeadlessGdxTest {
     private KeycardEvent keycard;
+    private MessageHandler test_handler;
 
     @BeforeEach
     public void setUp() {
+        StumbleHome test_game = new StumbleHome();
+        test_handler = new MessageHandler(test_game);
         keycard = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {1f, 1f});
     }
 
@@ -158,7 +161,8 @@ public class KeycardEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testframe_sizeConstant() {
-        KeycardEvent keycard2 = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {1f, 1f});
+        KeycardEvent keycard2 =
+                new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {1f, 1f});
 
         assertEquals(1.0f, keycard.frame_size);
         assertEquals(1.0f, keycard2.frame_size);
@@ -166,8 +170,10 @@ public class KeycardEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testMultipleKeycardsIndependent() {
-        KeycardEvent k1 = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {0f, 0f});
-        KeycardEvent k2 = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {20f, 20});
+        KeycardEvent k1 =
+                new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {0f, 0f});
+        KeycardEvent k2 =
+                new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {20f, 20});
 
         k1.checkColliding(0.5f, 0.5f);
         boolean k2Result = k2.checkColliding(20.5f, 20.5f);
@@ -221,8 +227,10 @@ public class KeycardEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testMultipleKeycardsGameplay() {
-        KeycardEvent k1 = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {0f, 0f});
-        KeycardEvent k2 = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {10f, 10f});
+        KeycardEvent k1 =
+                new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {0f, 0f});
+        KeycardEvent k2 =
+                new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {10f, 10f});
 
         k1.logic();
         boolean k1Collision = k1.checkColliding(0.5f, 0.5f);
@@ -275,10 +283,12 @@ public class KeycardEventTest extends AbstractHeadlessGdxTest {
         keycard.setY(0.0f);
         boolean rightApproach = keycard.checkColliding(2.0f, 0.5f);
 
-        KeycardEvent k2 = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {0f, 0f});
+        KeycardEvent k2 =
+                new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {0f, 0f});
         boolean topApproach = k2.checkColliding(0.5f, 2.0f);
 
-        KeycardEvent k3 = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {0f, 0f});
+        KeycardEvent k3 =
+                new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {0f, 0f});
         boolean diagonalApproach = k3.checkColliding(0.5f, 0.5f);
 
         assertFalse(rightApproach);
@@ -296,5 +306,13 @@ public class KeycardEventTest extends AbstractHeadlessGdxTest {
 
         assertTrue(centerCollision);
         assertFalse(farCollision);
+    }
+
+    @Test
+    public void testCollectedOnce() {
+        keycard.setX(0.0f);
+        keycard.setY(0.0f);
+        keycard.checkColliding(0.5f, 0.5f);
+        assertFalse(keycard.checkColliding(0.5f, 0.5f));
     }
 }

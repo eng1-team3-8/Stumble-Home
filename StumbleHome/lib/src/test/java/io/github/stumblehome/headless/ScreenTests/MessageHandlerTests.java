@@ -1,23 +1,18 @@
 package io.github.stumblehome.headless.ScreenTests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.badlogic.gdx.graphics.Color;
 import io.github.stumblehome.Messages.*;
 import io.github.stumblehome.StumbleHome;
 import io.github.stumblehome.headless.AbstractHeadlessGdxTest;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class MessageHandlerTests extends AbstractHeadlessGdxTest {
-    MessageHandler test_handler;
+    private MessageHandler test_handler;
 
-    @BeforeAll
+    @BeforeEach
     public void setup() {
         StumbleHome test_game = new StumbleHome();
         test_handler = new MessageHandler(test_game);
@@ -80,7 +75,7 @@ public class MessageHandlerTests extends AbstractHeadlessGdxTest {
                 "MessageID should not be able to be initilised with negative size");
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new MessageID("test", Color.WHITE, 0),
+                () -> new MessageID("test", Color.WHITE, 0f),
                 "MessageID should not be able to be initilised with size of 0");
     }
 
@@ -222,15 +217,15 @@ public class MessageHandlerTests extends AbstractHeadlessGdxTest {
                 test_handler.getMessages().get(Messages.NOKEYCARD),
                 "second message should be added to MessageHandler");
         assertEquals(
-                test_handler.getMessages().get(Messages.PAUSED).getColour(),
+                test_handler.getMessages().get(Messages.NOKEYCARD).getColour(),
                 Color.RED,
                 "Message 2 colour was not changed correctly");
         assertEquals(
-                test_handler.getMessages().get(Messages.PAUSED).getMessage(),
+                test_handler.getMessages().get(Messages.NOKEYCARD).getMessage(),
                 "test2",
                 "Message 2 text was not changed correctly");
         assertEquals(
-                test_handler.getMessages().get(Messages.PAUSED).getSize(),
+                test_handler.getMessages().get(Messages.NOKEYCARD).getSize(),
                 2.0f,
                 "Message 2 size was not changed correctly");
     }
