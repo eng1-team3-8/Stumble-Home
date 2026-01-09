@@ -4,20 +4,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.badlogic.gdx.graphics.Texture;
 import io.github.stumblehome.Entities.KeycardEvent;
-import io.github.stumblehome.Messages.MessageHandler;
-import io.github.stumblehome.StumbleHome;
 import io.github.stumblehome.headless.AbstractHeadlessGdxTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class KeycardEventTest extends AbstractHeadlessGdxTest {
     private KeycardEvent keycard;
-    private MessageHandler test_handler;
 
     @BeforeEach
     public void setUp() {
-        StumbleHome test_game = new StumbleHome();
-        test_handler = new MessageHandler(test_game);
         keycard = new KeycardEvent(new Texture(KeycardEvent.ASSET), 1f, new float[] {1f, 1f});
     }
 
