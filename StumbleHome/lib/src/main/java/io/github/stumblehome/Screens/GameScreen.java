@@ -316,7 +316,7 @@ public class GameScreen implements Screen {
             if (musicToggle) {
                 music.stop();
             }
-            
+
             game.setScreen(new LoseScreen(game, remainingTime, score));
         }
         ;
@@ -596,11 +596,9 @@ public class GameScreen implements Screen {
         int seconds = (int) (remainingTime % 60);
         String timeText = String.format("%02d:%02d", minutes, seconds);
 
-        int totalEvents = 5;
-        String helpfulEventText = "Helpful events: " + helpfulEventCounter + "/" + totalEvents;
-        String hinderingEventText =
-                "Hindering events: " + hinderingEventCounter + "/" + totalEvents;
-        String hiddenEventText = "Hidden events: " + hiddenEventCounter + "/" + totalEvents;
+        String helpfulEventText = "Helpful events: " + helpfulEventCounter + "/" + 3;
+        String hinderingEventText = "Hindering events: " + hinderingEventCounter + "/" + 5;
+        String hiddenEventText = "Hidden events: " + hiddenEventCounter + "/" + 3;
 
         game.batch.begin();
 
