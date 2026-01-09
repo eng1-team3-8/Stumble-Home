@@ -3,16 +3,15 @@ package io.github.stumblehome.headless;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-
 import io.github.stumblehome.Player;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class PlayerTest extends AbstractHeadlessGdxTest {
     // Initianalize the player for using in each Test
@@ -20,7 +19,6 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
 
     @BeforeEach
     public void setUp() {
-
 
         // E
         TiledMap map = new TmxMapLoader().load("map.tmx");
