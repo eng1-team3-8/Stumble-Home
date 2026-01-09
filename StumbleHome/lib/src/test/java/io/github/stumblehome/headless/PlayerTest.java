@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import io.github.stumblehome.Player;
+import io.github.stumblehome.Entities.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -112,9 +112,9 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         Player player = testUnit;
 
         // Test initial state after constructor
-        assertEquals(0f, player.playerX, "Player X should start at 0");
-        assertEquals(0f, player.playerY, "Player Y should start at 0");
-        assertEquals(0.8f, player.playerSize, "Player size should be 0.8");
+        assertEquals(0f, player.getX(), "Player X should start at 0"); // Was player.playerX
+        assertEquals(0f, player.getY(), "Player Y should start at 0"); // Was player.playerY
+        assertEquals(0.8f, player.frame_size, "Player size should be 0.8"); // Was player.playerSize
         assertTrue(player.isDrunk, "Player should be drunk initially");
         assertEquals(-5f, player.player_speed, "Player speed should be -5 when drunk");
     }
