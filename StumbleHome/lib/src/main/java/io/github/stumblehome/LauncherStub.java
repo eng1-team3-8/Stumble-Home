@@ -8,10 +8,10 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
  * with `java -jar StumbleHome-local-SNAPSHOT.jar`.
  */
 public final class LauncherStub {
-  public static void main(String[] args) {
-    Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-    config.setTitle("StumbleHome");
-    config.setWindowedMode(800, 500);
-    new Lwjgl3Application(new StumbleHome(), config);
-  }
+    public static void main(String[] args) {
+        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        config.setTitle("StumbleHome");
+        config.setWindowedMode(800, 500);
+        new Lwjgl3Application(new StumbleHome(), config);
+    }
 }
