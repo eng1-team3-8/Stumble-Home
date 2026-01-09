@@ -1,12 +1,18 @@
 package io.github.stumblehome.Screens;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.backends.lwjgl3.audio.Mp3.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -15,10 +21,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import io.github.stumblehome.*;
+
+import io.github.stumblehome.StumbleHome;
 import io.github.stumblehome.Entities.Alcohol;
 import io.github.stumblehome.Entities.Bob;
 import io.github.stumblehome.Entities.BottleEvent;
@@ -31,7 +39,6 @@ import io.github.stumblehome.Entities.Rose;
 import io.github.stumblehome.Entities.Twig;
 import io.github.stumblehome.Messages.MessageHandler;
 import io.github.stumblehome.Messages.Messages;
-import java.util.HashMap;
 
 /**
  * The {@code GameScreen} class represents the main gameplay screen in the StumbleHome game.
@@ -80,6 +87,8 @@ public class GameScreen implements Screen {
     private final Alcohol beer;
     // Vodka for the negative event
     private final Alcohol vodka;
+    // Blackout for negative event
+    private ShapeRenderer blackout_box;
     // Chicken for the positive event
     private final Food chicken;
     // Adding the Yorks and the Lancs roses
@@ -98,6 +107,8 @@ public class GameScreen implements Screen {
     TiledMapTileLayer collisionLayer;
     // Indicates whether the game is currently paused.
     private boolean paused = false;
+    // Indicate when a blackout is occuring 
+    private boolean blackout = false;
     // Remaining time for the player to complete the game (in seconds).
     private float remainingTime = 300f;
     // Whether the countdown timer has reached zero.
@@ -247,7 +258,7 @@ public class GameScreen implements Screen {
                 "You've obtained a chainsaw. press e to cut a line of hedges! (Single use)",
                 Color.RED,
                 2f);
-
+        
         // Achievements Popup
         stage = new Stage(new ScreenViewport());
         Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
@@ -266,6 +277,7 @@ public class GameScreen implements Screen {
             music.setVolume(volume);
             music.play();
         }
+
     }
 
     @Override
@@ -281,6 +293,7 @@ public class GameScreen implements Screen {
      */
     @Override
     public void render(float delta) {
+        System.out.println("helo");
         // Toggle pause when SPACE is pressed
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)
                 || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
@@ -301,9 +314,14 @@ public class GameScreen implements Screen {
         }
 
         // Only run player input and logic if not paused and there is enough time left
-        if (!paused && !timeUp) {
+        if (!paused && !timeUp && !blackout) {
             player.input();
             logic();
+        }
+        if (blackout) {
+            this.remainingTime -= 60;
+            blackout = false;
+            game.setScreen(new BlackoutScreen(this.game, 3f, this));   
         }
         draw();
 
@@ -393,7 +411,10 @@ public class GameScreen implements Screen {
         //System.out.println(player.isPlayerDrunk());
         // Check if collision with beer
         if (beer.checkColliding(playerCentreX, playerCentreY)) {
-            hinderingEventCounter++;
+            hinderingEventCounter++;            
+            if (vodka.is_collected && player.isPlayerDrunk()) {
+                blackout = true;
+            }
             beer.makeDrunk(player);
 
             setAchievementText("BEER ME!");
@@ -402,8 +423,11 @@ public class GameScreen implements Screen {
         // Check if collision with vodka
         if (vodka.checkColliding(playerCentreX, playerCentreY)) {
             hinderingEventCounter++;
+            if (beer.is_collected && player.isPlayerDrunk()) {
+                blackout = true;
+            }
             vodka.makeDrunk(player);
-
+            
             setAchievementText("Down the vodka");
         }
 

@@ -24,7 +24,7 @@ public class KeycardEvent extends CollectableEntity {
      * hasn't been collected.
      */
     public void logic() {
-        if (!isCollected) {
+        if (!is_collected) {
             if (current_animation != previous_animation) {
                 state_time = 0f;
                 previous_animation = current_animation;
@@ -40,7 +40,7 @@ public class KeycardEvent extends CollectableEntity {
      */
     @Override
     public void draw(Batch batch) {
-        if (!isCollected) {
+        if (!is_collected) {
             TextureRegion frameToDraw = current_animation.getKeyFrame(state_time, true);
             batch.draw(frameToDraw, getX(), getY(), frame_size, frame_size);
         }
