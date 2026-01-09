@@ -66,13 +66,11 @@ public class BossFightLogic {
             throws InterruptedException {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && !isStopped) {
             isStopped = true;
-            System.out.println("It is being checked");
             this.checkOverlap(cables, scissors);
             this.isStopped = false;
             this.statesFSA.moveStates(1);
             scissors.setX(105f);
             this.mikeAttacks();
-            System.out.println("Player health: " + this.playerHealth);
         }
 
         // Below is code for testing
@@ -123,11 +121,8 @@ public class BossFightLogic {
      */
     public void checkOverlap(BossFightEntity[] cables, Scissors scissors)
             throws InterruptedException {
-        System.out.println("Overlap is being checked");
         for (int i = 0; i < cables.length; i++) {
-            System.out.println("Cable: " + i);
             if (scissors.checkOverlap(cables[i].getX(), this.viewport)) {
-                System.out.println("Overlaps!");
                 if (this.cableStatus[i]) {
                     updateSprite(cables[i], i);
                 }

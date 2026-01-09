@@ -38,9 +38,6 @@ public class BossFightEntity extends NonPlayerEntity {
     public boolean checkOverlap(float playerCentreX, FitViewport viewport) {
 
         double distance = abs(playerCentreX - this.getX());
-
-        System.out.println(distance + " " + playerCentreX + " " + this.getX());
-
         return distance < (viewport.getWorldWidth() / 80) * 3;
     }
 

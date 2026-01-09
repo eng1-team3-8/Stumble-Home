@@ -52,7 +52,6 @@ public class Chainsaw extends CollectableEntity {
                 while (removable_walls.getCell(start_pos[0], start_pos[1]) != null) {
                     removable_walls.setCell(start_pos[0], start_pos[1], null);
                     start_pos[1] += 1;
-                    System.out.println(start_pos[1]);
                 }
                 break;
             case DOWN:

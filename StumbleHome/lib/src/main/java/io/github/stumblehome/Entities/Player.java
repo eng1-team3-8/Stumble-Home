@@ -58,7 +58,6 @@ public class Player extends Entity {
         SwapControls();
 
         this.collisionLayer = collisionLayer;
-        System.out.println(this.canMoveTo(2f, 2f));
     }
 
     /**

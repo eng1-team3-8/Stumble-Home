@@ -269,7 +269,7 @@ public class BossScreen implements Screen {
 
         // Create the final attack stage
 
-        TextButton attackBossButton = new TextButton("ATTACK", skin);
+        TextButton attackBossButton = new TextButton("FIRE RST PACKET", skin);
 
         X = (viewport.getWorldWidth() / 2);
         Y = viewport.getWorldHeight() / 5;
@@ -285,7 +285,6 @@ public class BossScreen implements Screen {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         logicHandler.attackMike();
-                        System.out.println(logicHandler.getMikeHealth() + " " + mikeWidth);
                         statesFSA.moveStates(-1);
                         logicHandler.mikeAttacks();
                     }
@@ -308,8 +307,11 @@ public class BossScreen implements Screen {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        BossMusic.stop();
+                        if (musicToggle) {
+                            BossMusic.stop();
+                        }
                         game.setScreen(gameScreen);
+                        gameScreen.resumeMusic();
                     }
                 });
     }
@@ -325,8 +327,6 @@ public class BossScreen implements Screen {
     public void render(float delta) {
         // Make the Screen grey
         ScreenUtils.clear(Color.GRAY);
-
-        System.out.println(viewport.getWorldWidth() + " " + viewport.getWorldHeight());
 
         this.mikeWidth = ((float) this.logicHandler.getMikeHealth() / 100) * 400;
         this.playerWidth = ((float) this.logicHandler.getPlayerHealth() / 100) * 100;

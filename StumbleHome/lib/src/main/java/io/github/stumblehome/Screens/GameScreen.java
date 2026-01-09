@@ -673,4 +673,10 @@ public class GameScreen implements Screen {
 
         achievementData.put(text, true);
     }
+
+    public void resumeMusic() {
+        if (musicToggle && !music.isPlaying()) {
+            music.play();
+        }
+    }
 }
