@@ -323,6 +323,7 @@ public class GameScreen implements Screen {
         }
         if (blackout) {
             this.remainingTime -= 60;
+            hinderingEventCounter++;
             blackout = false;
             game.setScreen(new BlackoutScreen(this.game, 3f, this));
         }
