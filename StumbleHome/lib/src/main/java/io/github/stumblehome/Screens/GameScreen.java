@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.stumblehome.*;
 import io.github.stumblehome.Entities.Alcohol;
+import io.github.stumblehome.Entities.BirdSeed;
 import io.github.stumblehome.Entities.Bob;
 import io.github.stumblehome.Entities.BottleEvent;
 import io.github.stumblehome.Entities.Chainsaw;
@@ -89,6 +90,8 @@ public class GameScreen implements Screen {
     private final Chainsaw chainsaw;
     // Bob
     private final Bob bob;
+    // BirdSeed
+    private final BirdSeed birdSeed;
     private final String playerName;
     // The current map being rendered.
     TiledMap map;
@@ -199,7 +202,7 @@ public class GameScreen implements Screen {
         twig = new Twig(new Texture(Twig.ASSET), 1f, new float[] {51f, 19f});
 
         // Alcohol bottles
-        beer = new Alcohol(new Texture(Alcohol.ASSET_TSING), 1f, new float[] {62f, 5f});
+        beer = new Alcohol(new Texture(Alcohol.ASSET_TSING), 1.5f, new float[] {62f, 5f});
         vodka = new Alcohol(new Texture(Alcohol.ASSET_SMIRN), 1f, new float[] {35f, 2f});
 
         // Chicken
@@ -214,6 +217,9 @@ public class GameScreen implements Screen {
 
         // Bob
         bob = new Bob(new Texture(Bob.ASSET), 1f, new float[] {17f, 20f});
+
+        // Bird seed
+        birdSeed = new BirdSeed(new Texture(BirdSeed.ASSET), 1f, new float[] {48f, 20f});
 
         // message handler
         msg = new MessageHandler(game);
@@ -246,6 +252,11 @@ public class GameScreen implements Screen {
                 Messages.CHAINSAWPICKEDUP,
                 "You've obtained a chainsaw. press e to cut a line of hedges! (Single use)",
                 Color.RED,
+                2f);
+        msg.addMessage(
+                Messages.BIRDSEED,
+                "LongBoi is really hungry, look how fast he is!",
+                Color.BLACK,
                 2f);
 
         // Achievements Popup
@@ -420,7 +431,9 @@ public class GameScreen implements Screen {
 
         // Check if the Yorks rose has been stepped on
         if (York.checkColliding(playerCentreX, playerCentreY)) {
-            hiddenEventCounter++;
+            if (!Lancaster.isSquished) {
+                hiddenEventCounter++;
+            }
             msg.set_time(Messages.YORKSQUISHED, 3f);
             York.isSquished = true;
 
@@ -429,7 +442,9 @@ public class GameScreen implements Screen {
 
         // Check if the Lancaster rose has been stepped on
         if (Lancaster.checkColliding(playerCentreX, playerCentreY)) {
-            hiddenEventCounter++;
+            if (!York.isSquished) {
+                hiddenEventCounter++;
+            }
             msg.set_time(Messages.LANCASTERSQUISHED, 3f);
             Lancaster.isSquished = true;
 
@@ -455,6 +470,16 @@ public class GameScreen implements Screen {
             game.setScreen(new BossScreen(game, this, musicToggle, volume));
 
             setAchievementText("Someone didn't like SYS1...");
+        }
+
+        // Check if birdSeed has been collided with
+        if (birdSeed.checkColliding(playerCentreX, playerCentreY)) {
+            hinderingEventCounter++;
+            msg.set_time(Messages.BIRDSEED, 3f);
+
+            longBoi.setSpeed(5f);
+
+            setAchievementText("Feed the Bird");
         }
 
         // if long boi walk not completed, run logic
@@ -581,6 +606,7 @@ public class GameScreen implements Screen {
         Lancaster.draw(game.batch);
         chainsaw.draw(game.batch);
         bob.draw(game.batch);
+        birdSeed.draw(game.batch);
 
         game.batch.end();
 
@@ -659,6 +685,8 @@ public class GameScreen implements Screen {
         chicken.dispose();
         York.dispose();
         Lancaster.dispose();
+        bob.dispose();
+        birdSeed.dispose();
         stage.dispose();
         achievementBox.getContentTable().clearChildren();
         achievementBox.remove();

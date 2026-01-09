@@ -113,7 +113,8 @@ public class Achievements extends MenuScreen {
                     {"Traitor!!!", "(AKA: Crush White Rose)"},
                     {"Switched sides have you??", "(AKA: Crush Both Roses)"},
                     {"Someone didn't like SYS1...", "(AKA: Collect Bob)"},
-                    {"Raised from the dead... RUN!", "(AKA: Encounter LongBoi)"}
+                    {"Raised from the dead... RUN!", "(AKA: Encounter LongBoi)"},
+                    {"Feed the Bird", "(AKA: Collect Bird Food)"}
                 };
 
         // Adds title to leaderboard
