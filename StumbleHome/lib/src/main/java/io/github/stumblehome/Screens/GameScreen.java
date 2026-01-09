@@ -330,16 +330,8 @@ public class GameScreen implements Screen {
 
             game.setScreen(new LoseScreen(game, remainingTime, score));
         }
-        ;
-        if (dialogScaleFactor < 0) {
-            dialogScaleFactor = dialogScaleFactor * -1;
-        }
-        // Sets achievement box to bottom right
-        float w = Gdx.graphics.getWidth() / 2;
-        achievementBox.setPosition(w, 0);
-        // Pads text to avoid truncation
-        achievementBox.getContentTable().padLeft(4f);
-        achievementBox.getContentTable().padRight(4f);
+
+        positionDialogueBox();
 
         // Applies correct viewport for screen size
         stage.getViewport().apply();
@@ -387,7 +379,7 @@ public class GameScreen implements Screen {
         // Check collision with twig
         if (twig.checkColliding(playerCentreX, playerCentreY)) {
             hinderingEventCounter++;
-            player.slowDownPlayer(.5f);
+            player.slowDownPlayer(1f);
 
             setAchievementText("Broken Ankle");
         }
@@ -707,6 +699,18 @@ public class GameScreen implements Screen {
         achievementBox.text(text);
 
         achievementData.put(text, true);
+    }
+
+    private void positionDialogueBox() {
+        if (dialogScaleFactor < 0) {
+            dialogScaleFactor = dialogScaleFactor * -1;
+        }
+        // Sets achievement box to bottom right
+        float w = Gdx.graphics.getWidth() / 2;
+        achievementBox.setPosition(w, 0);
+        // Pads text to avoid truncation
+        achievementBox.getContentTable().padLeft(4f);
+        achievementBox.getContentTable().padRight(4f);
     }
 
     // Toggles music status between paused and play
