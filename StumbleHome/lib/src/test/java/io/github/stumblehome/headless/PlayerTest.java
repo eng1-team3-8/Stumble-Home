@@ -21,6 +21,7 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
     @BeforeEach
     public void setUp() {
 
+
         // E
         TiledMap map = new TmxMapLoader().load("map.tmx");
 
