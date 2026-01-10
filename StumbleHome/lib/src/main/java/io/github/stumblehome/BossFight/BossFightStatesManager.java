@@ -70,7 +70,7 @@ public class BossFightStatesManager {
                 }
                 break;
             default:
-              break;
+                break;
         }
     }
 }
