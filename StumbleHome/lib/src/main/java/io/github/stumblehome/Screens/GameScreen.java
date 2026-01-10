@@ -229,6 +229,7 @@ public class GameScreen implements Screen {
 
         this.initialiseMessages();
         msg.setTime(Messages.START, 5f);
+        msg.setTime(Messages.DRUNKINSTRUCTION, 5f);
 
         // Achievements Popup
         stage = new Stage(new ScreenViewport());
@@ -278,9 +279,10 @@ public class GameScreen implements Screen {
                 Color.SKY,
                 2f);
         msg.addMessage(Messages.BOTHSQUISHED, "I see, you just harbour chaos", Color.YELLOW, 2f);
+        msg.addMessage(Messages.CHAINSAWPICKEDUP, "You've obtained a chainsaw.", Color.GREEN, 2f);
         msg.addMessage(
-                Messages.CHAINSAWPICKEDUP,
-                "You've obtained a chainsaw. press e to cut a line of hedges! (Single use)",
+                Messages.CHAINSAWINSTRUCTION,
+                "Press e to cut a line of hedges! (Single use)",
                 Color.GREEN,
                 2f);
         msg.addMessage(
@@ -300,8 +302,12 @@ public class GameScreen implements Screen {
         msg.addMessage(Messages.FOOD, "That food seems to have sobered you up!", Color.GREEN, 2f);
         msg.addMessage(
                 Messages.START,
-                "You're drunk and trying to find you way back to halls! \n While drunk you have"
-                        + " inverted controls!",
+                "You're drunk and trying to find you way back to halls!",
+                Color.YELLOW,
+                2f);
+        msg.addMessage(
+                Messages.DRUNKINSTRUCTION,
+                "While drunk you have inverted controls!",
                 Color.YELLOW,
                 2f);
     }
@@ -423,6 +429,7 @@ public class GameScreen implements Screen {
         if (chainsaw.checkColliding(playerCentreX, playerCentreY)) {
             helpfulEventCounter++;
             msg.setTime(Messages.CHAINSAWPICKEDUP, 3f);
+            msg.setTime(Messages.CHAINSAWINSTRUCTION, 3f);
             setAchievementText("Here's Johnny!", 50);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
