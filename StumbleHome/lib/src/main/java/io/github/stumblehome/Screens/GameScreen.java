@@ -442,7 +442,7 @@ public class GameScreen implements Screen {
             if (!achievementData.containsKey("Down the vodka")) {
                 hinderingEventCounter++;
             }
-            if (vodka.isCollected && player.isPlayerDrunk()) {
+            if (vodka.is_collected && player.isPlayerDrunk()) {
                 setAchievementText("Mix & Blackout", 50);
                 blackout = true;
             }
@@ -456,7 +456,7 @@ public class GameScreen implements Screen {
             if (!achievementData.containsKey("BEER ME!")) {
                 hinderingEventCounter++;
             }
-            if (beer.isCollected && player.isPlayerDrunk()) {
+            if (beer.is_collected && player.isPlayerDrunk()) {
                 setAchievementText("Mix & Blackout", 50);
                 blackout = true;
             }

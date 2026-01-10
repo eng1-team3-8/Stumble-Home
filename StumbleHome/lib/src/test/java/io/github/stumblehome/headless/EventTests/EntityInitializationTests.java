@@ -36,7 +36,7 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
     @Test
     public void testFoodInitialNotCollected() {
         Food food = new Food(texture, testSize, testPosition);
-        assertFalse(food.isCollected);
+        assertFalse(food.is_collected);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
     public void testTwigInitialNotCollected() {
         Texture twigTexture = new Texture(Gdx.files.internal("Sprites/Stick.png"));
         Twig twig = new Twig(twigTexture, testSize, testPosition);
-        assertFalse(twig.isCollected);
+        assertFalse(twig.is_collected);
     }
 
     @Test
@@ -82,7 +82,7 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
     public void testChainsawInitialNotCollected() {
         Texture chainsawTexture = new Texture(Gdx.files.internal("Sprites/Chainsaw.png"));
         Chainsaw chainsaw = new Chainsaw(chainsawTexture, testSize, testPosition);
-        assertFalse(chainsaw.isCollected);
+        assertFalse(chainsaw.is_collected);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
     public void testBottleEventInitialNotCollected() {
         Texture bottleTexture = new Texture(Gdx.files.internal("waterBottle.png"));
         BottleEvent bottle = new BottleEvent(bottleTexture, testSize, testPosition);
-        assertFalse(bottle.isCollected);
+        assertFalse(bottle.is_collected);
     }
 
     @Test
@@ -114,8 +114,8 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
         Texture twigTexture = new Texture(Gdx.files.internal("Sprites/Stick.png"));
         Twig twig = new Twig(twigTexture, testSize, new float[] {50f, 60f});
 
-        assertFalse(food.isCollected);
-        assertFalse(twig.isCollected);
+        assertFalse(food.is_collected);
+        assertFalse(twig.is_collected);
         assertEquals(10f, food.getX());
         assertEquals(50f, twig.getX());
     }

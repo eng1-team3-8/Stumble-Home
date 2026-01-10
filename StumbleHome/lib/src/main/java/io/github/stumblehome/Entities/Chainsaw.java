@@ -14,7 +14,7 @@ public class Chainsaw extends CollectableEntity {
     }
 
     public boolean UseChainsaw(Player player, TiledMapTileLayer removable_walls) {
-        if (isTriggered || !(isCollected)) {
+        if (is_triggered || !(is_collected)) {
             return false;
         }
         EntityDirection direction = player.getDirection();
@@ -41,7 +41,7 @@ public class Chainsaw extends CollectableEntity {
             return false;
         }
         Chainsaw.remove_wall_strip(removable_walls, target_cells, direction);
-        isTriggered = true;
+        is_triggered = true;
         return true;
     }
 
