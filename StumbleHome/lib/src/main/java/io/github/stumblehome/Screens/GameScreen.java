@@ -228,7 +228,7 @@ public class GameScreen implements Screen {
         birdSeed = new BirdSeed(new Texture(BirdSeed.ASSET), 1f, new float[] {48f, 20f});
 
         this.initialiseMessages();
-        msg.set_time(Messages.START, 3f);
+        msg.setTime(Messages.START, 3f);
 
         // Achievements Popup
         stage = new Stage(new ScreenViewport());
@@ -347,7 +347,7 @@ public class GameScreen implements Screen {
             hinderingEventCounter++;
             blackout = false;
             game.setScreen(new BlackoutScreen(this.game, 3f, this));
-            msg.set_time(Messages.BLACKOUT, 3f);
+            msg.setTime(Messages.BLACKOUT, 3f);
         }
 
         draw();
@@ -422,7 +422,7 @@ public class GameScreen implements Screen {
         if (chainsaw.checkColliding(playerCentreX, playerCentreY)) {
             helpfulEventCounter++;
             msg.setTime(Messages.CHAINSAWPICKEDUP, 3f);
-            setAchievementText("Here's Johnny!");
+            setAchievementText("Here's Johnny!", 50);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             // player attempts to use chainsaw
@@ -434,12 +434,12 @@ public class GameScreen implements Screen {
             if (!achievementData.containsKey("Down the vodka")) {
                 hinderingEventCounter++;
             }
-            if (vodka.is_collected && player.isPlayerDrunk()) {
+            if (vodka.isCollected && player.isPlayerDrunk()) {
                 setAchievementText("Mix & Blackout", 50);
                 blackout = true;
             }
             beer.makeDrunk(player);
-            msg.set_time(Messages.ALCOHOL, 3f);
+            msg.setTime(Messages.ALCOHOL, 3f);
             setAchievementText("BEER ME!", 50);
         }
 
@@ -448,12 +448,12 @@ public class GameScreen implements Screen {
             if (!achievementData.containsKey("BEER ME!")) {
                 hinderingEventCounter++;
             }
-            if (beer.is_collected && player.isPlayerDrunk()) {
+            if (beer.isCollected && player.isPlayerDrunk()) {
                 setAchievementText("Mix & Blackout", 50);
                 blackout = true;
             }
             vodka.makeDrunk(player);
-            msg.set_time(Messages.ALCOHOL, 3f);
+            msg.setTime(Messages.ALCOHOL, 3f);
             setAchievementText("Down the vodka", 50);
         }
 
@@ -464,7 +464,7 @@ public class GameScreen implements Screen {
                 msg.setTime(Messages.REMEMBERKEYCARD, 3f);
             }
             chicken.eatFood(player);
-            msg.set_time(Messages.FOOD, 3f);
+            msg.setTime(Messages.FOOD, 3f);
             setAchievementText("Lava Chicken... TASTY AS HELL", 50);
         }
 
@@ -514,7 +514,7 @@ public class GameScreen implements Screen {
         // Check if birdSeed has been collided with
         if (birdSeed.checkColliding(playerCentreX, playerCentreY)) {
             hinderingEventCounter++;
-            msg.set_time(Messages.BIRDSEED, 3f);
+            msg.setTime(Messages.BIRDSEED, 3f);
 
             // Increases speed based of interaction
             longBoi.setSpeed(5f);

@@ -149,7 +149,7 @@ public class BossScreen implements Screen {
                 3f);
         msg.addMessage(
                 Messages.BOSSFIGHTRST, "He's vulnerable, fire the RST packets!!", Color.YELLOW, 3f);
-        msg.set_time(Messages.BOSSFIGHTSTART, 3f);
+        msg.setTime(Messages.BOSSFIGHTSTART, 3f);
 
         // Create the BossFightEntities
         this.scissors =
@@ -426,7 +426,7 @@ public class BossScreen implements Screen {
                 break;
             case ATTACK:
                 if (!view_wires) {
-                    msg.set_time(Messages.BOSSFIGHTWIRES, 3f);
+                    msg.setTime(Messages.BOSSFIGHTWIRES, 3f);
                     view_wires = true;
                 }
                 // Draw the switch
@@ -460,7 +460,7 @@ public class BossScreen implements Screen {
 
             case FINALATTACK:
                 if (!view_rst) {
-                    msg.set_time(Messages.BOSSFIGHTRST, 3f);
+                    msg.setTime(Messages.BOSSFIGHTRST, 3f);
                 }
                 this.batch.end();
                 this.finalAttackStage.draw();
