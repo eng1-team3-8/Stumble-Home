@@ -15,5 +15,10 @@ public enum Messages {
     LANCASTERSQUISHED,
     BOTHSQUISHED,
     CHAINSAWPICKEDUP,
-    BIRDSEED
+    BIRDSEED,
+    BLACKOUT,
+    START,
+    ALCOHOL,
+    ALCOHOLFULL,
+    FOOD,
 }

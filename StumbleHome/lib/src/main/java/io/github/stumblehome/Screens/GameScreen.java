@@ -227,43 +227,8 @@ public class GameScreen implements Screen {
         // Bird seed
         birdSeed = new BirdSeed(new Texture(BirdSeed.ASSET), 1f, new float[] {48f, 20f});
 
-        // message handler
-        msg = new MessageHandler(game);
-        msg.addMessage(Messages.PAUSED, "PAUSED", Color.WHITE, 2f);
-        msg.addMessage(
-                Messages.NOKEYCARD, "You need a KeyCard to enter the Door...", Color.RED, 2f);
-        msg.addMessage(
-                Messages.PICKUPKEYCARD,
-                "You have the keyCard, you can go home now!",
-                Color.YELLOW,
-                2f);
-        msg.addMessage(
-                Messages.REMEMBERKEYCARD,
-                "You remembered that you don't have the keycard, find it!",
-                Color.RED,
-                2f);
-        msg.addMessage(Messages.LONGBOIAPPEAR, "It's Long Boi! Avoid him!", Color.RED, 2f);
-        msg.addMessage(
-                Messages.YORKSQUISHED,
-                "Blud does NOT like York, I bet YOU killed Longboi!",
-                Color.RED,
-                2f);
-        msg.addMessage(
-                Messages.LANCASTERSQUISHED,
-                "Good job, doing God's work here. Goodbye Lancashire!",
-                Color.RED,
-                2f);
-        msg.addMessage(Messages.BOTHSQUISHED, "I see, you just harbour chaos", Color.BLACK, 2f);
-        msg.addMessage(
-                Messages.CHAINSAWPICKEDUP,
-                "You've obtained a chainsaw. press e to cut a line of hedges! (Single use)",
-                Color.RED,
-                2f);
-        msg.addMessage(
-                Messages.BIRDSEED,
-                "LongBoi is really hungry, look how fast he is!",
-                Color.BLACK,
-                2f);
+        this.initialiseMessages();
+        msg.set_time(Messages.START, 3f);
 
         // Achievements Popup
         stage = new Stage(new ScreenViewport());
@@ -283,6 +248,55 @@ public class GameScreen implements Screen {
             music.setVolume(volume);
             music.play();
         }
+    }
+
+    private void initialiseMessages() {
+        // message handler
+        msg = new MessageHandler(game);
+        msg.addMessage(Messages.PAUSED, "PAUSED", Color.WHITE, 3f);
+        msg.addMessage(
+                Messages.NOKEYCARD, "You need a KeyCard to enter the Door...", Color.RED, 3f);
+        msg.addMessage(
+                Messages.PICKUPKEYCARD,
+                "You have the keyCard, you can go home now!",
+                Color.GREEN,
+                3f);
+        msg.addMessage(
+                Messages.REMEMBERKEYCARD,
+                "You remembered that you don't have the keycard, find it!",
+                Color.GREEN,
+                3f);
+        msg.addMessage(Messages.LONGBOIAPPEAR, "It's Long Boi! Avoid him!", Color.RED, 3f);
+        msg.addMessage(
+                Messages.YORKSQUISHED,
+                "Blud does NOT like York, I bet YOU killed Longboi!",
+                Color.SKY,
+                3f);
+        msg.addMessage(
+                Messages.LANCASTERSQUISHED,
+                "Good job, doing God's work here. Goodbye Lancashire!",
+                Color.SKY,
+                3f);
+        msg.addMessage(Messages.BOTHSQUISHED, "I see, you just harbour chaos", Color.YELLOW, 3f);
+        msg.addMessage(
+                Messages.CHAINSAWPICKEDUP,
+                "You've obtained a chainsaw. press e to cut a line of hedges! (Single use)",
+                Color.GREEN,
+                3f);
+        msg.addMessage(
+                Messages.BIRDSEED,
+                "LongBoi is really hungry, look how fast he is!",
+                Color.RED,
+                3f);
+        msg.addMessage(
+                Messages.BLACKOUT,
+                "Looks like you blacked out, you lost a minuite of time!",
+                Color.RED,
+                3f);
+        msg.addMessage(Messages.ALCOHOL, "Maybe you should stop drinking for now...", Color.RED, 3f);
+        msg.addMessage(Messages.ALCOHOLFULL, "Thank god you had that chicken. You don't feel drunk", Color.GREEN, 3f);
+        msg.addMessage(Messages.FOOD, "That food seems to have sobered you up!", Color.GREEN, 3f);
+        msg.addMessage(Messages.START, "You're drunk and trying to find you way back to halls!", Color.YELLOW, 3f);
     }
 
     @Override
@@ -327,7 +341,9 @@ public class GameScreen implements Screen {
             hinderingEventCounter++;
             blackout = false;
             game.setScreen(new BlackoutScreen(this.game, 3f, this));
+            msg.set_time(Messages.BLACKOUT, 3f);
         }
+
         draw();
 
         msg.updateMessages();
@@ -417,7 +433,7 @@ public class GameScreen implements Screen {
                 blackout = true;
             }
             beer.makeDrunk(player);
-
+            msg.set_time(Messages.ALCOHOL, 3f);
             setAchievementText("BEER ME!", 50);
         }
 
@@ -431,7 +447,7 @@ public class GameScreen implements Screen {
                 blackout = true;
             }
             vodka.makeDrunk(player);
-
+            msg.set_time(Messages.ALCOHOL, 3f);
             setAchievementText("Down the vodka", 50);
         }
 
@@ -442,7 +458,7 @@ public class GameScreen implements Screen {
                 msg.set_time(Messages.REMEMBERKEYCARD, 3f);
             }
             chicken.eatFood(player);
-
+            msg.set_time(Messages.FOOD, 3f);
             setAchievementText("Lava Chicken... TASTY AS HELL", 50);
         }
 
