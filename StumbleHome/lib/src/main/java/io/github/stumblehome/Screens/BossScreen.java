@@ -426,7 +426,7 @@ public class BossScreen implements Screen {
                 break;
             case ATTACK:
                 if (!view_wires) {
-                    msg.setTime(Messages.BOSSFIGHTWIRES, 3f);
+                    msg.setTime(Messages.BOSSFIGHTWIRES, 5f);
                     view_wires = true;
                 }
                 // Draw the switch

@@ -228,7 +228,7 @@ public class GameScreen implements Screen {
         birdSeed = new BirdSeed(new Texture(BirdSeed.ASSET), 1f, new float[] {48f, 20f});
 
         this.initialiseMessages();
-        msg.setTime(Messages.START, 3f);
+        msg.setTime(Messages.START, 5f);
 
         // Achievements Popup
         stage = new Stage(new ScreenViewport());
@@ -300,7 +300,8 @@ public class GameScreen implements Screen {
         msg.addMessage(Messages.FOOD, "That food seems to have sobered you up!", Color.GREEN, 3f);
         msg.addMessage(
                 Messages.START,
-                "You're drunk and trying to find you way back to halls!",
+                "You're drunk and trying to find you way back to halls! While drunk you have"
+                        + " inverted controls!",
                 Color.YELLOW,
                 3f);
     }
