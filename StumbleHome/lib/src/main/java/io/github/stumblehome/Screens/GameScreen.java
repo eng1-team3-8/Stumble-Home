@@ -300,7 +300,7 @@ public class GameScreen implements Screen {
         msg.addMessage(Messages.FOOD, "That food seems to have sobered you up!", Color.GREEN, 2f);
         msg.addMessage(
                 Messages.START,
-                "You're drunk and trying to find you way back to halls! While drunk you have"
+                "You're drunk and trying to find you way back to halls! \n While drunk you have"
                         + " inverted controls!",
                 Color.YELLOW,
                 2f);
