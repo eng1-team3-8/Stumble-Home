@@ -19,6 +19,8 @@ import io.github.stumblehome.BossFight.BossFightLogic;
 import io.github.stumblehome.BossFight.BossFightStatesManager;
 import io.github.stumblehome.BossFight.Scissors;
 import io.github.stumblehome.Entities.BossFightEntity;
+import io.github.stumblehome.Messages.MessageHandler;
+import io.github.stumblehome.Messages.Messages;
 import io.github.stumblehome.StumbleHome;
 
 /**
@@ -93,6 +95,11 @@ public class BossScreen implements Screen {
     // Music control
     final boolean musicToggle;
 
+    // Message handler
+    private MessageHandler msg;
+    private boolean view_wires = false;
+    private boolean view_rst = false;
+
     /**
      * This is the constructor for the bossfight.
      *
@@ -127,6 +134,22 @@ public class BossScreen implements Screen {
         // Creates the text
         this.font = new BitmapFont();
         this.font.setColor(Color.BLUE);
+
+        // Create Message handler
+        msg = new MessageHandler(game);
+        msg.addMessage(
+                Messages.BOSSFIGHTSTART,
+                "It's Mike Freeman!! You'll have to fight him",
+                Color.YELLOW,
+                3f);
+        msg.addMessage(
+                Messages.BOSSFIGHTWIRES,
+                "Cut the ethernet wires to weaken him! Press Space to cut!",
+                Color.YELLOW,
+                3f);
+        msg.addMessage(
+                Messages.BOSSFIGHTRST, "He's vulnerable, fire the RST packets!!", Color.YELLOW, 3f);
+        msg.set_time(Messages.BOSSFIGHTSTART, 3f);
 
         // Create the BossFightEntities
         this.scissors =
@@ -379,6 +402,8 @@ public class BossScreen implements Screen {
                 (this.viewport.getWorldWidth() / 80) * 61,
                 (this.viewport.getWorldHeight() / 50) * 3);
 
+        msg.updateMessages();
+
         switch (this.statesFSA.returnState()) {
             case OPTIONS:
                 // Draw the stage and the buttons
@@ -400,7 +425,10 @@ public class BossScreen implements Screen {
 
                 break;
             case ATTACK:
-
+                if (!view_wires) {
+                    msg.set_time(Messages.BOSSFIGHTWIRES, 3f);
+                    view_wires = true;
+                }
                 // Draw the switch
                 this.batch.draw(
                         Switch,
@@ -431,6 +459,9 @@ public class BossScreen implements Screen {
                 break;
 
             case FINALATTACK:
+                if (!view_rst) {
+                    msg.set_time(Messages.BOSSFIGHTRST, 3f);
+                }
                 this.batch.end();
                 this.finalAttackStage.draw();
                 Gdx.input.setInputProcessor(this.finalAttackStage);

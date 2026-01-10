@@ -284,19 +284,25 @@ public class GameScreen implements Screen {
                 Color.GREEN,
                 3f);
         msg.addMessage(
-                Messages.BIRDSEED,
-                "LongBoi is really hungry, look how fast he is!",
-                Color.RED,
-                3f);
+                Messages.BIRDSEED, "LongBoi is really hungry, look how fast he is!", Color.RED, 3f);
         msg.addMessage(
                 Messages.BLACKOUT,
                 "Looks like you blacked out, you lost a minuite of time!",
                 Color.RED,
                 3f);
-        msg.addMessage(Messages.ALCOHOL, "Maybe you should stop drinking for now...", Color.RED, 3f);
-        msg.addMessage(Messages.ALCOHOLFULL, "Thank god you had that chicken. You don't feel drunk", Color.GREEN, 3f);
+        msg.addMessage(
+                Messages.ALCOHOL, "Maybe you should stop drinking for now...", Color.RED, 3f);
+        msg.addMessage(
+                Messages.ALCOHOLFULL,
+                "Thank god you had that chicken. You don't feel drunk",
+                Color.GREEN,
+                3f);
         msg.addMessage(Messages.FOOD, "That food seems to have sobered you up!", Color.GREEN, 3f);
-        msg.addMessage(Messages.START, "You're drunk and trying to find you way back to halls!", Color.YELLOW, 3f);
+        msg.addMessage(
+                Messages.START,
+                "You're drunk and trying to find you way back to halls!",
+                Color.YELLOW,
+                3f);
     }
 
     @Override

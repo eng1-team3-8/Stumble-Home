@@ -21,4 +21,7 @@ public enum Messages {
     ALCOHOL,
     ALCOHOLFULL,
     FOOD,
+    BOSSFIGHTSTART,
+    BOSSFIGHTWIRES,
+    BOSSFIGHTRST
 }
