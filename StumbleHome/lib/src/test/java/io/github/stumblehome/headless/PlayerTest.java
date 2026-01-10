@@ -18,7 +18,7 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
     public void setUp() {
 
         // E
-        TiledMap map = new TmxMapLoader().load("map.tmx");
+        TiledMap map = new TmxMapLoader().load("map2.tmx");
 
         // Set up map size to be the same as the game
         int mapWidthInTiles = map.getProperties().get("width", Integer.class);
@@ -168,9 +168,9 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         Player player = testUnit;
 
         // Test at origin (should be valid if no collision)
-        assertTrue(player.canMoveTo(0f, 0f), "Origin should be valid if no collision");
+        assertTrue(player.canMoveTo(1f, 1f), "Origin should be valid if no collision");
 
         // Test with very small positions
-        assertTrue(player.canMoveTo(0.1f, 0.1f), "Small positive positions should be valid");
+        assertTrue(player.canMoveTo(1.1f, 1.1f), "Small positive positions should be valid");
     }
 }

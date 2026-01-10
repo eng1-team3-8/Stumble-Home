@@ -162,6 +162,7 @@ public class Player extends Entity {
         float moveX = 0;
         float moveY = 0;
         boolean moving = false;
+        System.out.println(this.getY());
         delta = Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             // RIGHT key -> move LEFT
