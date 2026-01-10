@@ -1,15 +1,12 @@
 package io.github.stumblehome.headless;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import io.github.stumblehome.Player;
+import io.github.stumblehome.Entities.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +18,7 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
     public void setUp() {
 
         // E
-        TiledMap map = new TmxMapLoader().load("map.tmx");
+        TiledMap map = new TmxMapLoader().load("map2.tmx");
 
         // Set up map size to be the same as the game
         int mapWidthInTiles = map.getProperties().get("width", Integer.class);
@@ -38,7 +35,9 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         // Create player for test
         Player player =
                 new Player(
-                        new Sprite(new Texture("character.png")),
+                        new Texture("character.png"),
+                        0.8f,
+                        new float[] {0f, 0f},
                         mapWidth,
                         mapHeight,
                         collisionLayer);
@@ -53,18 +52,17 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
 
         // Test moving to coords without wall
         assertTrue(player.canMoveTo(1, 1));
-
         // Base of player collides with top of wall
-        assertFalse(player.canMoveTo(58.940044f, 45.36659f));
+        assertFalse(player.canMoveTo(56f, 45.3f));
 
         // Right side of player collides with left of wall
-        assertFalse(player.canMoveTo(60.234566f, 48.22915f));
+        assertFalse(player.canMoveTo(61.4f, 49f));
 
         // Left side of player collides with right of wall
-        assertFalse(player.canMoveTo(53.982384f, 48.22915f));
+        assertFalse(player.canMoveTo(54.7f, 49f));
 
         // Top side of player collides with bottom of wall
-        assertFalse(player.canMoveTo(59.212196f, 42.200703f));
+        assertFalse(player.canMoveTo(60f, 43.4f));
     }
 
     @Test
@@ -111,9 +109,9 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         Player player = testUnit;
 
         // Test initial state after constructor
-        assertEquals(0f, player.playerX, "Player X should start at 0");
-        assertEquals(0f, player.playerY, "Player Y should start at 0");
-        assertEquals(0.8f, player.playerSize, "Player size should be 0.8");
+        assertEquals(0f, player.getX(), "Player X should start at 0");
+        assertEquals(0f, player.getY(), "Player Y should start at 0");
+        assertEquals(0.8f, player.frame_size, "Player size should be 0.8");
         assertTrue(player.isDrunk, "Player should be drunk initially");
         assertEquals(-5f, player.player_speed, "Player speed should be -5 when drunk");
     }
@@ -170,9 +168,9 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         Player player = testUnit;
 
         // Test at origin (should be valid if no collision)
-        assertTrue(player.canMoveTo(0f, 0f), "Origin should be valid if no collision");
+        assertTrue(player.canMoveTo(1f, 1f), "Origin should be valid if no collision");
 
         // Test with very small positions
-        assertTrue(player.canMoveTo(0.1f, 0.1f), "Small positive positions should be valid");
+        assertTrue(player.canMoveTo(1.1f, 1.1f), "Small positive positions should be valid");
     }
 }

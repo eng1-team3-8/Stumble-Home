@@ -6,7 +6,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -15,72 +16,88 @@ import io.github.stumblehome.StumbleHome;
 
 /**
  * The {@code MainMenuScreen} class is the main menu screen for the StumbleHome game.
- * <p>
- * It displays three interactive buttons: <b>Play</b>, <b>Tutorial</b>, and <b>Exit</b>.
- * The screen also supports showing a tutorial image overlay that can be closed by pressing
- * the ESC key or clicking the on screen.
- * </p>
  *
- * <p>This class implements LibGDX {@link Screen} interface, which shows
- * methods for managing a screen in a game.</p>
+ * <p>It displays three interactive buttons: <b>Play</b>, <b>Tutorial</b>, and <b>Exit</b>. The
+ * screen also supports showing a tutorial image overlay that can be closed by pressing the ESC key
+ * or clicking the on screen.
  *
- *
+ * <p>This class implements LibGDX {@link Screen} interface, which shows methods for managing a
+ * screen in a game.
  */
 public class MainMenuScreen extends MenuScreen {
+    TextField playerNameInput;
     // Image displayed when the tutorial is shown.
     private Texture tutorialImage;
-
     // Flag that determines whether the tutorial image is currently displayed.
     private boolean showTutorial = false;
-
-    TextField playerNameInput;
+    private boolean musicToggle = true;
+    private float volume = 0.1f;
 
     public MainMenuScreen(final StumbleHome game) {
-        this.game = game;
+        super(game, "MainMenu.png");
+        // Textures for the main menu and the tutorial
+        tutorialImage = new Texture("tutorial.png");
     }
 
     /**
      * Called when this screen becomes the current screen for the game.
-     * <p>
-     * Initializes the background, tutorial image, buttons, and input processing.
-     * </p>
+     *
+     * <p>Initializes the background, tutorial image, buttons, and input processing.
      */
     @Override
     public void show() {
-        // Textures for the main menu and the tutorial
-        background = new Texture("MainMenu.png");
-        tutorialImage = new Texture("tutorial.png");
-
-        // Sets up the UI
         stage = new Stage(new ScreenViewport());
-        skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
         // create buttons
         TextButton playButton = new TextButton("Play", skin);
         TextButton tutorialButton = new TextButton("Tutorial", skin);
         TextButton leaderBoardButton = new TextButton("Leaderboard", skin);
+        TextButton achievementsButton = new TextButton("Achievements", skin);
         TextButton exitButton = new TextButton("Exit", skin);
 
-        // set button positions
-        float centerX = Gdx.graphics.getWidth() / 2f - 100;
-        float startY = Gdx.graphics.getHeight() / 2f + 50;
+        // Music Button
+        CheckBox musicButton = new CheckBox("Music", skin);
+        musicButton.setChecked(musicToggle);
 
+        //  Volume control
+        Slider volumeSlider = new Slider(0, 1, 0.01f, false, skin);
+        volumeSlider.setValue(volume);
+
+        // Set button size
+        float buttonWidth = Gdx.graphics.getWidth() * 0.25f;
+        float buttonHeight = Gdx.graphics.getHeight() * 0.1f;
+        float centerX = Gdx.graphics.getWidth() / 2f - (buttonWidth / 2f);
+        float startY = Gdx.graphics.getHeight() / 2f + (buttonHeight);
+
+        // Set button positions
         playerNameInput = new TextField("", skin);
-        playerNameInput.setBounds(centerX, startY + 60, 200, 50);
+        playerNameInput.setBounds(centerX, startY + (buttonHeight + 10), buttonWidth, buttonHeight);
         playerNameInput.setAlignment(1);
         playerNameInput.setMessageText("Enter Player Name");
         stage.addActor(playerNameInput);
 
-        playButton.setBounds(centerX, startY, 200, 50);
-        tutorialButton.setBounds(centerX, startY - 60, 200, 50);
-        leaderBoardButton.setBounds(centerX, startY - 120, 200, 50);
-        exitButton.setBounds(centerX, startY - 180, 200, 50);
+        float widthOffset = (buttonWidth / 2f + 10);
+
+        playButton.setBounds(centerX, startY, buttonWidth, buttonHeight);
+        tutorialButton.setBounds(centerX, startY - (buttonHeight + 10), buttonWidth, buttonHeight);
+        leaderBoardButton.setBounds(
+                centerX - widthOffset, startY - (buttonHeight * 2 + 20), buttonWidth, buttonHeight);
+        achievementsButton.setBounds(
+                centerX + widthOffset, startY - (buttonHeight * 2 + 20), buttonWidth, buttonHeight);
+        exitButton.setBounds(centerX, startY - (buttonHeight * 3 + 30), buttonWidth, buttonHeight);
+        musicButton.setBounds(
+                centerX - widthOffset, startY - (buttonHeight * 4 + 40), buttonWidth, buttonHeight);
+        volumeSlider.setBounds(
+                centerX + widthOffset, startY - (buttonHeight * 4 + 40), buttonWidth, buttonHeight);
 
         // adds buttons to stage
         stage.addActor(playButton);
         stage.addActor(tutorialButton);
         stage.addActor(leaderBoardButton);
+        stage.addActor(achievementsButton);
         stage.addActor(exitButton);
+        stage.addActor(musicButton);
+        stage.addActor(volumeSlider);
 
         //  Play button click
         playButton.addListener(
@@ -90,7 +107,10 @@ public class MainMenuScreen extends MenuScreen {
                         if (playerNameInput.getText().equals("")) {
                             // Display warning to enter username
                         } else {
-                            game.setScreen(new GameScreen(game, playerNameInput.getText()));
+                            volume = volumeSlider.getValue();
+                            game.setScreen(
+                                    new GameScreen(
+                                            game, playerNameInput.getText(), musicToggle, volume));
                         }
                     }
                 });
@@ -104,12 +124,21 @@ public class MainMenuScreen extends MenuScreen {
                     }
                 });
 
-        // Tutorial button click
+        // Leaderboard button click
         leaderBoardButton.addListener(
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         game.setScreen(new Leaderboard(game));
+                    }
+                });
+
+        // Achievements button click
+        achievementsButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        game.setScreen(new Achievements(game));
                     }
                 });
 
@@ -122,9 +151,17 @@ public class MainMenuScreen extends MenuScreen {
                     }
                 });
 
-        // set stage to receive input
+        // Music button click
+        musicButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        musicToggle = !musicToggle;
+                    }
+                });
         Gdx.input.setInputProcessor(stage);
     }
+
     /**
      * Called every frame to render the screen.
      *
@@ -138,9 +175,7 @@ public class MainMenuScreen extends MenuScreen {
         render_tutorial();
     }
 
-    /**
-     * renders the tutorial page if it is not active, removes it if esc is pressed
-     */
+    /** renders the tutorial page if it is not active, removes it if esc is pressed */
     private void render_tutorial() {
         if (showTutorial && tutorialImage != null) {
             game.batch.begin();
@@ -172,18 +207,12 @@ public class MainMenuScreen extends MenuScreen {
 
     /**
      * Called when this screen is no longer the current screen for the game.
-     * <p>Removes the input processor to prevent input handling when inactive.</p>
+     *
+     * <p>Removes the input processor to prevent input handling when inactive.
      */
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        game.viewport.update(width, height);
-        // Resizes button hit zones (and more)
-        this.show();
     }
 
     @Override
