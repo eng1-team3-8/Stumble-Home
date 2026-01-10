@@ -67,9 +67,12 @@ public class LoseScreen extends GameFinishScreen {
         table.setFillParent(true);
         table.center();
 
+        float buttonWidth = Gdx.graphics.getWidth() * 0.25f;
+        float buttonHeight = Gdx.graphics.getHeight() * 0.1f;
+
         table.add(timeLabel).padBottom(10).row();
         table.add(scoreLabel).padBottom(10).row();
-        table.add(restartButton).width(200).height(60);
+        table.add(restartButton).width(buttonWidth).height(buttonHeight);
 
         stage.addActor(table);
     }

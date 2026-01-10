@@ -14,6 +14,9 @@ import io.github.stumblehome.StumbleHome;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to display leaderboard
+ */
 public class Leaderboard extends MenuScreen {
     private ScrollPane scrollPane;
 
@@ -82,6 +85,11 @@ public class Leaderboard extends MenuScreen {
         scrollPane.clear();
     }
 
+    /**
+     * Sets up leaderboard table for display
+     * @param boardData csv file data
+     * @return formatted table with top 5 players & scores
+     */
     public Table leaderboardSetup(String boardData) {
         // Adds title to leaderboard
         Table leaderboard = new Table();
@@ -90,11 +98,15 @@ public class Leaderboard extends MenuScreen {
         leaderboard.add(tempRow).pad(15);
         leaderboard.row();
 
+        tempRow = new Label("Press ESC to exit", skin);
+        leaderboard.add(tempRow).pad(15);
+        leaderboard.row();
+
         // Adds error message if leaderboard doesn't exist
-        if (boardData.equals("Complete Game To Set Score")) {
+        if (boardData.equals("Play Game To Set Score")) {
             tempRow = new Label(boardData, skin);
             tempRow.setFontScale(3f);
-            leaderboard.add(tempRow).pad(15);
+            leaderboard.add(tempRow).pad(5);
             leaderboard.row();
         }
 
@@ -119,6 +131,11 @@ public class Leaderboard extends MenuScreen {
         return leaderboard;
     }
 
+    /**
+     * Orders csv rows using insertion sort
+     * @param splitBoard csv file split by line
+     * @return ordered arrayList in form [player, score]
+     */
     public List<String[]> orderValues(String[] splitBoard) {
         List<String[]> ordered = new ArrayList<>();
 
@@ -146,11 +163,16 @@ public class Leaderboard extends MenuScreen {
         return ordered;
     }
 
+    /**
+     * Reads in leaderboard csv if it exists
+     * If it doesn't returns value to be displayed to user
+     * @return file data or empty file message
+     */
     private String readLeaderBoard() {
         boolean file_exists = Gdx.files.local("leaderBoard.csv").exists();
 
         if (file_exists == false) {
-            return "Complete Game To Set Score";
+            return "Play Game To Set Score";
         } else {
             FileHandle file = Gdx.files.local("leaderBoard.csv");
             return file.readString();

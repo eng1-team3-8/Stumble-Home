@@ -3,6 +3,7 @@ package io.github.stumblehome.Entities;
 import static java.lang.Math.*;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
  * This is an entity class for sprites that are in the boss fight
@@ -24,18 +25,25 @@ public class BossFightEntity extends NonPlayerEntity {
     }
 
     @Override
-    public void logic() {}
-
-    @Override
     public boolean checkColliding(float playerCentreX, float playerCentreY) {
-
-        double distance = abs(playerCentreX - this.getX());
-
-        System.out.println(distance + " " + playerCentreX + " " + this.getX());
-
-        return distance < 30f;
+        return false;
     }
 
+    /**
+     * This method checks if the x-axis of the two object overlap
+     */
+    @Override
+    public void logic() {}
+
+    public boolean checkOverlap(float playerCentreX, FitViewport viewport) {
+
+        double distance = abs(playerCentreX - this.getX());
+        return distance < (viewport.getWorldWidth() / 80) * 3;
+    }
+
+    /**
+     * Setter for the position
+     */
     public void updatePosition() {
         this.setPosition(this.getX(), this.getY());
     }

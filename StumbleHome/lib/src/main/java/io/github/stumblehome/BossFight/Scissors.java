@@ -21,20 +21,19 @@ public class Scissors extends BossFightEntity {
     }
 
     public void move(Viewport viewport) {
-        if (this.getX() > 633) {
+        if (this.getX() > (viewport.getWorldWidth() / 800) * 633) {
             this.moveRight = false;
-        } else if (this.getX() < 105) {
+        } else if (this.getX() < (viewport.getWorldWidth() / 160) * 21) {
             this.moveRight = true;
         }
 
         if (moveRight) {
-            this.setX(this.getX() + 1);
+            this.setX(this.getX() + (viewport.getWorldWidth() / 800));
         } else {
-            this.setX(this.getX() - 1);
+            this.setX(this.getX() - (viewport.getWorldWidth() / 800));
         }
 
         this.updatePosition();
-        System.out.println(this.getX());
     }
 
     //    public void setX(float x) {

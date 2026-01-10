@@ -10,5 +10,6 @@ public enum BossFightStates {
     OPTIONS,
     ATTACK,
     FINALATTACK,
-    WIN
+    WIN,
+    LOST
 }

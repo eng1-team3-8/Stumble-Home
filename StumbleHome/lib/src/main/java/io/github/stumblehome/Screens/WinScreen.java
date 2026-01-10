@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import io.github.stumblehome.StumbleHome;
+import java.util.Map;
 
 /**
  * The {@code WinScreen} class represents the screen displayed when the player successfully
@@ -24,6 +25,7 @@ import io.github.stumblehome.StumbleHome;
  * a game.
  */
 public class WinScreen extends GameFinishScreen {
+    private Map<String, Integer> achievementData;
 
     /**
      * Constructs a new {@code WinScreen} instance.
@@ -32,8 +34,13 @@ public class WinScreen extends GameFinishScreen {
      * @param remainingTime the remaining time (in seconds) when the player won.
      * @param score the player's final score.
      */
-    public WinScreen(StumbleHome game, float remainingTime, int score) {
+    public WinScreen(
+            StumbleHome game,
+            float remainingTime,
+            int score,
+            Map<String, Integer> achievementData) {
         super(game, remainingTime, score, "MainMenu.png");
+        this.achievementData = achievementData;
     }
 
     /**
@@ -71,7 +78,7 @@ public class WinScreen extends GameFinishScreen {
                     }
                 });
 
-        // Create restart button
+        // Create leaderboard button
         TextButton leaderBoardButton = new TextButton("Leaderboard", skin);
         leaderBoardButton.addListener(
                 new ClickListener() {
@@ -81,16 +88,30 @@ public class WinScreen extends GameFinishScreen {
                     }
                 });
 
+        // Create achievements button
+        TextButton achievementsButton = new TextButton("Achievements", skin);
+        achievementsButton.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        game.setScreen(new Achievements(game, achievementData));
+                    }
+                });
+
         // Layout using a table
         Table table = new Table();
         table.setFillParent(true);
         table.center();
 
+        float buttonWidth = Gdx.graphics.getWidth() * 0.25f;
+        float buttonHeight = Gdx.graphics.getHeight() * 0.1f;
+
         table.add(winLabel).padBottom(40).row();
         table.add(timeLabel).padBottom(20).row();
         table.add(scoreLabel).padBottom(40).row();
-        table.add(restartButton).padBottom(40).width(200).height(60).row();
-        table.add(leaderBoardButton).width(200).height(60).row();
+        table.add(restartButton).padBottom(40).width(buttonWidth).height(buttonHeight).row();
+        table.add(leaderBoardButton).padBottom(40).width(buttonWidth).height(buttonHeight).row();
+        table.add(achievementsButton).padBottom(40).width(buttonWidth).height(buttonHeight).row();
 
         stage.addActor(table);
     }

@@ -58,7 +58,6 @@ public class Player extends Entity {
         SwapControls();
 
         this.collisionLayer = collisionLayer;
-        System.out.println(this.canMoveTo(2f, 2f));
     }
 
     /**
@@ -350,5 +349,26 @@ public class Player extends Entity {
         WALK_LEFT,
         WALK_RIGHT,
         WALK_UP
+    }
+
+    public boolean setDrunk() {
+        if (canGetDrunk && !isDrunk) {
+            SwapControls();
+        } else if (isDrunk) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean setSober() {
+        if (isDrunk) {
+            SwapControls();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isPlayerDrunk() {
+        return isDrunk;
     }
 }

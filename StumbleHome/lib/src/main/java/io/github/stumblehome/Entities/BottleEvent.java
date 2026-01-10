@@ -24,7 +24,7 @@ public class BottleEvent extends CollectableEntity {
      * been collected yet.
      */
     public void logic() {
-        if (!isCollected) {
+        if (!is_collected) {
             // Reset animation time if animation changed
             if (current_animation != previous_animation) {
                 state_time = 0f;
@@ -43,7 +43,7 @@ public class BottleEvent extends CollectableEntity {
      */
     @Override
     public void draw(Batch batch) {
-        if (!isCollected) {
+        if (!is_collected) {
             // Determine which frame to draw
             TextureRegion frameToDraw = current_animation.getKeyFrame(state_time, true);
             // Draw the character with proper aspect ratio
