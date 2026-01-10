@@ -69,6 +69,8 @@ public class BossFightStatesManager {
                     this.currentState = BossFightStates.LOST;
                 }
                 break;
+            default:
+              break;
         }
     }
 }
