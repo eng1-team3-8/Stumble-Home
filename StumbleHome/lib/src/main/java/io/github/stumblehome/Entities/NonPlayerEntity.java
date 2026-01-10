@@ -50,11 +50,11 @@ public abstract class NonPlayerEntity extends Entity {
      * Helper function to initialise the animations of a sprite assuming texture has layout structure:
      * 1 2
      * 3 4
-     * 5... 
+     * 5...
      * for all the frames in animation
      * @param frame_width of the individual frames
      * @param frame_height of the individual frames
-     * @param num_animations in the sprite 
+     * @param num_animations in the sprite
      */
     private void initialiseAnimations(int frame_width, int frame_height, int num_animations) {
         TextureRegion[] texture_frames = new TextureRegion[num_animations];
@@ -93,12 +93,12 @@ public abstract class NonPlayerEntity extends Entity {
     }
 
     /**
-     * funciton to check if the object has been collided with, 
+     * funciton to check if the object has been collided with,
      * different entities have different effects
      * needs to be called every frame
      * @param playerCentreX x position of the centre of the player to check collision with
      * @param playerCentreY y position of the centre of the player
-     * @return true if collision occurs, false if it does not 
+     * @return true if collision occurs, false if it does not
      */
     public abstract boolean checkColliding(float playerCentreX, float playerCentreY);
 }

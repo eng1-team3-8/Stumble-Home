@@ -14,7 +14,7 @@ public class MessageID {
     private Color colour;
     // size of the message
     private float size;
-    // remaining time left that the message should be shown for 
+    // remaining time left that the message should be shown for
     private float time_left;
 
     /**
@@ -62,7 +62,7 @@ public class MessageID {
     /**
      * sets the text of the message ID
      * @param message to be displayed, can't be null or empty
-     * @return true if text was set correctly 
+     * @return true if text was set correctly
      */
     public boolean setMessage(String message) {
         if (message == "" || message == null) {
@@ -84,7 +84,7 @@ public class MessageID {
     /**
      * sets the size of the message
      * @param size of the message, cannot be 0 or less
-     * @return true if the size was updated 
+     * @return true if the size was updated
      */
     public boolean setSize(float size) {
         if (size <= 0) {

@@ -17,9 +17,9 @@ import java.util.Queue;
 public class MessageHandler {
     // game the message handler is connected to
     private StumbleHome game;
-    // Map of the messages against their messageIDs 
+    // Map of the messages against their messageIDs
     private Map<Messages, MessageID> messages;
-    // Queue of all messages with more than 0 time_remaining 
+    // Queue of all messages with more than 0 time_remaining
     private Queue<Messages> shown_queue;
 
     /**
@@ -99,7 +99,7 @@ public class MessageHandler {
      * @param msg key of the message being referenced, must have been initilised using addMessage() first
      * @param new_time the new time that the message will be shown for, overrides previous time
      *  if less than 0, sets to 0
-     * @return true if time was set correctly 
+     * @return true if time was set correctly
      */
     public boolean setTime(Messages msg, float new_time) {
         if (messages.get(msg) == null) {
