@@ -117,8 +117,8 @@ public class MessageHandler {
      * @param time_difference the amount by which the time remaining is changed by, the new time is
      *     the old time + the time_difference
      */
-    public void shiftTime(Messages msg, float time_difference) {
-        setTime(msg, messages.get(msg).getTime() + time_difference);
+    public boolean shiftTime(Messages msg, float time_difference) {
+        return setTime(msg, messages.get(msg).getTime() + time_difference);
     }
 
     /**

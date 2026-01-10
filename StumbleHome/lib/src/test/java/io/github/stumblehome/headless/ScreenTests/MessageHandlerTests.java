@@ -1,6 +1,7 @@
 package io.github.stumblehome.headless.ScreenTests;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.booleanThat;
 
 import com.badlogic.gdx.graphics.Color;
 import io.github.stumblehome.Messages.*;
@@ -242,10 +243,66 @@ public class MessageHandlerTests extends AbstractHeadlessGdxTest {
 
     public void testSetTimeNullMessage() {
         boolean time_change = test_handler.setTime(Messages.PAUSED, 5);
-        assertFalse(time_change, "MessageHandler should not change time of null message");
-        assertEquals(
+        assertNull(
                 test_handler.getMessages().get(Messages.PAUSED),
-                null,
+                "Message should not be initilised by time_change");        
+        assertFalse(time_change, "MessageHandler should report failure");
+
+    }
+
+    public void testSetTimeNegativeTime() {
+        test_handler.addMessage(Messages.PAUSED, "test", null, 1.0f);
+        boolean time_change = test_handler.setTime(Messages.PAUSED, -5);
+        assertEquals(test_handler.getMessages().get(Messages.PAUSED).getTime(), 0f, "Negative time should be set to 0");
+        assertTrue(time_change, "MessageHandler should report change as successful");
+    }
+
+    public void testSetTimeZeroTime() {
+        test_handler.addMessage(Messages.PAUSED, "test", null, 1.0f);
+        boolean time_change = test_handler.setTime(Messages.PAUSED, 0);
+        assertEquals(test_handler.getMessages().get(Messages.PAUSED).getTime(), 0f, "time should be able to be set to 0");
+        assertTrue(time_change, "MessageHandler should report change as successful");
+    }
+
+    public void testShiftTimeExistingMessage() {
+        test_handler.addMessage(Messages.PAUSED, "test", null, 1.0f);
+        test_handler.setTime(Messages.PAUSED, 5);
+        boolean time_change = test_handler.shiftTime(Messages.PAUSED, 2);
+        assertEquals(
+                test_handler.getMessages().get(Messages.PAUSED).getTime(),
+                7f,
+                "Time should result in 7");
+        assertTrue(time_change, "MessageHandler should report success");
+    }
+
+    public void testShiftTimeNullMessage() {
+        test_handler.setTime(Messages.PAUSED, 5);
+        boolean time_change = test_handler.shiftTime(Messages.PAUSED, 2);
+        assertNull(
+                test_handler.getMessages().get(Messages.PAUSED),
                 "Message should not be initilised by time_change");
+        assertFalse(time_change, "MessageHandler should report failure");
+    }
+
+    public void testShiftTimeNegativeTime() {
+        test_handler.addMessage(Messages.PAUSED, "test", null, 1.0f);
+        test_handler.setTime(Messages.PAUSED, 5);
+        boolean time_change = test_handler.shiftTime(Messages.PAUSED, -2f);
+        assertEquals(
+                test_handler.getMessages().get(Messages.PAUSED).getTime(),
+                3f,
+                "Time should result in 3");
+        assertTrue(time_change, "MessageHandler should report success");
+    }
+
+    public void testShiftTimeZeroTime() {
+        test_handler.addMessage(Messages.PAUSED, "test", null, 1.0f);
+        test_handler.setTime(Messages.PAUSED, 5);
+        boolean time_change = test_handler.shiftTime(Messages.PAUSED, 0f);
+        assertEquals(
+                test_handler.getMessages().get(Messages.PAUSED).getTime(),
+                5f,
+                "Time should result in 5");
+        assertTrue(time_change, "MessageHandler should report success");
     }
 }
