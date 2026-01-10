@@ -25,9 +25,9 @@ public class Player extends Entity {
     // Height of the game map in tiles.
     private final float mapHeight;
     // Controls whether the player has reversed controls (1 = drunk, 0 = sober).
-    public boolean isDrunk = true;
+    private boolean isDrunk = true;
     // Speed of the player
-    public float player_speed;
+    private float player_speed;
     // Boolean to see if the player can get drunk (default true, only false after a meal)
     public boolean canGetDrunk = true;
     // Layer containing collision information from the tiled map.
@@ -131,7 +131,7 @@ public class Player extends Entity {
     /**
      * swaps the controls, intended for when player becomes drunk/sober
      */
-    public void SwapControls() {
+    private void SwapControls() {
         Animation<TextureRegion> swap_placeholder = animations.get(Animation_enum.WALK_UP);
         animations.put(Animation_enum.WALK_UP, animations.get(Animation_enum.WALK_DOWN));
         animations.put(Animation_enum.WALK_DOWN, swap_placeholder);
@@ -162,7 +162,6 @@ public class Player extends Entity {
         float moveX = 0;
         float moveY = 0;
         boolean moving = false;
-        System.out.println(this.getY());
         delta = Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             // RIGHT key -> move LEFT
@@ -294,22 +293,42 @@ public class Player extends Entity {
         batch.draw(frameToDraw, this.getX(), this.getY(), frame_size, drawHeight);
     }
 
-    public void slowDownPlayer(float amount) {
+    public boolean slowDownPlayer(float amount) {
         if (isDrunk) {
             amount *= -1;
+            if (player_speed - amount > 0) {
+                return false;
+            }
+        } else {
+            if (player_speed - amount < 0) {
+                return false;
+            }
         }
         this.player_speed -= amount;
+        return true;
     }
 
-    public void speedUpPlayer(float amount) {
+    public boolean speedUpPlayer(float amount) {
         if (isDrunk) {
             amount *= -1;
+            if (player_speed + amount > 0) {
+                return false;
+            }
+        } else {
+            if (player_speed + amount < 0) {
+                return false;
+            }
         }
         this.player_speed += amount;
+        return true;
+    }
+
+    public float getPlayerSpeed() {
+        return player_speed;
     }
 
     public EntityDirection getDirection() {
-        if (isDrunk) {
+        if (isPlayerDrunk()) {
             if (lastDirection == Animation_enum.DOWN || lastDirection == Animation_enum.WALK_DOWN) {
                 return EntityDirection.DOWN;
             }
@@ -371,5 +390,20 @@ public class Player extends Entity {
 
     public boolean isPlayerDrunk() {
         return isDrunk;
+    }
+
+    public void changeDirection(int direct) throws IllegalArgumentException {
+        if (direct < 0 || direct > 3) {
+            throw new IllegalArgumentException("direction must be between 0 and 3");
+        }
+        if (direct == 0) {
+            lastDirection = Animation_enum.UP;
+        } else if (direct == 1) {
+            lastDirection = Animation_enum.RIGHT;
+        } else if (direct == 2) {
+            lastDirection = Animation_enum.DOWN;
+        } else {
+            lastDirection = Animation_enum.LEFT;
+        }
     }
 }

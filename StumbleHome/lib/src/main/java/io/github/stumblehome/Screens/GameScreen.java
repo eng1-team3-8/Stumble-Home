@@ -460,7 +460,7 @@ public class GameScreen implements Screen {
         // Check if collision with chicken
         if (chicken.checkColliding(playerCentreX, playerCentreY)) {
             helpfulEventCounter++;
-            if (player.isDrunk) {
+            if (player.isPlayerDrunk()) {
                 msg.setTime(Messages.REMEMBERKEYCARD, 3f);
             }
             chicken.eatFood(player);

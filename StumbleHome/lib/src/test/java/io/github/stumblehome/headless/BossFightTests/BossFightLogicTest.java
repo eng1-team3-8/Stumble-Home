@@ -102,8 +102,7 @@ public class BossFightLogicTest extends AbstractHeadlessGdxTest {
 
         Scissors scissors =
                 new Scissors(new Texture("character.png"), 1.0f, new float[] {100f, 100f});
-        scissors.setX(
-                cableX); // Position scissors at exact cable position
+        scissors.setX(cableX); // Position scissors at exact cable position
 
         Texture originalTexture = cables[0].getTexture();
         assertNotNull(originalTexture);
