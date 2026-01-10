@@ -1,8 +1,6 @@
 package io.github.stumblehome.headless;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -37,7 +35,7 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         // Create player for test
         Player player =
                 new Player(
-                        new Texture(Player.ASSET),
+                        new Texture("character.png"),
                         0.8f,
                         new float[] {0f, 0f},
                         mapWidth,
@@ -53,8 +51,7 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         Player player = testUnit;
 
         // Test moving to coords without wall
-        assertTrue(player.canMoveTo(2, 2));
-
+        assertTrue(player.canMoveTo(1, 1));
         // Base of player collides with top of wall
         assertFalse(player.canMoveTo(56f, 45.3f));
 
@@ -112,9 +109,9 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         Player player = testUnit;
 
         // Test initial state after constructor
-        assertEquals(0f, player.getX(), "Player X should start at 0"); // Was player.playerX
-        assertEquals(0f, player.getY(), "Player Y should start at 0"); // Was player.playerY
-        assertEquals(0.8f, player.frame_size, "Player size should be 0.8"); // Was player.playerSize
+        assertEquals(0f, player.getX(), "Player X should start at 0");
+        assertEquals(0f, player.getY(), "Player Y should start at 0");
+        assertEquals(0.8f, player.frame_size, "Player size should be 0.8");
         assertTrue(player.isDrunk, "Player should be drunk initially");
         assertEquals(-5f, player.player_speed, "Player speed should be -5 when drunk");
     }

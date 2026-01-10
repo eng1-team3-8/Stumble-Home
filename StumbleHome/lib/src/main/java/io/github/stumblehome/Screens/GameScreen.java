@@ -394,7 +394,7 @@ public class GameScreen implements Screen {
         if (bottle.checkColliding(playerCentreX, playerCentreY)) {
             // Player collected the water bottle - becomes sober
             if (player.isPlayerDrunk()) {
-                msg.set_time(Messages.REMEMBERKEYCARD, 3f);
+                msg.setTime(Messages.REMEMBERKEYCARD, 3f);
             }
             player.setSober();
             helpfulEventCounter++;
@@ -406,7 +406,7 @@ public class GameScreen implements Screen {
         if (keycard.checkColliding(playerCentreX, playerCentreY)) {
             hasKeycard = true;
             hinderingEventCounter++;
-            msg.set_time(Messages.PICKUPKEYCARD, 3f);
+            msg.setTime(Messages.PICKUPKEYCARD, 3f);
 
             setAchievementText("Swipe the card!", 50);
         }
@@ -421,8 +421,8 @@ public class GameScreen implements Screen {
 
         if (chainsaw.checkColliding(playerCentreX, playerCentreY)) {
             helpfulEventCounter++;
-            msg.set_time(Messages.CHAINSAWPICKEDUP, 3f);
-            setAchievementText("Here's Johnny!", 50);
+            msg.setTime(Messages.CHAINSAWPICKEDUP, 3f);
+            setAchievementText("Here's Johnny!");
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             // player attempts to use chainsaw
@@ -460,8 +460,8 @@ public class GameScreen implements Screen {
         // Check if collision with chicken
         if (chicken.checkColliding(playerCentreX, playerCentreY)) {
             helpfulEventCounter++;
-            if (player.isPlayerDrunk()) {
-                msg.set_time(Messages.REMEMBERKEYCARD, 3f);
+            if (player.isDrunk) {
+                msg.setTime(Messages.REMEMBERKEYCARD, 3f);
             }
             chicken.eatFood(player);
             msg.set_time(Messages.FOOD, 3f);
@@ -473,7 +473,7 @@ public class GameScreen implements Screen {
             if (!Lancaster.isSquished) {
                 hiddenEventCounter++;
             }
-            msg.set_time(Messages.YORKSQUISHED, 3f);
+            msg.setTime(Messages.YORKSQUISHED, 3f);
             York.isSquished = true;
 
             setAchievementText("Traitor!!!", 50);
@@ -484,7 +484,7 @@ public class GameScreen implements Screen {
             if (!York.isSquished) {
                 hiddenEventCounter++;
             }
-            msg.set_time(Messages.LANCASTERSQUISHED, 3f);
+            msg.setTime(Messages.LANCASTERSQUISHED, 3f);
             Lancaster.isSquished = true;
 
             setAchievementText("War of the Roses...", 50);
@@ -494,7 +494,7 @@ public class GameScreen implements Screen {
         // If true send a message and then immediately set squished to false, to prevent it
         // repeating
         if (York.isSquished && Lancaster.isSquished) {
-            msg.set_time(Messages.BOTHSQUISHED, 3f);
+            msg.setTime(Messages.BOTHSQUISHED, 3f);
             York.isSquished = false;
             Lancaster.isSquished = false;
 
@@ -527,7 +527,7 @@ public class GameScreen implements Screen {
             // check if player near longBoi
             if (longBoi.checkNear(playerCentreX, playerCentreY)) {
                 // player is near
-                msg.set_time(Messages.LONGBOIAPPEAR, 2f);
+                msg.setTime(Messages.LONGBOIAPPEAR, 2f);
                 hiddenEventCounter++;
 
                 setAchievementText("Raised from the dead... RUN!", 50);
@@ -585,7 +585,7 @@ public class GameScreen implements Screen {
 
         // if at finish with no keycard, show no keycard message
         if (!hasKeycard && reachedFinishZone()) {
-            msg.set_time(Messages.NOKEYCARD, 3f);
+            msg.setTime(Messages.NOKEYCARD, 3f);
         }
 
         clampCamera();
