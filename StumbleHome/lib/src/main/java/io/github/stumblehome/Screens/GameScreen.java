@@ -225,7 +225,7 @@ public class GameScreen implements Screen {
         bob = new Bob(new Texture(Bob.ASSET), 1f, new float[] {17f, 20f});
 
         // Bird seed
-        birdSeed = new BirdSeed(new Texture(BirdSeed.ASSET), 1f, new float[] {48f, 20f});
+        birdSeed = new BirdSeed(new Texture(BirdSeed.ASSET), 1f, new float[] {43f, 19f});
 
         this.initialiseMessages();
         msg.setTime(Messages.START, 3f);
@@ -253,56 +253,56 @@ public class GameScreen implements Screen {
     private void initialiseMessages() {
         // message handler
         msg = new MessageHandler(game);
-        msg.addMessage(Messages.PAUSED, "PAUSED", Color.WHITE, 3f);
+        msg.addMessage(Messages.PAUSED, "PAUSED", Color.WHITE, 2f);
         msg.addMessage(
-                Messages.NOKEYCARD, "You need a KeyCard to enter the Door...", Color.RED, 3f);
+                Messages.NOKEYCARD, "You need a KeyCard to enter the Door...", Color.RED, 2f);
         msg.addMessage(
                 Messages.PICKUPKEYCARD,
                 "You have the keyCard, you can go home now!",
                 Color.GREEN,
-                3f);
+                2f);
         msg.addMessage(
                 Messages.REMEMBERKEYCARD,
                 "You remembered that you don't have the keycard, find it!",
                 Color.GREEN,
-                3f);
-        msg.addMessage(Messages.LONGBOIAPPEAR, "It's Long Boi! Avoid him!", Color.RED, 3f);
+                2f);
+        msg.addMessage(Messages.LONGBOIAPPEAR, "It's Long Boi! Avoid him!", Color.RED, 2f);
         msg.addMessage(
                 Messages.YORKSQUISHED,
                 "Blud does NOT like York, I bet YOU killed Longboi!",
                 Color.SKY,
-                3f);
+                2f);
         msg.addMessage(
                 Messages.LANCASTERSQUISHED,
                 "Good job, doing God's work here. Goodbye Lancashire!",
                 Color.SKY,
-                3f);
-        msg.addMessage(Messages.BOTHSQUISHED, "I see, you just harbour chaos", Color.YELLOW, 3f);
+                2f);
+        msg.addMessage(Messages.BOTHSQUISHED, "I see, you just harbour chaos", Color.YELLOW, 2f);
         msg.addMessage(
                 Messages.CHAINSAWPICKEDUP,
                 "You've obtained a chainsaw. press e to cut a line of hedges! (Single use)",
                 Color.GREEN,
-                3f);
+                2f);
         msg.addMessage(
-                Messages.BIRDSEED, "LongBoi is really hungry, look how fast he is!", Color.RED, 3f);
+                Messages.BIRDSEED, "LongBoi is really hungry, look how fast he is!", Color.RED, 2f);
         msg.addMessage(
                 Messages.BLACKOUT,
                 "Looks like you blacked out, you lost a minuite of time!",
                 Color.RED,
-                3f);
+                2f);
         msg.addMessage(
-                Messages.ALCOHOL, "Maybe you should stop drinking for now...", Color.RED, 3f);
+                Messages.ALCOHOL, "Maybe you should stop drinking for now...", Color.RED, 2f);
         msg.addMessage(
                 Messages.ALCOHOLFULL,
                 "Thank god you had that chicken. You don't feel drunk",
                 Color.GREEN,
-                3f);
-        msg.addMessage(Messages.FOOD, "That food seems to have sobered you up!", Color.GREEN, 3f);
+                2f);
+        msg.addMessage(Messages.FOOD, "That food seems to have sobered you up!", Color.GREEN, 2f);
         msg.addMessage(
                 Messages.START,
                 "You're drunk and trying to find you way back to halls!",
                 Color.YELLOW,
-                3f);
+                2f);
     }
 
     @Override

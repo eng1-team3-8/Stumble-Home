@@ -141,7 +141,7 @@ public class MessageHandler {
 
         GlyphLayout layout = new GlyphLayout(game.font, mssg_id.getMessage());
         float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
-        float y = (Gdx.graphics.getHeight() - layout.height * message_priority);
+        float y = (Gdx.graphics.getHeight() - layout.height * message_priority) - 35;
         game.font.draw(game.batch, layout, x, y);
 
         game.font.getData().setScale(1f);
