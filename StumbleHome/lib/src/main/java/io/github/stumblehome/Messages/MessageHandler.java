@@ -84,9 +84,13 @@ public class MessageHandler {
      *     method does nothing
      * @param message the key of the message to be shown
      */
-    public void updateMessage(boolean show_msg, Messages message) {
+    public void updateMessage(boolean show_msg, Messages message) throws IllegalArgumentException {
         if (show_msg) {
-            drawCenteredText(messages.get(message), shown_queue.size() + 1);
+            if (message == null) {
+                throw new IllegalArgumentException("message of null can't be drawn");
+            } else {
+                drawCenteredText(messages.get(message), shown_queue.size() + 1);
+            }
         }
     }
 
@@ -118,6 +122,9 @@ public class MessageHandler {
      *     the old time + the time_difference
      */
     public boolean shiftTime(Messages msg, float time_difference) {
+        if (messages.get(msg) == null) {
+            return false;
+        }
         return setTime(msg, messages.get(msg).getTime() + time_difference);
     }
 
