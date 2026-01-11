@@ -11,12 +11,12 @@ import org.junit.jupiter.api.Test;
 
 public class EntityInitializationTests extends AbstractHeadlessGdxTest {
     private Texture texture;
-    private static final float TEST_SIZE = 2.0f;
-    private static final float SMALL_SIZE = 1.0f;
-    private static final float LARGE_SIZE = 3.5f;
-    private static final float[] TEST_POSITION = {10f, 20f};
-    private static final float[] ALT_POSITION = {5f, 5f};
-    private static final float[] FAR_POSITION = {50f, 60f};
+    private static final float TESTSIZE = 2.0f;
+    private static final float SMALLSIZE = 1.0f;
+    private static final float LARGESIZE = 3.5f;
+    private static final float[] TESTPOSITION = {10f, 20f};
+    private static final float[] ALTPOSITION = {5f, 5f};
+    private static final float[] FARPOSITION = {50f, 60f};
 
     @BeforeEach
     public void setUp() {
@@ -26,7 +26,7 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
     @Test
     public void testAlcoholInitialization() {
         Texture alcoholTexture = new Texture(Gdx.files.internal(Alcohol.ASSET_TSING));
-        Alcohol alcohol = new Alcohol(alcoholTexture, SMALL_SIZE, ALT_POSITION);
+        Alcohol alcohol = new Alcohol(alcoholTexture, SMALLSIZE, ALTPOSITION);
         assertFalse(alcohol.isCollected);
         assertFalse(alcohol.isTriggered);
     }
@@ -34,7 +34,7 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
     @Test
     public void testBottleEventInitialization() {
         Texture bottleTexture = new Texture(Gdx.files.internal(BottleEvent.ASSET));
-        BottleEvent bottle = new BottleEvent(bottleTexture, SMALL_SIZE, ALT_POSITION);
+        BottleEvent bottle = new BottleEvent(bottleTexture, SMALLSIZE, ALTPOSITION);
         assertFalse(bottle.isCollected);
         assertFalse(bottle.isTriggered);
     }
@@ -42,35 +42,35 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
     @Test
     public void testKeycardEventInitialization() {
         Texture keycardTexture = new Texture(Gdx.files.internal(KeycardEvent.ASSET));
-        KeycardEvent keycard = new KeycardEvent(keycardTexture, SMALL_SIZE, ALT_POSITION);
+        KeycardEvent keycard = new KeycardEvent(keycardTexture, SMALLSIZE, ALTPOSITION);
         assertFalse(keycard.isCollected);
         assertFalse(keycard.isTriggered);
     }
 
     @Test
     public void testFoodInitializationPosition() {
-        Food food = new Food(texture, TEST_SIZE, TEST_POSITION);
+        Food food = new Food(texture, TESTSIZE, TESTPOSITION);
         assertEquals(10f, food.getX());
         assertEquals(20f, food.getY());
     }
 
     @Test
     public void testFoodInitializationSize() {
-        Food food = new Food(texture, TEST_SIZE, TEST_POSITION);
-        assertEquals(TEST_SIZE, food.getWidth());
-        assertEquals(TEST_SIZE, food.getHeight());
+        Food food = new Food(texture, TESTSIZE, TESTPOSITION);
+        assertEquals(TESTSIZE, food.getWidth());
+        assertEquals(TESTSIZE, food.getHeight());
     }
 
     @Test
     public void testFoodInitialNotCollected() {
-        Food food = new Food(texture, TEST_SIZE, TEST_POSITION);
+        Food food = new Food(texture, TESTSIZE, TESTPOSITION);
         assertFalse(food.isCollected);
     }
 
     @Test
     public void testTwigInitializationPosition() {
         Texture twigTexture = new Texture(Gdx.files.internal(Twig.ASSET));
-        Twig twig = new Twig(twigTexture, TEST_SIZE, TEST_POSITION);
+        Twig twig = new Twig(twigTexture, TESTSIZE, TESTPOSITION);
         assertEquals(10f, twig.getX());
         assertEquals(20f, twig.getY());
     }
@@ -78,22 +78,22 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
     @Test
     public void testTwigInitializationSize() {
         Texture twigTexture = new Texture(Gdx.files.internal(Twig.ASSET));
-        Twig twig = new Twig(twigTexture, TEST_SIZE, TEST_POSITION);
-        assertEquals(TEST_SIZE, twig.getWidth());
-        assertEquals(TEST_SIZE, twig.getHeight());
+        Twig twig = new Twig(twigTexture, TESTSIZE, TESTPOSITION);
+        assertEquals(TESTSIZE, twig.getWidth());
+        assertEquals(TESTSIZE, twig.getHeight());
     }
 
     @Test
     public void testTwigInitialNotCollected() {
         Texture twigTexture = new Texture(Gdx.files.internal(Twig.ASSET));
-        Twig twig = new Twig(twigTexture, TEST_SIZE, TEST_POSITION);
+        Twig twig = new Twig(twigTexture, TESTSIZE, TESTPOSITION);
         assertFalse(twig.isCollected);
     }
 
     @Test
     public void testChainsawInitializationPosition() {
         Texture chainsawTexture = new Texture(Gdx.files.internal(Chainsaw.ASSET));
-        Chainsaw chainsaw = new Chainsaw(chainsawTexture, TEST_SIZE, TEST_POSITION);
+        Chainsaw chainsaw = new Chainsaw(chainsawTexture, TESTSIZE, TESTPOSITION);
         assertEquals(10f, chainsaw.getX());
         assertEquals(20f, chainsaw.getY());
     }
@@ -101,22 +101,22 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
     @Test
     public void testChainsawInitializationSize() {
         Texture chainsawTexture = new Texture(Gdx.files.internal(Chainsaw.ASSET));
-        Chainsaw chainsaw = new Chainsaw(chainsawTexture, TEST_SIZE, TEST_POSITION);
-        assertEquals(TEST_SIZE, chainsaw.getWidth());
-        assertEquals(TEST_SIZE, chainsaw.getHeight());
+        Chainsaw chainsaw = new Chainsaw(chainsawTexture, TESTSIZE, TESTPOSITION);
+        assertEquals(TESTSIZE, chainsaw.getWidth());
+        assertEquals(TESTSIZE, chainsaw.getHeight());
     }
 
     @Test
     public void testChainsawInitialNotCollected() {
         Texture chainsawTexture = new Texture(Gdx.files.internal(Chainsaw.ASSET));
-        Chainsaw chainsaw = new Chainsaw(chainsawTexture, TEST_SIZE, TEST_POSITION);
+        Chainsaw chainsaw = new Chainsaw(chainsawTexture, TESTSIZE, TESTPOSITION);
         assertFalse(chainsaw.isCollected);
     }
 
     @Test
     public void testBottleEventInitializationPosition() {
         Texture bottleTexture = new Texture(Gdx.files.internal(BottleEvent.ASSET));
-        BottleEvent bottle = new BottleEvent(bottleTexture, TEST_SIZE, TEST_POSITION);
+        BottleEvent bottle = new BottleEvent(bottleTexture, TESTSIZE, TESTPOSITION);
         assertEquals(10f, bottle.getX());
         assertEquals(20f, bottle.getY());
     }
@@ -124,23 +124,23 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
     @Test
     public void testBottleEventInitializationSize() {
         Texture bottleTexture = new Texture(Gdx.files.internal(BottleEvent.ASSET));
-        BottleEvent bottle = new BottleEvent(bottleTexture, TEST_SIZE, TEST_POSITION);
-        assertEquals(TEST_SIZE, bottle.getWidth());
-        assertEquals(TEST_SIZE, bottle.getHeight());
+        BottleEvent bottle = new BottleEvent(bottleTexture, TESTSIZE, TESTPOSITION);
+        assertEquals(TESTSIZE, bottle.getWidth());
+        assertEquals(TESTSIZE, bottle.getHeight());
     }
 
     @Test
     public void testBottleEventInitialNotCollected() {
         Texture bottleTexture = new Texture(Gdx.files.internal(BottleEvent.ASSET));
-        BottleEvent bottle = new BottleEvent(bottleTexture, TEST_SIZE, TEST_POSITION);
+        BottleEvent bottle = new BottleEvent(bottleTexture, TESTSIZE, TESTPOSITION);
         assertFalse(bottle.isCollected);
     }
 
     @Test
     public void testMultipleEntitiesIndependentState() {
-        Food food = new Food(texture, TEST_SIZE, TEST_POSITION);
+        Food food = new Food(texture, TESTSIZE, TESTPOSITION);
         Texture twigTexture = new Texture(Gdx.files.internal(Twig.ASSET));
-        Twig twig = new Twig(twigTexture, TEST_SIZE, FAR_POSITION);
+        Twig twig = new Twig(twigTexture, TESTSIZE, FARPOSITION);
         assertFalse(food.isCollected);
         assertFalse(twig.isCollected);
         assertEquals(10f, food.getX());
@@ -149,9 +149,9 @@ public class EntityInitializationTests extends AbstractHeadlessGdxTest {
 
     @Test
     public void testDifferentSizesInitialization() {
-        Food smallFood = new Food(texture, SMALL_SIZE, TEST_POSITION);
-        Food largeFood = new Food(texture, LARGE_SIZE, TEST_POSITION);
-        assertEquals(SMALL_SIZE, smallFood.getWidth());
-        assertEquals(LARGE_SIZE, largeFood.getWidth());
+        Food smallFood = new Food(texture, SMALLSIZE, TESTPOSITION);
+        Food largeFood = new Food(texture, LARGESIZE, TESTPOSITION);
+        assertEquals(SMALLSIZE, smallFood.getWidth());
+        assertEquals(LARGESIZE, largeFood.getWidth());
     }
 }
