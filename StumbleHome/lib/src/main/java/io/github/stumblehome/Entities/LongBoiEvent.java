@@ -25,7 +25,7 @@ public class LongBoiEvent extends NonPlayerEntity {
     // Variable which is true when player collided with long boi.
     public boolean collided = false;
     // Distance between player and long boi to set near to true.
-    public float radius = 6;
+    private float radius = 6;
     // Layer containing collision information from the tiled map.
     private TiledMapTileLayer collision_layer;
     // Previous movement storage vars
@@ -230,7 +230,31 @@ public class LongBoiEvent extends NonPlayerEntity {
         return false;
     }
 
+    /**
+     * setter for longBoi speed. can be negative to make long boi go backwards
+     * @param speed new speed of longboi
+     */
     public void setSpeed(float speed) {
         this.speed = speed;
+    }
+
+    /**
+     * getter for the radius that long boi will treat as near
+     * @return the radius
+     */
+    public float getRadius() {
+        return radius;
+    }
+
+    /**
+     * setter for the radius
+     * @param radius to be set, if negative is turned positive as positive radius is equivalent but awkward
+     */
+    public void setRadius(float radius) {
+        if (radius < 0) {
+            radius *= -1;
+        } else {
+            this.radius = radius;
+        }
     }
 }

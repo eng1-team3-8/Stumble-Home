@@ -182,6 +182,7 @@ public class GameScreen implements Screen {
                         new Texture(Player.ASSET),
                         0.8f,
                         new float[] {60f, 50f},
+                        5f,
                         mapWidth,
                         mapHeight,
                         collisionLayer);
@@ -478,33 +479,30 @@ public class GameScreen implements Screen {
 
         // Check if the Yorks rose has been stepped on
         if (York.checkColliding(playerCentreX, playerCentreY)) {
-            if (!Lancaster.isSquished) {
+            if (!Lancaster.isCollected) {
                 hiddenEventCounter++;
             }
             msg.setTime(Messages.YORKSQUISHED, 3f);
-            York.isSquished = true;
 
             setAchievementText("Traitor!!!", 50);
         }
 
         // Check if the Lancaster rose has been stepped on
         if (Lancaster.checkColliding(playerCentreX, playerCentreY)) {
-            if (!York.isSquished) {
+            if (!York.isCollected) {
                 hiddenEventCounter++;
             }
             msg.setTime(Messages.LANCASTERSQUISHED, 3f);
-            Lancaster.isSquished = true;
-
             setAchievementText("War of the Roses...", 50);
         }
 
         // CHeck if both roses have been squished.
         // If true send a message and then immediately set squished to false, to prevent it
         // repeating
-        if (York.isSquished && Lancaster.isSquished) {
+        if (York.isCollected && Lancaster.isCollected) {
             msg.setTime(Messages.BOTHSQUISHED, 3f);
-            York.isSquished = false;
-            Lancaster.isSquished = false;
+            York.isCollected = false;
+            Lancaster.isCollected = false;
 
             setAchievementText("Switched sides have you??", 50);
         }

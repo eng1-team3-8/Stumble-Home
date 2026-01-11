@@ -11,12 +11,7 @@ public class Twig extends CollectableEntity {
     public static final String ASSET = "Sprites/Stick.png";
 
     /**
-     * A constructor for entities that don't have any animations
-     *
-     * @param texture Texture: The texture of the entity
-     * @param size float: The size of the entity
-     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X,
-     *     and 1 is Y.
+     * calls the super constructor
      */
     public Twig(Texture texture, float size, float[] position) {
         super(texture, size, position);

@@ -20,6 +20,10 @@ public class Scissors extends BossFightEntity {
         super(texture, size, position);
     }
 
+    /**
+     * function to move the scissors across the screen
+     * @param viewport the viewport that the scissors should move accross
+     */
     public void move(Viewport viewport) {
         if (this.getX() > (viewport.getWorldWidth() / 800) * 633) {
             this.moveRight = false;
@@ -32,12 +36,5 @@ public class Scissors extends BossFightEntity {
         } else {
             this.setX(this.getX() - (viewport.getWorldWidth() / 800));
         }
-
-        this.updatePosition();
     }
-
-    //    public void setX(float x) {
-    //        this.s
-    //        this.updatePosition();
-    //    }
 }
