@@ -23,15 +23,7 @@ public abstract class CollectableEntity extends NonPlayerEntity {
     public boolean isTriggered = false;
 
     /**
-     * A constructor for entities that have animations
-     *
-     * @param texture Texture: The texture of the entity
-     * @param size float: The size of the entity
-     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X,
-     *     and 1 is Y.
-     * @param frame_width integer: The frame width of the animation
-     * @param frame_height integer: The frame height of the animation
-     * @param num_animations integer: The number of animations
+     * calls super constructor
      */
     public CollectableEntity(
             Texture texture,
@@ -44,12 +36,7 @@ public abstract class CollectableEntity extends NonPlayerEntity {
     }
 
     /**
-     * A constructor for entities that don't have any animations
-     *
-     * @param texture Texture: The texture of the entity
-     * @param size float: The size of the entity
-     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X,
-     *     and 1 is Y.
+     * calls super constructor
      */
     public CollectableEntity(Texture texture, float size, float[] position) {
         super(texture, size, position);
@@ -68,8 +55,7 @@ public abstract class CollectableEntity extends NonPlayerEntity {
         if (this.isCollected) {
             return false;
         }
-
-        // Calculates the distance between the player and the entity using pythagoras
+        // a^2 + b^2 = c^2
         double distance =
                 sqrt(pow(playerX - this.getCentreX(), 2) + pow(playerY - this.getCentreY(), 2));
 

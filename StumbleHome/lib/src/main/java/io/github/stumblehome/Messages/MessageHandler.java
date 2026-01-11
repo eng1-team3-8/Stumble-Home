@@ -15,8 +15,11 @@ import java.util.Queue;
  * @author Isaac M
  */
 public class MessageHandler {
+    // game the message handler is connected to
     private StumbleHome game;
+    // Map of the messages against their messageIDs
     private Map<Messages, MessageID> messages;
+    // Queue of all messages with more than 0 time_remaining
     private Queue<Messages> shown_queue;
 
     /**
@@ -97,8 +100,10 @@ public class MessageHandler {
     /**
      * allows the time a message is shown for to be set to a value
      *
-     * @param msg key of the message being referenced
+     * @param msg key of the message being referenced, must have been initilised using addMessage() first
      * @param new_time the new time that the message will be shown for, overrides previous time
+     *  if less than 0, sets to 0
+     * @return true if time was set correctly
      */
     public boolean setTime(Messages msg, float new_time) {
         if (messages.get(msg) == null) {
@@ -115,11 +120,13 @@ public class MessageHandler {
     }
 
     /**
-     * allows the remaining time a message is shown for to be increased/decreased
+     * allows the remaining time a message is shown for to be increased/decreased by a specific amount
      *
-     * @param msg key of the message being referenced
+     * @param msg key of the message being referenced, must have been initilised using addMessage() first
      * @param time_difference the amount by which the time remaining is changed by, the new time is
      *     the old time + the time_difference
+     *     if new time is negative time is set to 0
+     * @return true if time was shifted set correctly
      */
     public boolean shiftTime(Messages msg, float time_difference) {
         if (messages.get(msg) == null) {
@@ -148,7 +155,7 @@ public class MessageHandler {
 
         GlyphLayout layout = new GlyphLayout(game.font, mssg_id.getMessage());
         float x = (Gdx.graphics.getWidth() - layout.width) / 2f;
-        float y = (Gdx.graphics.getHeight() - layout.height * message_priority);
+        float y = (Gdx.graphics.getHeight() - layout.height * message_priority) - 35;
         game.font.draw(game.batch, layout, x, y);
 
         game.font.getData().setScale(1f);

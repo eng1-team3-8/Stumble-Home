@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.stumblehome.Entities.BossFightEntity;
 
 public class Scissors extends BossFightEntity {
-
+    public static final String ASSET = "Sprites/BossFight/Scissors.png";
     private boolean moveRight = true;
 
     /**
