@@ -88,6 +88,8 @@ public class GameScreen implements Screen {
     // Adding the Yorks and the Lancs roses
     private final Rose York;
     private final Rose Lancaster;
+    // used to indicate when both roses have been obtained 
+    private boolean bothRosesCollected = false;
     // Chainsaw for the positive event
     private final Chainsaw chainsaw;
     // Bob entity to activate Mike boss fight
@@ -492,10 +494,9 @@ public class GameScreen implements Screen {
         // CHeck if both roses have been squished.
         // If true send a message and then immediately set squished to false, to prevent it
         // repeating
-        if (York.isCollected && Lancaster.isCollected) {
+        if (York.isCollected && Lancaster.isCollected && !bothRosesCollected) {
             msg.setTime(Messages.BOTHSQUISHED, 3f);
-            York.isCollected = false;
-            Lancaster.isCollected = false;
+            bothRosesCollected = true;
 
             setAchievementText("Switched sides have you??", 50);
         }
