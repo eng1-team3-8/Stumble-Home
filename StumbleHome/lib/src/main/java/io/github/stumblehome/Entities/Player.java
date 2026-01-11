@@ -410,7 +410,7 @@ public class Player extends Entity {
 
     /**
      * sets the player to being drunk if possible
-     * @return true is player has been set drunk, 
+     * @return true is player has been set drunk,
      *      false if player cannot be set as drunk or is already drunk
      */
     public boolean setDrunk() {
