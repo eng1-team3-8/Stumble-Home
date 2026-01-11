@@ -44,11 +44,4 @@ public class BossFightEntity extends NonPlayerEntity {
         double distance = abs(playerCentreX - this.getX());
         return distance < (viewport.getWorldWidth() / 80) * 3;
     }
-
-    /**
-     * Setter for the position
-     */
-    public void updatePosition() {
-        this.setPosition(this.getX(), this.getY());
-    }
 }
