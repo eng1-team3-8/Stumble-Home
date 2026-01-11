@@ -264,15 +264,15 @@ public class GameScreen implements Screen {
         msg = new MessageHandler(game);
         msg.addMessage(Messages.PAUSED, "PAUSED", Color.WHITE, 2f);
         msg.addMessage(
-                Messages.NOKEYCARD, "You need a KeyCard to enter the Door...", Color.RED, 2f);
+                Messages.NOKEYCARD, "You need a Key Card to enter the Door...", Color.RED, 2f);
         msg.addMessage(
                 Messages.PICKUPKEYCARD,
-                "You have the keyCard, you can go home now!",
+                "You have the Key Card, you can go home now!",
                 Color.GREEN,
                 2f);
         msg.addMessage(
                 Messages.REMEMBERKEYCARD,
-                "You remembered that you don't have the keycard, find it!",
+                "You remembered that you don't have the Key Card, find it!",
                 Color.GREEN,
                 2f);
         msg.addMessage(Messages.LONGBOIAPPEAR, "It's Long Boi! Avoid him!", Color.RED, 2f);
