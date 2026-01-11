@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
- * Represents a collectible bottle item that appears in the game world. When collected by the
- * player, this affects their movement controls.
+ * Represents a collectible bottle item that appears in the game world.
+ * When collected makes player sober
  */
 public class BottleEvent extends CollectableEntity {
     public static final String ASSET = "waterBottle.png";
@@ -20,9 +20,9 @@ public class BottleEvent extends CollectableEntity {
     }
 
     /**
-     * Updates the bottle's animation state each frame. Only processes animation if the bottle hasn't
-     * been collected yet.
+     * only renders when not collected
      */
+    @Override
     public void logic() {
         if (!is_collected) {
             // Reset animation time if animation changed

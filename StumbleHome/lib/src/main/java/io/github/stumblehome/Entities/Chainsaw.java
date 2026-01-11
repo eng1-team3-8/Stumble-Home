@@ -3,6 +3,12 @@ package io.github.stumblehome.Entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
+/**
+ * Collectable event item for chainsaw
+ * When collected allows the player to cut a row of hedges a single time
+ *
+ * @author Isaac
+ */
 public class Chainsaw extends CollectableEntity {
     public static final String ASSET = "Sprites/Chainsaw.png";
 
@@ -13,6 +19,14 @@ public class Chainsaw extends CollectableEntity {
         super(texture, size, position);
     }
 
+    /**
+     * detects the direction that player is facing and cuts a row of hegdes in that direction
+     * until a non hedge is reached. sets is_triggered to true
+     * @param player player using the chainsaw
+     * @param removable_walls wall layer that should be considered when deciding to remove,
+     *      will remove any not null cell
+     * @return true if successful and false if not
+     */
     public boolean UseChainsaw(Player player, TiledMapTileLayer removable_walls) {
         if (is_triggered || !(is_collected)) {
             return false;
@@ -45,6 +59,13 @@ public class Chainsaw extends CollectableEntity {
         return true;
     }
 
+    /**
+     * static function to remove the wall strip in a given direction, starting at a given position
+     * @param removable_walls the layer that should be considered and removed from.
+     *      all non null cells will be removed
+     * @param start_pos the inital position of the line of walls to be removed in format [x, y]
+     * @param direction the direction that the line shoudl go in
+     */
     public static void remove_wall_strip(
             TiledMapTileLayer removable_walls, int[] start_pos, EntityDirection direction) {
         switch (direction) {

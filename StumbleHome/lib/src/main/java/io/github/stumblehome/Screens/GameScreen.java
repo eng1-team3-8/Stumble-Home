@@ -446,7 +446,7 @@ public class GameScreen implements Screen {
                 setAchievementText("Mix & Blackout", 50);
                 blackout = true;
             }
-            beer.makeDrunk(player);
+            player.setDrunk();
             msg.setTime(Messages.ALCOHOL, 3f);
             setAchievementText("BEER ME!", 50);
         }
@@ -460,7 +460,7 @@ public class GameScreen implements Screen {
                 setAchievementText("Mix & Blackout", 50);
                 blackout = true;
             }
-            vodka.makeDrunk(player);
+            player.setDrunk();
             msg.setTime(Messages.ALCOHOL, 3f);
             setAchievementText("Down the vodka", 50);
         }
