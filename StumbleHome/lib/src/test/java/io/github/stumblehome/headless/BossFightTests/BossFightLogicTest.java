@@ -48,7 +48,6 @@ public class BossFightLogicTest extends AbstractHeadlessGdxTest {
         assertTrue(newHealth >= 0, "Mike's health should not be negative");
     }
 
-    // Test commit
     @Test
     public void testMikeAttacksPlayer() {
         int initialHealth = bossFightLogic.getPlayerHealth();
