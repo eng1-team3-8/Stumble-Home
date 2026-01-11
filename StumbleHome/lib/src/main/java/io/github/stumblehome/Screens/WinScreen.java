@@ -54,6 +54,9 @@ public class WinScreen extends GameFinishScreen {
         skin.dispose();
     }
 
+    /**
+     * draws the layout of the lose screen, including various buttons to other screens
+     */
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());

@@ -16,6 +16,8 @@ import java.util.List;
 
 /**
  * Class to display leaderboard
+ *
+ * @author Henry
  */
 public class Leaderboard extends MenuScreen {
     private ScrollPane scrollPane;
@@ -24,6 +26,9 @@ public class Leaderboard extends MenuScreen {
         super(game);
     }
 
+    /**
+     * draws the leaderboard table and adds all current scores
+     */
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
@@ -73,10 +78,7 @@ public class Leaderboard extends MenuScreen {
     }
 
     @Override
-    public void hide() {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'hide'");
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {

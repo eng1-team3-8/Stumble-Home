@@ -14,6 +14,8 @@ import java.util.Map;
 
 /**
  * Class to display achievements
+ *
+ * @author Henry
  */
 public class Achievements extends MenuScreen {
     private ScrollPane scrollPane;
@@ -26,16 +28,22 @@ public class Achievements extends MenuScreen {
     // Used to select mode (last player's achievement status or list)
     private boolean playerAchievements;
 
-    // Used to display player achievement status
-    // Used on win screen
+    /**
+     * constructor for screen when entering from win screen
+     * @param game the game that is being referenced
+     * @param achievementData the achievement data for the game just won
+     */
     public Achievements(StumbleHome game, Map<String, Integer> achievementData) {
         super(game);
         this.achievementData = achievementData;
         playerAchievements = true;
     }
 
-    // Used to instantiate list of achievements
-    // Used on main menu
+    /**
+     * constructor for screen when entering from main menu screen
+     * @param game the game that is being referenced
+     * no achievements are listed as completed
+     */
     public Achievements(StumbleHome game) {
         super(game);
         playerAchievements = false;
@@ -89,10 +97,7 @@ public class Achievements extends MenuScreen {
     }
 
     @Override
-    public void hide() {
-        // TODO Auto-generated method stub
-        // throw new UnsupportedOperationException("Unimplemented method 'hide'");
-    }
+    public void hide() {}
 
     @Override
     public void dispose() {

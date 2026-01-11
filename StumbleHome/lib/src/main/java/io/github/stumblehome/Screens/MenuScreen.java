@@ -9,6 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import io.github.stumblehome.StumbleHome;
 
+/**
+ * base abstract class for a screen containing menu content
+ */
 public abstract class MenuScreen implements Screen {
     protected StumbleHome game;
 
@@ -21,11 +24,20 @@ public abstract class MenuScreen implements Screen {
     // Skin used for styling UI components.
     protected Skin skin;
 
+    /**
+     * constructor for a menuScreen without a background
+     * @param game that the screen is appearing on
+     */
     public MenuScreen(final StumbleHome game) {
         this.game = game;
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
     }
 
+    /**
+     * constructor for a menu screen with a background
+     * @param game that the screen is appearing on
+     * @param background string that gives the path to the image to be used as the background
+     */
     public MenuScreen(final StumbleHome game, String background) {
         this(game);
         this.background = new Texture(background);
