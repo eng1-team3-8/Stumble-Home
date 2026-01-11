@@ -88,7 +88,7 @@ public class GameScreen implements Screen {
     // Adding the Yorks and the Lancs roses
     private final Rose York;
     private final Rose Lancaster;
-    // used to indicate when both roses have been obtained 
+    // used to indicate when both roses have been obtained
     private boolean bothRosesCollected = false;
     // Chainsaw for the positive event
     private final Chainsaw chainsaw;
