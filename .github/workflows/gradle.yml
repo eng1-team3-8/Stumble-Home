@@ -207,17 +207,11 @@ jobs:
           cd StumbleHome
           ./gradlew --stacktrace packageMacM1
 
-      - name: Extract macOS app and remove zip
-        run: |
-          cd StumbleHome/build/construo
-          unzip -o stumblehome-macM1.zip -d .
-          rm stumblehome-macM1.zip
-
       - name: Upload macOS app bundle
         uses: actions/upload-artifact@v4
         with:
           name: macos-app
-          path: StumbleHome/build/construo
+          path: StumbleHome/build/construo/stumblehome-macM1.zip
           retention-days: 7
 
   release:
@@ -261,16 +255,15 @@ jobs:
           name: macos-app
           path: ./macos-app
 
-      - name: Create macOS app zip with version
+      - name: Rename macOS app zip with version
         if: steps.download-macos.outcome == 'success'
         run: |
           VERSION="${{ needs.build.outputs.version }}"
-          cd macos-app
-          if [ -d "Stumble Home.app" ]; then
-            zip -r ../StumbleHome-${VERSION}-macos-app.zip "Stumble Home.app"
+          if [ -f "macos-app/stumblehome-macM1.zip" ]; then
+            mv macos-app/stumblehome-macM1.zip StumbleHome-${VERSION}-macos-app.zip
             echo "Created StumbleHome-${VERSION}-macos-app.zip"
           else
-            echo "Stumble Home.app not found, skipping macOS app packaging"
+            echo "stumblehome-macM1.zip not found, skipping macOS app packaging"
           fi
 
       - name: Generate release body

@@ -154,13 +154,13 @@ construo {
       architecture.set(Target.Architecture.AARCH64)
       jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.11%2B9/OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.11_9.tar.gz")
       identifier.set("io.github.stumblehome.StumbleHome")
-      macIcon.set(project.file("src/main/resources/MainMenu.png"))
     }
   }
 
   roast {
-    // macOS: run JVM on first thread (needed for LWJGL), this defaults to true but you can be explicit
+    // macOS: run JVM on first thread (needed for LWJGL)
     runOnFirstThread.set(true)
-    // optional: vmArgs.addAll("-Xmx1G")
+    // Explicit VM arguments for better compatibility
+    vmArgs.addAll("-Xmx1G", "-Xms256M")
   }
 }
