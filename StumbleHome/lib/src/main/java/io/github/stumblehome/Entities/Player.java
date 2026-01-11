@@ -37,26 +37,52 @@ public class Player extends Entity {
     // The direction the player was last moving or facing.
     private Animation_enum lastDirection = Animation_enum.DOWN;
 
+    /**
+     * calls super constructor for Entity, intialises extra starting variables for the player
+     * @param mapWidth the width of the map that the player is on, must be greater than size
+     * @param mapHeight the height of the map that the player is on, must be greater than size
+     * @param speed the inital speed of the player being created, cannot be negative
+     * @param collisionLayer the collision layer that the player needs to collide with, cannot be null
+     * @throws IllegalArgumentException if the Width or Height are smaller than the player size or if the collision layer is null
+     */
     public Player(
             Texture texture,
             float size,
             float[] position,
+            float speed,
             float mapWidth,
             float mapHeight,
-            TiledMapTileLayer collisionLayer) {
+            TiledMapTileLayer collisionLayer)
+            throws IllegalArgumentException {
         super(texture, size, position);
 
         // Initialize player animations
         initializeAnimations();
 
+        if (mapWidth < size) {
+            throw new IllegalArgumentException(
+                    "The map width passed in was less than the player size");
+        }
+        if (mapHeight < size) {
+            throw new IllegalArgumentException(
+                    "The map height passed in was less than the player size");
+        }
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
-        this.playerSpeed = 5f;
+        if (speed < 0) {
+            throw new IllegalArgumentException(
+                    "The speed of the player cannot be set as a negative value");
+        }
+        this.playerSpeed = speed;
         this.isDrunk = false;
 
         // Intialises as normal for understandability and then gets player drunk
-        SwapControls();
+        this.setDrunk();
 
+        if (collisionLayer == null) {
+            throw new IllegalArgumentException(
+                    "the collision layer cannot be null, it can be empty");
+        }
         this.collisionLayer = collisionLayer;
     }
 
@@ -129,7 +155,7 @@ public class Player extends Entity {
     }
 
     /**
-     * swaps the controls, intended for when player becomes drunk/sober
+     * swaps the controls, intended for when player becomes drunk/sober, also swaps isDrunk
      */
     private void SwapControls() {
         Animation<TextureRegion> swap_placeholder = animations.get(Animation_enum.WALK_UP);
@@ -293,6 +319,12 @@ public class Player extends Entity {
         batch.draw(frameToDraw, this.getX(), this.getY(), frame_size, drawHeight);
     }
 
+    /**
+     * slows down the player by a certain amount, taking acount for drunk.
+     * cannot slow down the player to negative speed
+     * @param amount that the plaer should slow down by. new speed = current speed - amount
+     * @return true if slow down was successful
+     */
     public boolean slowDownPlayer(float amount) {
         if (isDrunk) {
             amount *= -1;
@@ -308,25 +340,30 @@ public class Player extends Entity {
         return true;
     }
 
-    public boolean speedUpPlayer(float amount) {
+    /**
+     * speeds up the player by a certain amount, taking about for drunk
+     * always succeeds
+     * @param amount that the player speed is increased by. new speed = old speed + amount
+     */
+    public void speedUpPlayer(float amount) {
         if (isDrunk) {
             amount *= -1;
-            if (playerSpeed + amount > 0) {
-                return false;
-            }
-        } else {
-            if (playerSpeed + amount < 0) {
-                return false;
-            }
         }
         this.playerSpeed += amount;
-        return true;
     }
 
+    /**
+     * getter for player speed
+     * @return the player speed
+     */
     public float getPlayerSpeed() {
         return playerSpeed;
     }
 
+    /**
+     * getter for the direction the player is facing (assuming no current botton being pressed)
+     * @return the direction the player is face as an EntityDirection
+     */
     public EntityDirection getDirection() {
         if (isPlayerDrunk()) {
             if (lastDirection == Animation_enum.DOWN || lastDirection == Animation_enum.WALK_DOWN) {
@@ -371,6 +408,11 @@ public class Player extends Entity {
         WALK_UP
     }
 
+    /**
+     * sets the player to being drunk if possible
+     * @return true is player has been set drunk, 
+     *      false if player cannot be set as drunk or is already drunk
+     */
     public boolean setDrunk() {
         if (canGetDrunk && !isDrunk) {
             SwapControls();
@@ -380,6 +422,11 @@ public class Player extends Entity {
         return false;
     }
 
+    /**
+     * sets the player to being sober if possible
+     * @return true if the player has been set sober,
+     *      false if player was already sober
+     */
     public boolean setSober() {
         if (isDrunk) {
             SwapControls();
@@ -388,22 +435,32 @@ public class Player extends Entity {
         return false;
     }
 
+    /**
+     * checks if the player is drunk
+     * @return true if player is drunk, false if not
+     */
     public boolean isPlayerDrunk() {
         return isDrunk;
     }
 
-    public void changeDirection(int direct) throws IllegalArgumentException {
-        if (direct < 0 || direct > 3) {
-            throw new IllegalArgumentException("direction must be between 0 and 3");
-        }
-        if (direct == 0) {
-            lastDirection = Animation_enum.UP;
-        } else if (direct == 1) {
-            lastDirection = Animation_enum.RIGHT;
-        } else if (direct == 2) {
-            lastDirection = Animation_enum.DOWN;
-        } else {
-            lastDirection = Animation_enum.LEFT;
+    /**
+     * allows the players standing direction to be changed
+     * @param direct the dire
+     */
+    public void changeDirection(EntityDirection direction) {
+        switch (direction) {
+            case UP:
+                lastDirection = Animation_enum.UP;
+                break;
+            case DOWN:
+                lastDirection = Animation_enum.DOWN;
+                break;
+            case LEFT:
+                lastDirection = Animation_enum.LEFT;
+                break;
+            case RIGHT:
+                lastDirection = Animation_enum.RIGHT;
+                break;
         }
     }
 }

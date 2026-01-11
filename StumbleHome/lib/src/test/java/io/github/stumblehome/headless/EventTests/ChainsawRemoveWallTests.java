@@ -40,6 +40,7 @@ public class ChainsawRemoveWallTests extends AbstractHeadlessGdxTest {
                         new Texture("character.png"),
                         0.8f,
                         new float[] {0f, 0f},
+                        5f,
                         mapWidth,
                         mapHeight,
                         testCollisionLayer);
@@ -87,7 +88,7 @@ public class ChainsawRemoveWallTests extends AbstractHeadlessGdxTest {
 
     @Test
     public void useWhenNotCollected() {
-        testPlayer.changeDirection(1);
+        testPlayer.changeDirection(EntityDirection.RIGHT);
         assertFalse(
                 chainsaw.UseChainsaw(testPlayer, testCollisionLayer),
                 "Chainsaw should not be used when it has not been collected");
@@ -98,7 +99,7 @@ public class ChainsawRemoveWallTests extends AbstractHeadlessGdxTest {
 
     @Test
     public void useWhenCollected() {
-        testPlayer.changeDirection(0);
+        testPlayer.changeDirection(EntityDirection.UP);
         chainsaw.isCollected = true;
         assertTrue(
                 chainsaw.UseChainsaw(testPlayer, testCollisionLayer),
@@ -108,11 +109,11 @@ public class ChainsawRemoveWallTests extends AbstractHeadlessGdxTest {
 
     @Test
     public void usetwice() {
-        testPlayer.changeDirection(0);
+        testPlayer.changeDirection(EntityDirection.UP);
         chainsaw.isCollected = true;
         chainsaw.UseChainsaw(testPlayer, testCollisionLayer);
         testPlayer.setX(2);
-        testPlayer.changeDirection(1);
+        testPlayer.changeDirection(EntityDirection.RIGHT);
         chainsaw.UseChainsaw(testPlayer, testCollisionLayer);
         assertFalse(
                 chainsaw.UseChainsaw(testPlayer, testCollisionLayer),

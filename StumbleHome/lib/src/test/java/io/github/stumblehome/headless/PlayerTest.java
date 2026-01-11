@@ -39,6 +39,7 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
                         new Texture("character.png"),
                         0.8f,
                         new float[] {0f, 0f},
+                        5f,
                         mapWidth,
                         mapHeight,
                         collisionLayer);
@@ -196,22 +197,22 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
                 player.getDirection(),
                 EntityDirection.UP,
                 "input with no input should not change direction");
-        player.changeDirection(0);
+        player.changeDirection(EntityDirection.UP);
         assertEquals(
                 player.getDirection(),
                 EntityDirection.DOWN,
                 "change direction should be set to down when sober");
-        player.changeDirection(1);
+        player.changeDirection(EntityDirection.RIGHT);
         assertEquals(
                 player.getDirection(),
                 EntityDirection.LEFT,
                 "change direction should be set to left when sober");
-        player.changeDirection(2);
+        player.changeDirection(EntityDirection.DOWN);
         assertEquals(
                 player.getDirection(),
                 EntityDirection.UP,
                 "change direction should be set to up when sober");
-        player.changeDirection(3);
+        player.changeDirection(EntityDirection.LEFT);
         assertEquals(
                 player.getDirection(),
                 EntityDirection.RIGHT,
@@ -228,20 +229,20 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
                 player.getDirection(),
                 EntityDirection.DOWN,
                 "input with no input should not change direction");
-        player.changeDirection(0);
+        player.changeDirection(EntityDirection.UP);
         assertEquals(
                 player.getDirection(), EntityDirection.UP, "change direction should be set to up");
-        player.changeDirection(1);
+        player.changeDirection(EntityDirection.RIGHT);
         assertEquals(
                 player.getDirection(),
                 EntityDirection.RIGHT,
                 "change direction should be set to right");
-        player.changeDirection(2);
+        player.changeDirection(EntityDirection.DOWN);
         assertEquals(
                 player.getDirection(),
                 EntityDirection.DOWN,
                 "change direction should be set to down");
-        player.changeDirection(3);
+        player.changeDirection(EntityDirection.LEFT);
         assertEquals(
                 player.getDirection(),
                 EntityDirection.LEFT,
