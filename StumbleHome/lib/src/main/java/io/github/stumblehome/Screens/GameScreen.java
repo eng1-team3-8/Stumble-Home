@@ -442,7 +442,7 @@ public class GameScreen implements Screen {
             if (!achievementData.containsKey("Down the vodka")) {
                 hinderingEventCounter++;
             }
-            if (vodka.is_collected && player.isPlayerDrunk()) {
+            if (vodka.isCollected && player.isPlayerDrunk()) {
                 setAchievementText("Mix & Blackout", 50);
                 blackout = true;
             }
@@ -456,7 +456,7 @@ public class GameScreen implements Screen {
             if (!achievementData.containsKey("BEER ME!")) {
                 hinderingEventCounter++;
             }
-            if (beer.is_collected && player.isPlayerDrunk()) {
+            if (beer.isCollected && player.isPlayerDrunk()) {
                 setAchievementText("Mix & Blackout", 50);
                 blackout = true;
             }
@@ -468,7 +468,7 @@ public class GameScreen implements Screen {
         // Check if collision with chicken
         if (chicken.checkColliding(playerCentreX, playerCentreY)) {
             helpfulEventCounter++;
-            if (player.isDrunk) {
+            if (player.isPlayerDrunk()) {
                 msg.setTime(Messages.REMEMBERKEYCARD, 3f);
             }
             chicken.eatFood(player);

@@ -1,0 +1,18 @@
+Manual Tests
+Outline of the manual tests that cannot be automated.
+This is due to the limitations of headless running or the subjectivity of their results
+
+1 - Menu screens
+    ID: testMainMenuLoad 
+        Desc: open the game and see if the Main Menu is rendered
+        Requirement: 
+2 - Game screen
+
+3 - Boss fight screen
+
+4 - messages 
+
+5 - Leaderboard
+
+6 - Player 
+

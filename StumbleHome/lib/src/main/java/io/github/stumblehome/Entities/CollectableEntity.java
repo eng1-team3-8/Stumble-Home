@@ -14,13 +14,13 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 public abstract class CollectableEntity extends NonPlayerEntity {
 
     // Boolean value to see if the entity is colliding with the player
-    private boolean is_colliding = false;
+    private boolean isColliding = false;
 
     // Boolean value to see if the entity has been collected
-    public boolean is_collected = false;
+    public boolean isCollected = false;
 
     // Boolean value to see if the event caused by the collision has been triggered yet
-    public boolean is_triggered = false;
+    public boolean isTriggered = false;
 
     /**
      * calls super constructor
@@ -44,25 +44,31 @@ public abstract class CollectableEntity extends NonPlayerEntity {
 
     /**
      * This method checks if the player is within a certain distance of the centre of the entity. If
-     * so, it updates the is_colliding parameter. It works by using pythagoras' theorem to calculate
+     * so, it updates the isColliding parameter. It works by using pythagoras' theorem to calculate
      * the straight line distance between the player and the entity
      *
      * @param playerX float: the x coordinate of the player
      * @param playerY float: the y coordinate of the player
      */
     public boolean checkColliding(float playerX, float playerY) {
-        if (this.is_collected) {
+        // Checks if the entity has already been collected
+        if (this.isCollected) {
             return false;
         }
+
+        // a^2 + b^2 = c^2
         // a^2 + b^2 = c^2
         double distance =
                 sqrt(pow(playerX - this.getCentreX(), 2) + pow(playerY - this.getCentreY(), 2));
-        this.is_colliding = distance < 1f;
-        if (this.is_colliding) {
-            this.is_collected = true;
+
+        // Sets the colliding variable to true if the player is within a certain distance
+        this.isColliding = distance < 1f;
+
+        if (this.isColliding) {
+            this.isCollected = true;
         }
 
-        return this.is_colliding;
+        return this.isColliding;
     }
 
     /**
@@ -72,7 +78,7 @@ public abstract class CollectableEntity extends NonPlayerEntity {
      */
     @Override
     public void draw(Batch batch) {
-        if (!this.is_collected) {
+        if (!this.isCollected) {
             super.draw(batch);
         }
     }
