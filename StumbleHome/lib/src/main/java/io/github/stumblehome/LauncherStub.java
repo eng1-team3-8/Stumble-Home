@@ -2,7 +2,6 @@ package io.github.stumblehome;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.graphics.Texture;
 
 /**
  * Minimal launcher that starts the game using LWJGL3 backend so the produced fat JAR is runnable
