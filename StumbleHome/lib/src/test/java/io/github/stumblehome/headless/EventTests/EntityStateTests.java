@@ -195,10 +195,9 @@ public class EntityStateTests extends AbstractHeadlessGdxTest {
     }
 
     @Test
-
     public void testMultipleCollectableEntitiesIndependentState() {
-        Food food1 = new Food(texture, testSize, new float[]{10f, 10f});
-        Food food2 = new Food(texture, testSize, new float[]{20f, 20f});
+        Food food1 = new Food(texture, testSize, new float[] {10f, 10f});
+        Food food2 = new Food(texture, testSize, new float[] {20f, 20f});
         food1.checkColliding(10.5f, 10.5f);
         assertTrue(food1.isCollected);
         assertFalse(food2.isCollected);
