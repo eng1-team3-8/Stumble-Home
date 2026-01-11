@@ -55,6 +55,7 @@ public abstract class CollectableEntity extends NonPlayerEntity {
         if (this.isCollected) {
             return false;
         }
+
         // a^2 + b^2 = c^2
         double distance =
                 sqrt(pow(playerX - this.getCentreX(), 2) + pow(playerY - this.getCentreY(), 2));

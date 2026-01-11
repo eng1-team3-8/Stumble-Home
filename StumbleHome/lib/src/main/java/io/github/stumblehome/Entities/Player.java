@@ -27,7 +27,7 @@ public class Player extends Entity {
     // Controls whether the player has reversed controls (1 = drunk, 0 = sober).
     private boolean isDrunk = true;
     // Speed of the player
-    private float player_speed;
+    private float playerSpeed;
     // Boolean to see if the player can get drunk (default true, only false after a meal)
     public boolean canGetDrunk = true;
     // Layer containing collision information from the tiled map.
@@ -51,7 +51,7 @@ public class Player extends Entity {
 
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
-        this.player_speed = 5f;
+        this.playerSpeed = 5f;
         this.isDrunk = false;
 
         // Intialises as normal for understandability and then gets player drunk
@@ -145,7 +145,7 @@ public class Player extends Entity {
         animations.put(Animation_enum.LEFT, animations.get(Animation_enum.RIGHT));
         animations.put(Animation_enum.RIGHT, swap_placeholder);
 
-        player_speed = -player_speed;
+        playerSpeed = -playerSpeed;
         if (isDrunk) {
             isDrunk = false;
         } else {
@@ -165,28 +165,28 @@ public class Player extends Entity {
         delta = Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
             // RIGHT key -> move LEFT
-            moveX = player_speed * delta;
+            moveX = playerSpeed * delta;
             current_animation = animations.get(Animation_enum.WALK_RIGHT);
             lastDirection = Animation_enum.LEFT;
             moving = true;
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)
                 || Gdx.input.isKeyPressed(Input.Keys.A)) {
             // LEFT key -> move RIGHT
-            moveX = -player_speed * delta;
+            moveX = -playerSpeed * delta;
             current_animation = animations.get(Animation_enum.WALK_LEFT);
             lastDirection = Animation_enum.RIGHT;
             moving = true;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) {
             // UP key -> move DOWN
-            moveY = player_speed * delta;
+            moveY = playerSpeed * delta;
             current_animation = animations.get(Animation_enum.WALK_UP);
             lastDirection = Animation_enum.DOWN;
             moving = true;
         } else if (Gdx.input.isKeyPressed(Input.Keys.DOWN)
                 || Gdx.input.isKeyPressed(Input.Keys.S)) {
             // DOWN key -> move UP
-            moveY = -player_speed * delta;
+            moveY = -playerSpeed * delta;
             current_animation = animations.get(Animation_enum.WALK_DOWN);
             lastDirection = Animation_enum.UP;
             moving = true;
@@ -296,35 +296,35 @@ public class Player extends Entity {
     public boolean slowDownPlayer(float amount) {
         if (isDrunk) {
             amount *= -1;
-            if (player_speed - amount > 0) {
+            if (playerSpeed - amount > 0) {
                 return false;
             }
         } else {
-            if (player_speed - amount < 0) {
+            if (playerSpeed - amount < 0) {
                 return false;
             }
         }
-        this.player_speed -= amount;
+        this.playerSpeed -= amount;
         return true;
     }
 
     public boolean speedUpPlayer(float amount) {
         if (isDrunk) {
             amount *= -1;
-            if (player_speed + amount > 0) {
+            if (playerSpeed + amount > 0) {
                 return false;
             }
         } else {
-            if (player_speed + amount < 0) {
+            if (playerSpeed + amount < 0) {
                 return false;
             }
         }
-        this.player_speed += amount;
+        this.playerSpeed += amount;
         return true;
     }
 
     public float getPlayerSpeed() {
-        return player_speed;
+        return playerSpeed;
     }
 
     public EntityDirection getDirection() {
