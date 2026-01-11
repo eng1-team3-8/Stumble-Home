@@ -22,7 +22,7 @@ public class Scissors extends BossFightEntity {
 
     /**
      * function to move the scissors across the screen
-     * @param viewport the viewport that the scissors should move accross 
+     * @param viewport the viewport that the scissors should move accross
      */
     public void move(Viewport viewport) {
         if (this.getX() > (viewport.getWorldWidth() / 800) * 633) {

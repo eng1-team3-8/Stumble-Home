@@ -25,7 +25,7 @@ public class ChainsawRemoveWallTests extends AbstractHeadlessGdxTest {
         // Load Map and get collision layers
         TiledMap testMap = new TmxMapLoader().load("map2.tmx");
         testCollisionLayer = (TiledMapTileLayer) testMap.getLayers().get("hedge");
-        
+
         // Set up map size to be the same as the game
         int mapWidthInTiles = testMap.getProperties().get("width", Integer.class);
         int mapHeightInTiles = testMap.getProperties().get("height", Integer.class);
