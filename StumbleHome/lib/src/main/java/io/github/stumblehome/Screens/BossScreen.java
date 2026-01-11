@@ -133,7 +133,7 @@ public class BossScreen implements Screen {
 
         // Creates the text
         this.font = new BitmapFont();
-        this.font.setColor(Color.BLUE);
+        this.font.setColor(Color.GOLD);
 
         // Create Message handler
         msg = new MessageHandler(game);
