@@ -7,6 +7,7 @@ import io.github.stumblehome.Entities.Alcohol;
 import io.github.stumblehome.Entities.Bob;
 import io.github.stumblehome.Entities.Chainsaw;
 import io.github.stumblehome.Entities.Food;
+import io.github.stumblehome.Entities.LongBoiEvent;
 import io.github.stumblehome.Entities.Rose;
 import io.github.stumblehome.Entities.Twig;
 import io.github.stumblehome.headless.AbstractHeadlessGdxTest;
@@ -51,5 +52,12 @@ public class AssetTests extends AbstractHeadlessGdxTest {
     @Test
     public void testAlcoholSmirnovSprite() {
         assertTrue(Gdx.files.internal(Alcohol.ASSET_SMIRN).exists());
+    }
+
+    @Test
+    public void testLongBoiTextureAtlasExists() {
+        assertTrue(
+                Gdx.files.internal(LongBoiEvent.ASSET).exists(),
+                "LongBoi texture atlas should exist");
     }
 }
