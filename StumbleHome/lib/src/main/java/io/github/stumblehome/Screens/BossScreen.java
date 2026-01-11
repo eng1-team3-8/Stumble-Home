@@ -154,7 +154,7 @@ public class BossScreen implements Screen {
         // Create the BossFightEntities
         this.scissors =
                 new Scissors(
-                        new Texture("Sprites/BossFight/Scissors.png"),
+                        new Texture(Scissors.ASSET),
                         viewport.getWorldWidth() / 8,
                         new float[] {
                             (this.viewport.getWorldWidth() / 160) * 21,
@@ -163,25 +163,25 @@ public class BossScreen implements Screen {
 
         this.cable1 =
                 new BossFightEntity(
-                        new Texture("Sprites/BossFight/Cable.png"),
+                        new Texture(BossFightEntity.ASSET_CABLES),
                         (viewport.getWorldWidth() / 16) * 3,
                         new float[] {(this.viewport.getWorldWidth() / 800) * 199, 0});
 
         this.cable2 =
                 new BossFightEntity(
-                        new Texture("Sprites/BossFight/Cable.png"),
+                        new Texture(BossFightEntity.ASSET_CABLES),
                         (viewport.getWorldWidth() / 16) * 3,
                         new float[] {(this.viewport.getWorldWidth() / 800) * 287, 0});
 
         this.cable3 =
                 new BossFightEntity(
-                        new Texture("Sprites/BossFight/Cable.png"),
+                        new Texture(BossFightEntity.ASSET_CABLES),
                         (viewport.getWorldWidth() / 16) * 3,
                         new float[] {(this.viewport.getWorldWidth() / 32) * 15, 0});
 
         this.cable4 =
                 new BossFightEntity(
-                        new Texture("Sprites/BossFight/Cable.png"),
+                        new Texture(BossFightEntity.ASSET_CABLES),
                         (viewport.getWorldWidth() / 16) * 3,
                         new float[] {(this.viewport.getWorldWidth() / 800) * 463, 0});
 
