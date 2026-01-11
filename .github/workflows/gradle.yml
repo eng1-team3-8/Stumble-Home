@@ -302,7 +302,12 @@ jobs:
 
           **For macOS (native app):**
           - Download \`StumbleHome-${VERSION}-macos-app.zip\`
-          - Extract and run \`Stumble Home.app\`"
+          - Extract the zip file
+          - **Important:** Remove the quarantine flag (required because the app is not signed with an Apple Developer ID):
+            \`\`\`bash
+            sudo xattr -d com.apple.quarantine \"/path/to/Stumble Home.app\"
+            \`\`\`
+          - Now you can double-click \`Stumble Home.app\` to run"
           fi
 
           echo "body<<EOF" >> $GITHUB_OUTPUT
