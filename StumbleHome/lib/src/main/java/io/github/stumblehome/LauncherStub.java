@@ -2,6 +2,7 @@ package io.github.stumblehome;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.graphics.Texture;
 
 /**
  * Minimal launcher that starts the game using LWJGL3 backend so the produced fat JAR is runnable
@@ -12,6 +13,7 @@ public final class LauncherStub {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
         config.setTitle("StumbleHome");
         config.setWindowedMode(800, 500);
+        config.setWindowIcon("image.png");
         new Lwjgl3Application(new StumbleHome(), config);
     }
 }
