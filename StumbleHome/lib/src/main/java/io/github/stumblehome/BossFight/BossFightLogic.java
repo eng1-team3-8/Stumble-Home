@@ -196,6 +196,9 @@ public class BossFightLogic {
      */
     public void mikeAttacks() {
         double damage = Math.random();
+        while (damage == 0) {
+            damage = Math.random();
+        }
         damage = damage * 10;
 
         if (!this.playerWon) {
