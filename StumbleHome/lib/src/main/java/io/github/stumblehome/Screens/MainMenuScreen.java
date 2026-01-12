@@ -104,9 +104,21 @@ public class MainMenuScreen extends MenuScreen {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
+                        boolean invalidName = false;
+
+                        // Checks name is valid and not empty or , (breaks csv)
                         if (playerNameInput.getText().equals("")) {
-                            // Display warning to enter username
+                            invalidName = true;
                         } else {
+                            for (char letter : playerNameInput.getText().toCharArray()) {
+                                if (letter == ',') {
+                                    invalidName = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!invalidName) {
                             volume = volumeSlider.getValue();
                             game.setScreen(
                                     new GameScreen(
