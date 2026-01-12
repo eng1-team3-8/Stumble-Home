@@ -363,6 +363,7 @@ public class GameScreen implements Screen {
             hinderingEventCounter++;
             blackout = false;
             game.setScreen(new BlackoutScreen(this.game, 3f, this));
+            rescale = false;
             msg.setTime(Messages.BLACKOUT, 3f);
         }
 
@@ -442,6 +443,7 @@ public class GameScreen implements Screen {
             if (vodka.isCollected && player.isPlayerDrunk()) {
                 setAchievementText("Mix & Blackout", 50);
                 blackout = true;
+                rescale = false;
             }
             player.setDrunk();
             msg.setTime(Messages.ALCOHOL, 3f);
