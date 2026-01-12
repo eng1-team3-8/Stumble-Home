@@ -15,8 +15,11 @@ import java.util.Queue;
  * @author Isaac M
  */
 public class MessageHandler {
+    // game the message handler is connected to
     private StumbleHome game;
+    // Map of the messages against their messageIDs
     private Map<Messages, MessageID> messages;
+    // Queue of all messages with more than 0 time_remaining
     private Queue<Messages> shown_queue;
 
     /**
@@ -84,17 +87,23 @@ public class MessageHandler {
      *     method does nothing
      * @param message the key of the message to be shown
      */
-    public void updateMessage(boolean show_msg, Messages message) {
+    public void updateMessage(boolean show_msg, Messages message) throws IllegalArgumentException {
         if (show_msg) {
-            drawCenteredText(messages.get(message), shown_queue.size() + 1);
+            if (message == null) {
+                throw new IllegalArgumentException("message of null can't be drawn");
+            } else {
+                drawCenteredText(messages.get(message), shown_queue.size() + 1);
+            }
         }
     }
 
     /**
      * allows the time a message is shown for to be set to a value
      *
-     * @param msg key of the message being referenced
+     * @param msg key of the message being referenced, must have been initilised using addMessage() first
      * @param new_time the new time that the message will be shown for, overrides previous time
+     *  if less than 0, sets to 0
+     * @return true if time was set correctly
      */
     public boolean setTime(Messages msg, float new_time) {
         if (messages.get(msg) == null) {
@@ -111,14 +120,19 @@ public class MessageHandler {
     }
 
     /**
-     * allows the remaining time a message is shown for to be increased/decreased
+     * allows the remaining time a message is shown for to be increased/decreased by a specific amount
      *
-     * @param msg key of the message being referenced
+     * @param msg key of the message being referenced, must have been initilised using addMessage() first
      * @param time_difference the amount by which the time remaining is changed by, the new time is
      *     the old time + the time_difference
+     *     if new time is negative time is set to 0
+     * @return true if time was shifted set correctly
      */
-    public void shiftTime(Messages msg, float time_difference) {
-        setTime(msg, messages.get(msg).getTime() + time_difference);
+    public boolean shiftTime(Messages msg, float time_difference) {
+        if (messages.get(msg) == null) {
+            return false;
+        }
+        return setTime(msg, messages.get(msg).getTime() + time_difference);
     }
 
     /**

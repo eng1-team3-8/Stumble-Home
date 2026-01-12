@@ -20,12 +20,6 @@ public class MenuAssetTests extends AbstractHeadlessGdxTest {
     }
 
     @Test
-    public void testLeaderboardAssets() {
-        // assertTrue(
-        //       Gdx.files.internal("leaderBoard.csv").exists(), "Leaderboard csv does not exist");
-    }
-
-    @Test
     public void testGameFinishAssets() {
         // Currently no custom assets for the end game screens.
         // this test exists for future development

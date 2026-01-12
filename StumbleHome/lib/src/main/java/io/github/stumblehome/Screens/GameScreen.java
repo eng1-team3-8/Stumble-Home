@@ -52,13 +52,14 @@ import java.util.HashMap;
  * </ul>
  */
 public class GameScreen implements Screen {
+    public static final String MAPASSET = "map2.tmx";
     // Reference to the main game instance.
     final StumbleHome game;
-    // Map boundaries
     // Width of the map in world units.
     private final float mapWidth;
     // Height of the map in world units.
     private final float mapHeight;
+
     // Minimum X coordinate for the camera position.
     private final float minCameraX;
     // Maximum X coordinate for the camera position.
@@ -67,6 +68,7 @@ public class GameScreen implements Screen {
     private final float minCameraY;
     // Maximum Y coordinate for the camera position.
     private final float maxCameraY;
+
     // The player character instance.
     private final Player player;
     // Interactive event: the water bottle (removes drunkenness).
@@ -81,39 +83,38 @@ public class GameScreen implements Screen {
     private final Alcohol beer;
     // Vodka for the negative event
     private final Alcohol vodka;
-    ;
     // Chicken for the positive event
     private final Food chicken;
     // Adding the Yorks and the Lancs roses
     private final Rose York;
     private final Rose Lancaster;
+    // used to indicate when both roses have been obtained
+    private boolean bothRosesCollected = false;
     // Chainsaw for the positive event
     private final Chainsaw chainsaw;
-    // Bob
+    // Bob entity to activate Mike boss fight
     private final Bob bob;
-    // BirdSeed
+    // BirdSeed entity for negative event
     private final BirdSeed birdSeed;
     private final String playerName;
+
     // The current map being rendered.
     TiledMap map;
     // Renders the tiled map using an orthogonal projection.
     OrthogonalTiledMapRenderer renderer;
     // Collision layer representing obstacles (e.g., hedges).
     TiledMapTileLayer collisionLayer;
+
     // Indicates whether the game is currently paused.
     private boolean paused = false;
     // Indicate when a blackout is occuring
     private boolean blackout = false;
     // Remaining time for the player to complete the game (in seconds).
     private float remainingTime = 300f;
-    // Whether the countdown timer has reached zero.
-    private boolean timeUp = false;
-    // Whether the player has reached the finish zone.
-    private boolean reachedFinish = false;
-    // Whether the player has collected the keycard.
-    private boolean hasKeycard = false;
-    // Message timers for temporary on-screen notifications.
+
+    // Message handler to handle game notifications
     private MessageHandler msg;
+
     // Counters for hidden, helpful, and hindering events.
     private int hiddenEventCounter = 0;
     private int helpfulEventCounter = 0;
@@ -125,6 +126,7 @@ public class GameScreen implements Screen {
     private boolean eventTriggered = false;
     private float oldWidth = 0;
     private float dialogScaleFactor = 0;
+    private boolean rescale = true;
 
     // Achievement Tracker
     HashMap<String, Integer> achievementData = new HashMap<>();
@@ -141,6 +143,9 @@ public class GameScreen implements Screen {
      * Constructs the {@code GameScreen} and initializes the map, player, camera, and in-game events.
      *
      * @param game the main {@link StumbleHome} game instance.
+     * @param playerName the name of the player playing the game
+     * @param musicToggle boolean to determine if music is turned on or not
+     * @param volume the volume that the music is playing at
      */
     public GameScreen(
             final StumbleHome game,
@@ -152,7 +157,7 @@ public class GameScreen implements Screen {
         this.musicToggle = musicToggle;
         this.volume = volume;
 
-        map = new TmxMapLoader().load("map2.tmx");
+        map = new TmxMapLoader().load(GameScreen.MAPASSET);
         renderer = new OrthogonalTiledMapRenderer(map, 1 / 16f);
         collisionLayer = (TiledMapTileLayer) map.getLayers().get("hedge");
 
@@ -182,6 +187,7 @@ public class GameScreen implements Screen {
                         new Texture(Player.ASSET),
                         0.8f,
                         new float[] {60f, 50f},
+                        5f,
                         mapWidth,
                         mapHeight,
                         collisionLayer);
@@ -251,20 +257,23 @@ public class GameScreen implements Screen {
         }
     }
 
+    /**
+     * initlises the message handler and adds all the messages used in this screen to it
+     */
     private void initialiseMessages() {
         // message handler
         msg = new MessageHandler(game);
         msg.addMessage(Messages.PAUSED, "PAUSED", Color.WHITE, 2f);
         msg.addMessage(
-                Messages.NOKEYCARD, "You need a KeyCard to enter the Door...", Color.RED, 2f);
+                Messages.NOKEYCARD, "You need a Key Card to enter the Door...", Color.RED, 2f);
         msg.addMessage(
                 Messages.PICKUPKEYCARD,
-                "You have the keyCard, you can go home now!",
+                "You have the Key Card, you can go home now!",
                 Color.GREEN,
                 2f);
         msg.addMessage(
                 Messages.REMEMBERKEYCARD,
-                "You remembered that you don't have the keycard, find it!",
+                "You remembered that you don't have the Key Card, find it!",
                 Color.GREEN,
                 2f);
         msg.addMessage(Messages.LONGBOIAPPEAR, "It's Long Boi! Avoid him!", Color.RED, 2f);
@@ -345,7 +354,7 @@ public class GameScreen implements Screen {
         }
 
         // Only run player input and logic if not paused and there is enough time left
-        if (!paused && !timeUp && !blackout) {
+        if (!paused && (remainingTime > 0) && !blackout) {
             player.input();
             logic();
         }
@@ -354,6 +363,7 @@ public class GameScreen implements Screen {
             hinderingEventCounter++;
             blackout = false;
             game.setScreen(new BlackoutScreen(this.game, 3f, this));
+            rescale = false;
             msg.setTime(Messages.BLACKOUT, 3f);
         }
 
@@ -361,17 +371,6 @@ public class GameScreen implements Screen {
 
         msg.updateMessages();
         msg.updateMessage(paused, Messages.PAUSED);
-
-        if (timeUp && !reachedFinish) {
-            int score = calculateScore(false);
-            saveLeaderBoardScore(score);
-
-            if (musicToggle) {
-                music.stop();
-            }
-
-            game.setScreen(new LoseScreen(game, remainingTime, score));
-        }
 
         positionDialogueBox();
 
@@ -411,7 +410,6 @@ public class GameScreen implements Screen {
 
         // check collision with keycard
         if (keycard.checkColliding(playerCentreX, playerCentreY)) {
-            hasKeycard = true;
             hinderingEventCounter++;
             msg.setTime(Messages.PICKUPKEYCARD, 3f);
 
@@ -445,8 +443,9 @@ public class GameScreen implements Screen {
             if (vodka.isCollected && player.isPlayerDrunk()) {
                 setAchievementText("Mix & Blackout", 50);
                 blackout = true;
+                rescale = false;
             }
-            beer.makeDrunk(player);
+            player.setDrunk();
             msg.setTime(Messages.ALCOHOL, 3f);
             setAchievementText("BEER ME!", 50);
         }
@@ -459,8 +458,9 @@ public class GameScreen implements Screen {
             if (beer.isCollected && player.isPlayerDrunk()) {
                 setAchievementText("Mix & Blackout", 50);
                 blackout = true;
+                rescale = false;
             }
-            vodka.makeDrunk(player);
+            player.setDrunk();
             msg.setTime(Messages.ALCOHOL, 3f);
             setAchievementText("Down the vodka", 50);
         }
@@ -468,7 +468,7 @@ public class GameScreen implements Screen {
         // Check if collision with chicken
         if (chicken.checkColliding(playerCentreX, playerCentreY)) {
             helpfulEventCounter++;
-            if (player.isDrunk) {
+            if (player.isPlayerDrunk()) {
                 msg.setTime(Messages.REMEMBERKEYCARD, 3f);
             }
             chicken.eatFood(player);
@@ -478,33 +478,29 @@ public class GameScreen implements Screen {
 
         // Check if the Yorks rose has been stepped on
         if (York.checkColliding(playerCentreX, playerCentreY)) {
-            if (!Lancaster.isSquished) {
+            if (!Lancaster.isCollected) {
                 hiddenEventCounter++;
             }
             msg.setTime(Messages.YORKSQUISHED, 3f);
-            York.isSquished = true;
 
             setAchievementText("Traitor!!!", 50);
         }
 
         // Check if the Lancaster rose has been stepped on
         if (Lancaster.checkColliding(playerCentreX, playerCentreY)) {
-            if (!York.isSquished) {
+            if (!York.isCollected) {
                 hiddenEventCounter++;
             }
             msg.setTime(Messages.LANCASTERSQUISHED, 3f);
-            Lancaster.isSquished = true;
-
             setAchievementText("War of the Roses...", 50);
         }
 
         // CHeck if both roses have been squished.
         // If true send a message and then immediately set squished to false, to prevent it
         // repeating
-        if (York.isSquished && Lancaster.isSquished) {
+        if (York.isCollected && Lancaster.isCollected && !bothRosesCollected) {
             msg.setTime(Messages.BOTHSQUISHED, 3f);
-            York.isSquished = false;
-            Lancaster.isSquished = false;
+            bothRosesCollected = true;
 
             setAchievementText("Switched sides have you??", 50);
         }
@@ -514,6 +510,7 @@ public class GameScreen implements Screen {
             hiddenEventCounter++;
 
             toggleMusic();
+            rescale = false;
             game.setScreen(new BossScreen(game, this, musicToggle, volume));
 
             setAchievementText("Someone didn't like SYS1...", 50);
@@ -567,38 +564,43 @@ public class GameScreen implements Screen {
         game.camera.position.set(playerCenterX, playerCenterY, 0);
 
         // logic for time running out
-        if (!paused && !reachedFinish) {
+        if (!paused) {
             if (remainingTime > 0) {
                 // decrease time
                 remainingTime -= Gdx.graphics.getDeltaTime();
                 if (remainingTime <= 0) {
                     remainingTime = 0;
-                    timeUp = true;
+                    int score = calculateScore(false);
+                    saveLeaderBoardScore(score);
+                    if (musicToggle) {
+                        music.stop();
+                    }
+                    game.setScreen(new LoseScreen(game, remainingTime, score));
                 }
             }
         }
 
         // if reached finish successfully (has keycard)
-        if (!reachedFinish && hasKeycard && reachedFinishZone()) {
-            timeUp = true;
-            paused = true;
-
+        if (keycard.isCollected && reachedFinishZone()) {
             int score = calculateScore(true);
             saveLeaderBoardScore(score);
 
-            reachedFinish = true;
             game.setScreen(new WinScreen(game, remainingTime, score, achievementData));
             dispose();
         }
 
         // if at finish with no keycard, show no keycard message
-        if (!hasKeycard && reachedFinishZone()) {
+        if (!keycard.isCollected && reachedFinishZone()) {
             msg.setTime(Messages.NOKEYCARD, 3f);
         }
 
         clampCamera();
     }
 
+    /**
+     * checks if the player has reached the finish zone
+     * @return true if the player has reached the finish zone, false if not
+     */
     private boolean reachedFinishZone() {
         float finishZoneX = 2f;
         float finishZoneY = 6f;
@@ -610,6 +612,9 @@ public class GameScreen implements Screen {
                 && player.getY() + player.frame_size > finishZoneY;
     }
 
+    /**
+     * stops camera moving past the boundaries of the map
+     */
     private void clampCamera() {
         // Only clamp if map is larger than viewport in each dimension
         if (mapWidth >= game.viewport.getWorldWidth()) {
@@ -700,13 +705,17 @@ public class GameScreen implements Screen {
         stage.getViewport().update(width, height, true);
 
         // Scales achievement box to new screen size
-        float temp = dialogScaleFactor;
-        dialogScaleFactor = (width / oldWidth);
-        if (temp > dialogScaleFactor) {
-            dialogScaleFactor = -dialogScaleFactor;
+        if (rescale) {
+            float temp = dialogScaleFactor;
+            dialogScaleFactor = (width / oldWidth);
+            if (temp > dialogScaleFactor) {
+                dialogScaleFactor = -dialogScaleFactor;
+            }
+            achievementBox.scaleBy(dialogScaleFactor - 1);
+            oldWidth = width;
+        } else {
+            rescale = true;
         }
-        achievementBox.scaleBy(dialogScaleFactor - 1);
-        oldWidth = width;
     }
 
     @Override

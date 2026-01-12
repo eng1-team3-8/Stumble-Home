@@ -44,6 +44,9 @@ public class LoseScreen extends GameFinishScreen {
         skin.dispose();
     }
 
+    /**
+     * draws the layout of the lose screen, including a restart button
+     */
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());

@@ -10,8 +10,9 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 public final class LauncherStub {
     public static void main(String[] args) {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        config.setTitle("StumbleHome");
+        config.setTitle("Stumble Home");
         config.setWindowedMode(800, 500);
+        config.setWindowIcon("andy.png");
         new Lwjgl3Application(new StumbleHome(), config);
     }
 }

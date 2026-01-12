@@ -143,11 +143,11 @@ public class LongBoiEventTest extends AbstractHeadlessGdxTest {
 
     @Test
     public void testRadiusProperty() {
-        assertEquals(6f, longBoi.radius);
+        assertEquals(6f, longBoi.getRadius());
 
-        longBoi.radius = 3.0f;
+        longBoi.setRadius(3.0f);
 
-        assertEquals(3.0f, longBoi.radius);
+        assertEquals(3.0f, longBoi.getRadius());
     }
 
     @Test

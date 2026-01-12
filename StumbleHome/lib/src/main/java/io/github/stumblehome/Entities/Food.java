@@ -11,17 +11,16 @@ public class Food extends CollectableEntity {
     public static final String ASSET = "Sprites/Chicken.png";
 
     /**
-     * A constructor for entities that don't have any animations
-     *
-     * @param texture Texture: The texture of the entity
-     * @param size float: The size of the entity
-     * @param position float[X,Y]: A float array of the coordinates of the entity. Position 0 is X,
-     *     and 1 is Y.
+     * Calling constructor of superclass
      */
     public Food(Texture texture, float size, float[] position) {
         super(texture, size, position);
     }
 
+    /**
+     * sets the player to being unable to get drunk
+     * @param player that the food is affecting
+     */
     public void eatFood(Player player) {
         player.canGetDrunk = false;
         player.setSober();

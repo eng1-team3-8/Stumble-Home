@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import io.github.stumblehome.Entities.EntityDirection;
 import io.github.stumblehome.Entities.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,16 +34,15 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         // Load collision layers
         TiledMapTileLayer collisionLayer = (TiledMapTileLayer) map.getLayers().get("hedge");
         // Create player for test
-        Player player =
+        testUnit =
                 new Player(
                         new Texture("character.png"),
                         0.8f,
                         new float[] {0f, 0f},
+                        5f,
                         mapWidth,
                         mapHeight,
                         collisionLayer);
-
-        testUnit = player;
     }
 
     @Test
@@ -66,30 +66,38 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
     }
 
     @Test
-    public void testSwapControls() {
+    public void testDrunkAndSoberMethods() {
 
         Player player = testUnit;
 
-        assertTrue(player.isDrunk, "Player class attribute isDrunk should have the value True");
-        player.SwapControls();
-        assertFalse(player.isDrunk, "Player class method SwapControl must reverse isDrunk value");
-        assertEquals(5f, player.player_speed, "Speed is not reversing");
-        player.SwapControls();
         assertTrue(
-                player.isDrunk, "Double SwapControls method should return True value for isDrunk");
-        assertEquals(-5f, player.player_speed);
+                player.isPlayerDrunk(),
+                "Player class attribute isDrunk should have the value True");
+        assertEquals(-5f, player.getPlayerSpeed(), "Speed should be reversed when drunk");
+        player.setSober();
+        assertFalse(
+                player.isPlayerDrunk(),
+                "Player class method SwapControl must reverse isDrunk value");
+        assertEquals(5f, player.getPlayerSpeed(), "Speed is not reversing");
+        player.setDrunk();
+        assertTrue(player.isPlayerDrunk(), "setDrunk method should return True value for isDrunk");
+        assertEquals(-5f, player.getPlayerSpeed(), "setDrunk should result in a negative speed");
     }
 
     @Test
     public void testSlowDown() {
         Player player = testUnit;
-
-        player.slowDownPlayer(4);
-        assertEquals(-1f, player.player_speed);
-        player.slowDownPlayer(1);
-        assertEquals(0, player.player_speed);
-        player.slowDownPlayer(1);
-        assertEquals(1f, player.player_speed);
+        boolean result;
+        result = player.slowDownPlayer(4);
+        assertTrue(result, "Player should report success");
+        assertEquals(-1f, player.getPlayerSpeed(), "player should be slowed down");
+        result = player.slowDownPlayer(1);
+        assertEquals(0, player.getPlayerSpeed(), "player should be able to be slowed down to 0");
+        assertTrue(result, "Player should report success");
+        result = player.slowDownPlayer(2);
+        assertEquals(
+                0f, player.getPlayerSpeed(), "player should not be able to be slowed down past 0");
+        assertFalse(result, "Player should report failure");
     }
 
     @Test
@@ -97,11 +105,11 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         Player player = testUnit;
 
         player.speedUpPlayer(6);
-        assertEquals(-11f, player.player_speed);
+        assertEquals(-11f, player.getPlayerSpeed());
 
-        player.SwapControls();
+        player.setSober();
         player.speedUpPlayer(5);
-        assertEquals(16f, player.player_speed);
+        assertEquals(16f, player.getPlayerSpeed());
     }
 
     @Test
@@ -112,8 +120,8 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         assertEquals(0f, player.getX(), "Player X should start at 0");
         assertEquals(0f, player.getY(), "Player Y should start at 0");
         assertEquals(0.8f, player.frame_size, "Player size should be 0.8");
-        assertTrue(player.isDrunk, "Player should be drunk initially");
-        assertEquals(-5f, player.player_speed, "Player speed should be -5 when drunk");
+        assertTrue(player.isPlayerDrunk(), "Player should be drunk initially");
+        assertEquals(-5f, player.getPlayerSpeed(), "Player speed should be -5 when drunk");
     }
 
     @Test
@@ -121,12 +129,12 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         Player player = testUnit;
 
         // Make player sober
-        player.SwapControls();
-        assertEquals(5f, player.player_speed, "Should be sober with positive speed");
+        player.setSober();
+        assertEquals(5f, player.getPlayerSpeed(), "Should be sober with positive speed");
 
         // Slow down when sober (normal behavior)
         player.slowDownPlayer(3);
-        assertEquals(2f, player.player_speed, "SlowDown should work normally when sober");
+        assertEquals(2f, player.getPlayerSpeed(), "SlowDown should work normally when sober");
     }
 
     @Test
@@ -134,12 +142,12 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         Player player = testUnit;
 
         // Make player sober
-        player.SwapControls();
-        assertEquals(5f, player.player_speed, "Should be sober with positive speed");
+        player.setSober();
+        assertEquals(5f, player.getPlayerSpeed(), "Should be sober with positive speed");
 
         // Speed up when sober (normal behavior)
         player.speedUpPlayer(3);
-        assertEquals(8f, player.player_speed, "SpeedUp should work normally when sober");
+        assertEquals(8f, player.getPlayerSpeed(), "SpeedUp should work normally when sober");
     }
 
     @Test
@@ -147,20 +155,14 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
         Player player = testUnit;
 
         // Test multiple swaps
-        assertTrue(player.isDrunk);
-        assertEquals(-5f, player.player_speed);
+        assertTrue(player.isPlayerDrunk(), "initally player should be drunk");
+        assertEquals(-5f, player.getPlayerSpeed(), "Initally speed should be negative");
 
-        player.SwapControls();
-        assertFalse(player.isDrunk);
-        assertEquals(5f, player.player_speed);
-
-        player.SwapControls();
-        assertTrue(player.isDrunk);
-        assertEquals(-5f, player.player_speed);
-
-        player.SwapControls();
-        assertFalse(player.isDrunk);
-        assertEquals(5f, player.player_speed);
+        player.setSober();
+        player.setDrunk();
+        player.setSober();
+        assertFalse(player.isPlayerDrunk(), "multiple switches of setSober, setDrunk should work");
+        assertEquals(5f, player.getPlayerSpeed(), "speed when sober should be positive");
     }
 
     @Test
@@ -172,5 +174,78 @@ public class PlayerTest extends AbstractHeadlessGdxTest {
 
         // Test with very small positions
         assertTrue(player.canMoveTo(1.1f, 1.1f), "Small positive positions should be valid");
+    }
+
+    @Test
+    public void testInputNoInput() {
+        Player player = testUnit;
+        player.input();
+        assertEquals(player.getX(), 0, "Player should not move with no input");
+        assertEquals(player.getY(), 0, "Player should not move with no input");
+    }
+
+    @Test
+    public void testSetDirection() {
+        Player player = testUnit;
+        player.setSober();
+        assertEquals(
+                player.getDirection(),
+                EntityDirection.UP,
+                "intial direction should be up when sober");
+        player.input();
+        assertEquals(
+                player.getDirection(),
+                EntityDirection.UP,
+                "input with no input should not change direction");
+        player.changeDirection(EntityDirection.UP);
+        assertEquals(
+                player.getDirection(),
+                EntityDirection.DOWN,
+                "change direction should be set to down when sober");
+        player.changeDirection(EntityDirection.RIGHT);
+        assertEquals(
+                player.getDirection(),
+                EntityDirection.LEFT,
+                "change direction should be set to left when sober");
+        player.changeDirection(EntityDirection.DOWN);
+        assertEquals(
+                player.getDirection(),
+                EntityDirection.UP,
+                "change direction should be set to up when sober");
+        player.changeDirection(EntityDirection.LEFT);
+        assertEquals(
+                player.getDirection(),
+                EntityDirection.RIGHT,
+                "change direction should be set to right when sober");
+    }
+
+    @Test
+    public void testSetDirectionDrunk() {
+        Player player = testUnit;
+        assertEquals(
+                player.getDirection(), EntityDirection.DOWN, "intial direction should be down");
+        player.input();
+        assertEquals(
+                player.getDirection(),
+                EntityDirection.DOWN,
+                "input with no input should not change direction");
+        player.changeDirection(EntityDirection.UP);
+        assertEquals(
+                player.getDirection(), EntityDirection.UP, "change direction should be set to up");
+        player.changeDirection(EntityDirection.RIGHT);
+        assertEquals(
+                player.getDirection(),
+                EntityDirection.RIGHT,
+                "change direction should be set to right");
+        player.changeDirection(EntityDirection.DOWN);
+        assertEquals(
+                player.getDirection(),
+                EntityDirection.DOWN,
+                "change direction should be set to down");
+        player.changeDirection(EntityDirection.LEFT);
+        assertEquals(
+                player.getDirection(),
+                EntityDirection.LEFT,
+                "change direction should be set to left");
     }
 }

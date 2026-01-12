@@ -230,6 +230,7 @@ public class MessageHandlerTests extends AbstractHeadlessGdxTest {
                 "Message 2 size was not changed correctly");
     }
 
+    @Test
     public void testSetTimeExistingMessage() {
         test_handler.addMessage(Messages.PAUSED, "test", Color.WHITE, 1.0f);
         boolean time_change = test_handler.setTime(Messages.PAUSED, 5);
@@ -238,14 +239,135 @@ public class MessageHandlerTests extends AbstractHeadlessGdxTest {
                 5f,
                 "Time should have been set to 5");
         assertTrue(time_change, "MessageHandler should report success");
+        assertEquals(
+                test_handler.getShown_queue().peek(),
+                Messages.PAUSED,
+                "Message should be added to shown_queue");
     }
 
+    @Test
     public void testSetTimeNullMessage() {
         boolean time_change = test_handler.setTime(Messages.PAUSED, 5);
-        assertFalse(time_change, "MessageHandler should not change time of null message");
-        assertEquals(
+        assertNull(
                 test_handler.getMessages().get(Messages.PAUSED),
-                null,
                 "Message should not be initilised by time_change");
+        assertFalse(time_change, "MessageHandler should report failure");
+        assertNull(
+                test_handler.getShown_queue().peek(), "Message should not be added to shown queue");
+    }
+
+    @Test
+    public void testSetTimeNegativeTime() {
+        test_handler.addMessage(Messages.PAUSED, "test", null, 1.0f);
+        boolean time_change = test_handler.setTime(Messages.PAUSED, -5);
+        assertEquals(
+                test_handler.getMessages().get(Messages.PAUSED).getTime(),
+                0f,
+                "Negative time should be set to 0");
+        assertTrue(time_change, "MessageHandler should report change as successful");
+        assertNull(
+                test_handler.getShown_queue().peek(), "Message should not be added to shown queue");
+    }
+
+    @Test
+    public void testSetTimeZeroTime() {
+        test_handler.addMessage(Messages.PAUSED, "test", null, 1.0f);
+        boolean time_change = test_handler.setTime(Messages.PAUSED, 0);
+        assertEquals(
+                test_handler.getMessages().get(Messages.PAUSED).getTime(),
+                0f,
+                "time should be able to be set to 0");
+        assertTrue(time_change, "MessageHandler should report change as successful");
+        assertNull(
+                test_handler.getShown_queue().peek(), "Message should not be added to shown queue");
+    }
+
+    @Test
+    public void testShiftTimeExistingMessage() {
+        test_handler.addMessage(Messages.PAUSED, "test", null, 1.0f);
+        test_handler.setTime(Messages.PAUSED, 5);
+        boolean time_change = test_handler.shiftTime(Messages.PAUSED, 2);
+        assertEquals(
+                test_handler.getMessages().get(Messages.PAUSED).getTime(),
+                7f,
+                "Time should result in 7");
+        assertTrue(time_change, "MessageHandler should report success");
+        assertEquals(
+                test_handler.getShown_queue().peek(),
+                Messages.PAUSED,
+                "Message should be added to shown_queue");
+    }
+
+    @Test
+    public void testShiftTimeNullMessage() {
+        test_handler.setTime(Messages.PAUSED, 5);
+        boolean time_change = test_handler.shiftTime(Messages.PAUSED, 2);
+        assertNull(
+                test_handler.getMessages().get(Messages.PAUSED),
+                "Message should not be initilised by time_change");
+        assertFalse(time_change, "MessageHandler should report failure");
+        assertNull(
+                test_handler.getShown_queue().peek(), "Message should not be added to shown queue");
+    }
+
+    @Test
+    public void testShiftTimeNegativeTime() {
+        test_handler.addMessage(Messages.PAUSED, "test", null, 1.0f);
+        test_handler.setTime(Messages.PAUSED, 5);
+        boolean time_change = test_handler.shiftTime(Messages.PAUSED, -2f);
+        assertEquals(
+                test_handler.getMessages().get(Messages.PAUSED).getTime(),
+                3f,
+                "Time should result in 3");
+        assertTrue(time_change, "MessageHandler should report success");
+        assertEquals(
+                test_handler.getShown_queue().peek(),
+                Messages.PAUSED,
+                "Message should be added to shown_queue");
+    }
+
+    @Test
+    public void testShiftTimeZeroTime() {
+        test_handler.addMessage(Messages.PAUSED, "test", null, 1.0f);
+        test_handler.setTime(Messages.PAUSED, 5);
+        boolean time_change = test_handler.shiftTime(Messages.PAUSED, 0f);
+        assertEquals(
+                test_handler.getMessages().get(Messages.PAUSED).getTime(),
+                5f,
+                "Time should result in 5");
+        assertTrue(time_change, "MessageHandler should report success");
+        assertEquals(
+                test_handler.getShown_queue().peek(),
+                Messages.PAUSED,
+                "Message should be added to shown_queue");
+    }
+
+    @Test
+    public void testUpdateMessagesEmptyQueue() {
+        test_handler.updateMessages();
+        assertEquals(
+                test_handler.getShown_queue().size(),
+                0,
+                "Shown queue should not be increased by updateMessages");
+        assertEquals(
+                test_handler.getMessages().size(),
+                Messages.values().length,
+                "All messages should still be initialised into MessageHandler");
+        for (Messages msg : test_handler.getMessages().keySet()) {
+            assertEquals(
+                    test_handler.getMessages().get(msg),
+                    null,
+                    "All messages should be still be null");
+        }
+    }
+
+    @Test
+    public void testUpdateMessageFalse() {
+        test_handler.updateMessage(false, null);
+        test_handler.updateMessage(false, Messages.PAUSED);
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> test_handler.updateMessage(true, null),
+                "updateMessage with a null message should throw an error");
     }
 }
