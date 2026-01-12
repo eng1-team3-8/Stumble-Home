@@ -37,13 +37,14 @@ Tests use JUnit 5 and run automatically with `build`, or separately:
 
 ```bash
 cd StumbleHome
-./gradlew test                                                     # Run all tests
+./gradlew test                                                     # Run all tests (generates coverage report automatically)
 ./gradlew test --info                                              # Detailed output
 ./gradlew test --tests "io.github.stumblehome.headless.PlayerTest" # Specific test
-./gradlew test jacocoTestReport                                    # With coverage
+./gradlew jacocoTestReport                                         # Generate coverage report (runs tests first)
 ```
 
 **Reports:**
+
 - Tests: `StumbleHome/lib/build/reports/tests/test/index.html`
 - Coverage: `StumbleHome/lib/build/reports/jacoco/test/html/index.html`
 
@@ -61,9 +62,11 @@ cd StumbleHome
 
 Create and push a version tag to trigger an automated release (versioned JAR + macOS app bundle).
 
-Only create releases for **significant** milestones (major features, stable versions), not every commit. Commits to `main`/`development` trigger CI/CD for testing but don't create releases.
+Only create releases for **significant** milestones (major features, stable versions), not every commit. Commits to
+`main`/`development` trigger CI/CD for testing but don't create releases.
 
 **Release types:**
+
 - **`main` branch tags**: Stable production releases (e.g., `v2.0.0` → `StumbleHome-2.0.0.jar`)
 - **`development` branch tags**: Include `-dev` suffix in the tag (e.g., `v2.0.0-dev` → `StumbleHome-2.0.0-dev.jar`)
 
@@ -87,16 +90,18 @@ git push origin v2.1.0-dev
 #### 4.2 What happens after pushing a tag
 
 Once the tag is pushed:
+
 1. The GitHub Actions workflow builds the universal JAR with the version from the tag (e.g., `StumbleHome-2.0.0.jar`)
 2. Tests run on all platforms (Ubuntu, Windows, macOS) to ensure compatibility
 3. The macOS native app bundle is built
 4. A GitHub release is automatically created with:
-   - `StumbleHome-{version}.jar` (universal JAR for all platforms)
-   - `StumbleHome-{version}-macos-app.zip` (native macOS app)
+    - `StumbleHome-{version}.jar` (universal JAR for all platforms)
+    - `StumbleHome-{version}-macos-app.zip` (native macOS app)
 
 #### 4.3 Deleting a tag (only before release succeeds)
 
-Only delete a tag **before** the release is published or if the workflow fails (wrong version number, build errors, test failures).
+Only delete a tag **before** the release is published or if the workflow fails (wrong version number, build errors, test
+failures).
 
 Once a release is published, **do NOT** delete the tag. Instead, create a new version (e.g., v2.0.1 to fix v2.0.0).
 
