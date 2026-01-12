@@ -196,7 +196,7 @@ public class BossFightLogic {
      */
     public void mikeAttacks() {
         double damage = Math.random();
-        while (damage == 0) {
+        while (damage <= 0.1) {
             damage = Math.random();
         }
         damage = damage * 10;
