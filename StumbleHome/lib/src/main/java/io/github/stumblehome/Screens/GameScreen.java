@@ -126,6 +126,7 @@ public class GameScreen implements Screen {
     private boolean eventTriggered = false;
     private float oldWidth = 0;
     private float dialogScaleFactor = 0;
+    private boolean rescale = true;
 
     // Achievement Tracker
     HashMap<String, Integer> achievementData = new HashMap<>();
@@ -455,6 +456,7 @@ public class GameScreen implements Screen {
             if (beer.isCollected && player.isPlayerDrunk()) {
                 setAchievementText("Mix & Blackout", 50);
                 blackout = true;
+                rescale = false;
             }
             player.setDrunk();
             msg.setTime(Messages.ALCOHOL, 3f);
@@ -506,6 +508,7 @@ public class GameScreen implements Screen {
             hiddenEventCounter++;
 
             toggleMusic();
+            rescale = false;
             game.setScreen(new BossScreen(game, this, musicToggle, volume));
 
             setAchievementText("Someone didn't like SYS1...", 50);
@@ -700,13 +703,17 @@ public class GameScreen implements Screen {
         stage.getViewport().update(width, height, true);
 
         // Scales achievement box to new screen size
-        float temp = dialogScaleFactor;
-        dialogScaleFactor = (width / oldWidth);
-        if (temp > dialogScaleFactor) {
-            dialogScaleFactor = -dialogScaleFactor;
+        if (rescale) {
+            float temp = dialogScaleFactor;
+            dialogScaleFactor = (width / oldWidth);
+            if (temp > dialogScaleFactor) {
+                dialogScaleFactor = -dialogScaleFactor;
+            }
+            achievementBox.scaleBy(dialogScaleFactor - 1);
+            oldWidth = width;
+        } else {
+            rescale = true;
         }
-        achievementBox.scaleBy(dialogScaleFactor - 1);
-        oldWidth = width;
     }
 
     @Override
